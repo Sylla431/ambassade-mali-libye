@@ -15,7 +15,8 @@ export const POST = withAuth(async (request) => {
     const uploadResults = []
     const uploadDir = 'uploads/images'
 
-    for (const file of Array.from(files)) {
+    const filesArray = Array.from(files)
+    for (const file of filesArray) {
       const result = await saveFile(file, uploadDir, ALLOWED_IMAGE_TYPES)
       
       if (result.success) {
