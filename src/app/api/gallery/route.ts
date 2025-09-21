@@ -6,6 +6,7 @@ import path from 'path'
 
 // Force dynamic rendering for this API route
 export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
 
 // GET /api/gallery - Récupérer toutes les images de la galerie
 export const GET = withAuth(async (request) => {

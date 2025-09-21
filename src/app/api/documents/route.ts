@@ -4,6 +4,7 @@ import { successResponse, errorResponse, getPaginationParams, createPaginationRe
 
 // Force dynamic rendering for this API route
 export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
 
 // GET /api/documents - Récupérer tous les documents
 export async function GET(request: NextRequest) {

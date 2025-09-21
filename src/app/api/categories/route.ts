@@ -4,6 +4,7 @@ import { z } from 'zod'
 
 // Force dynamic rendering for this API route
 export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
 
 // Schéma de validation pour la création d'une catégorie
 const createCategorySchema = z.object({

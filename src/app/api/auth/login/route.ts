@@ -3,6 +3,8 @@ import { authenticateUser, generateToken } from '@/lib/auth'
 import { loginSchema } from '@/utils/validation'
 import { successResponse, errorResponse, validationErrorResponse } from '@/utils/api'
 
+export const runtime = 'nodejs'
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()

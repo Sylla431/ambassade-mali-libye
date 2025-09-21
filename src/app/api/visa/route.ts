@@ -6,6 +6,7 @@ import { withAuth } from '@/middleware/auth'
 
 // Force dynamic rendering for this API route
 export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
 
 // GET /api/visa - Récupérer toutes les demandes de visa (admin seulement)
 export const GET = withAuth(async (request) => {

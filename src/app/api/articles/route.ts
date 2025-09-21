@@ -6,6 +6,7 @@ import { withAuth } from '@/middleware/auth'
 
 // Force dynamic rendering for this API route
 export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
 
 // GET /api/articles - Récupérer tous les articles
 export async function GET(request: NextRequest) {

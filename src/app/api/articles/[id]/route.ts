@@ -4,6 +4,8 @@ import { updateArticleSchema } from '@/utils/validation'
 import { successResponse, errorResponse, validationErrorResponse, notFoundResponse } from '@/utils/api'
 import { withAuth, AuthenticatedRequest } from '@/middleware/auth'
 
+export const runtime = 'nodejs'
+
 // GET /api/articles/[id] - Récupérer un article par ID
 export async function GET(
   request: NextRequest,
