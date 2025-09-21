@@ -2,11 +2,11 @@ import { NextRequest } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { updateVisaApplicationSchema } from '@/utils/validation'
 import { successResponse, errorResponse, validationErrorResponse, notFoundResponse } from '@/utils/api'
-import { withAuth } from '@/middleware/auth'
+import { withAuth, AuthenticatedRequest } from '@/middleware/auth'
 
 // GET /api/visa/[id] - Récupérer une demande de visa par ID
 export const GET = withAuth(async (
-  request: NextRequest,
+  request: AuthenticatedRequest,
   { params }: { params: { id: string } }
 ) => {
   try {
@@ -37,7 +37,7 @@ export const GET = withAuth(async (
 
 // PUT /api/visa/[id] - Mettre à jour une demande de visa (admin seulement)
 export const PUT = withAuth(async (
-  request: NextRequest,
+  request: AuthenticatedRequest,
   { params }: { params: { id: string } }
 ) => {
   try {
@@ -96,7 +96,7 @@ export const PUT = withAuth(async (
 
 // DELETE /api/visa/[id] - Supprimer une demande de visa (admin seulement)
 export const DELETE = withAuth(async (
-  request: NextRequest,
+  request: AuthenticatedRequest,
   { params }: { params: { id: string } }
 ) => {
   try {
