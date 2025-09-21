@@ -8,7 +8,7 @@ import {
   Calendar, 
   MapPin, 
   Target,
-  Handshake,
+  Hand,
   TrendingUp,
   Award,
   FileText,
@@ -564,7 +564,7 @@ function AESOverview() {
                 className="btn-secondary inline-flex items-center space-x-2 text-lg px-8 py-4"
               >
                 <span>Nous Contacter</span>
-                <Handshake className="h-5 w-5" />
+                <Hand className="h-5 w-5" />
               </Link>
             </div>
           </div>
