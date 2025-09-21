@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { updateArticleSchema } from '@/utils/validation'
 import { successResponse, errorResponse, validationErrorResponse, notFoundResponse } from '@/utils/api'
-import { withAuth } from '@/middleware/auth'
+import { withAuth, AuthenticatedRequest } from '@/middleware/auth'
 
 // GET /api/articles/[id] - Récupérer un article par ID
 export async function GET(
@@ -40,7 +40,7 @@ export async function GET(
 
 // PUT /api/articles/[id] - Mettre à jour un article
 export const PUT = withAuth(async (
-  request: NextRequest,
+  request: AuthenticatedRequest,
   context: { params: { id: string } }
 ) => {
   const { params } = context
@@ -110,7 +110,7 @@ export const PUT = withAuth(async (
 
 // DELETE /api/articles/[id] - Supprimer un article
 export const DELETE = withAuth(async (
-  request: NextRequest,
+  request: AuthenticatedRequest,
   context: { params: { id: string } }
 ) => {
   const { params } = context

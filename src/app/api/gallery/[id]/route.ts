@@ -1,11 +1,11 @@
 import { NextRequest } from 'next/server'
 import { successResponse, errorResponse } from '@/utils/api'
-import { withAuth } from '@/middleware/auth'
+import { withAuth, AuthenticatedRequest } from '@/middleware/auth'
 import fs from 'fs'
 import path from 'path'
 
 // DELETE /api/gallery/[id] - Supprimer une image de la galerie
-export const DELETE = withAuth(async (request: NextRequest, context: { params: { id: string } }) => {
+export const DELETE = withAuth(async (request: AuthenticatedRequest, context: { params: { id: string } }) => {
   try {
     const { params } = context
     const imageId = params.id
