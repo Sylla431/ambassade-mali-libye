@@ -103,7 +103,7 @@ export default function ArticleGalleryPage() {
     try {
       const token = localStorage.getItem('admin_token')
       
-      for (const file of files) {
+      for (const file of Array.from(files)) {
         const formData = new FormData()
         formData.append('files', file)
 

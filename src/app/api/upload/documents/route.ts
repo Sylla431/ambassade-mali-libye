@@ -17,7 +17,7 @@ export const POST = withAuth(async (request) => {
     const uploadDir = 'uploads/documents'
     const user = request.user!
 
-    for (const file of files) {
+    for (const file of Array.from(files)) {
       const result = await saveFile(file, uploadDir, ALLOWED_DOCUMENT_TYPES)
       
       if (result.success) {

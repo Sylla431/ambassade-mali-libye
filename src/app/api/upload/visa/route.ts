@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
     const uploadResults = []
     const uploadDir = 'uploads/visa'
 
-    for (const file of files) {
+    for (const file of Array.from(files)) {
       const result = await saveFile(file, uploadDir, ALLOWED_DOCUMENT_TYPES)
       
       if (result.success) {
