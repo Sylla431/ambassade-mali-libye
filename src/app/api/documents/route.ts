@@ -2,6 +2,9 @@ import { NextRequest } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { successResponse, errorResponse, getPaginationParams, createPaginationResponse } from '@/utils/api'
 
+// Force dynamic rendering for this API route
+export const dynamic = 'force-dynamic'
+
 // GET /api/documents - Récupérer tous les documents
 export async function GET(request: NextRequest) {
   try {

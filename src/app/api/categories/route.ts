@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { z } from 'zod'
 
+// Force dynamic rendering for this API route
+export const dynamic = 'force-dynamic'
+
 // Schéma de validation pour la création d'une catégorie
 const createCategorySchema = z.object({
   name: z.string().min(1, 'Le nom est requis'),

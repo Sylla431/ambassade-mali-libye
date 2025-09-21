@@ -4,6 +4,9 @@ import { createArticleSchema } from '@/utils/validation'
 import { successResponse, errorResponse, validationErrorResponse, getPaginationParams, createPaginationResponse } from '@/utils/api'
 import { withAuth } from '@/middleware/auth'
 
+// Force dynamic rendering for this API route
+export const dynamic = 'force-dynamic'
+
 // GET /api/articles - Récupérer tous les articles
 export async function GET(request: NextRequest) {
   try {
