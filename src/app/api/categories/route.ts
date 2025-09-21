@@ -15,7 +15,7 @@ const createCategorySchema = z.object({
 // GET /api/categories - Récupérer toutes les catégories
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url)
+    const { searchParams } = request.nextUrl
     const isActive = searchParams.get('isActive')
     const includeCounts = searchParams.get('includeCounts') === 'true'
 

@@ -7,7 +7,7 @@ import { withAuth } from '@/middleware/auth'
 // GET /api/visa - Récupérer toutes les demandes de visa (admin seulement)
 export const GET = withAuth(async (request) => {
   try {
-    const { searchParams } = new URL(request.url)
+    const { searchParams } = request.nextUrl
     const { page, limit, search, status } = getPaginationParams(searchParams)
 
     const where: any = {}

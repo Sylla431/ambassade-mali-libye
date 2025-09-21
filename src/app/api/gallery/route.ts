@@ -7,7 +7,7 @@ import path from 'path'
 // GET /api/gallery - Récupérer toutes les images de la galerie
 export const GET = withAuth(async (request) => {
   try {
-    const { searchParams } = new URL(request.url)
+    const { searchParams } = request.nextUrl
     const page = parseInt(searchParams.get('page') || '1')
     const limit = parseInt(searchParams.get('limit') || '20')
     const search = searchParams.get('search') || ''

@@ -7,7 +7,7 @@ import { withAuth } from '@/middleware/auth'
 // GET /api/events - Récupérer tous les événements
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url)
+    const { searchParams } = request.nextUrl
     const { page, limit, search } = getPaginationParams(searchParams)
     const published = searchParams.get('published') === 'true'
 

@@ -7,7 +7,7 @@ import { withAuth } from '@/middleware/auth'
 // GET /api/contact - Récupérer tous les messages de contact (admin seulement)
 export const GET = withAuth(async (request) => {
   try {
-    const { searchParams } = new URL(request.url)
+    const { searchParams } = request.nextUrl
     const { page, limit, search } = getPaginationParams(searchParams)
 
     const where: any = {}

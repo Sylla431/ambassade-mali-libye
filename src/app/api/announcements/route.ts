@@ -7,7 +7,7 @@ import { withAuth } from '@/middleware/auth'
 // GET /api/announcements - Récupérer toutes les annonces
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url)
+    const { searchParams } = request.nextUrl
     const { page, limit, search } = getPaginationParams(searchParams)
     const active = searchParams.get('active') === 'true'
 
