@@ -18,7 +18,7 @@ export default function ArticlesListSimple() {
           setStatus(`❌ Erreur API: ${data.error}`)
         }
       } catch (error) {
-        setStatus(`❌ Erreur: ${error.message}`)
+        setStatus(`❌ Erreur: ${error instanceof Error ? error.message : 'Erreur inconnue'}`)
       }
     }
 
