@@ -8,7 +8,15 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useTranslation } from '@/hooks/useTranslationSimple'
 import LanguageSwitcher from '@/components/ui/LanguageSwitcher'
 
-const getNavigation = (t: (key: string) => string) => [
+interface NavigationItem {
+  name: string
+  href: string
+  target?: string
+  rel?: string
+  submenu?: Array<{ name: string; href: string }>
+}
+
+const getNavigation = (t: (key: string) => string): NavigationItem[] => [
   { 
     name: t('navigation.home'), 
     href: '/',
