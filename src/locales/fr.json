@@ -1,0 +1,91 @@
+{
+  "navigation": {
+    "home": "Accueil",
+    "services": "Services",
+    "visa": "Visa",
+    "investments": "Investissements",
+    "aes": "AES",
+    "culture": "Culture & Tourisme",
+    "articles": "Rubriques",
+    "contact": "Contact",
+    "documents": "Documents Officiels"
+  },
+  "header": {
+    "title": "Ambassade du Mali",
+    "subtitle": "République du Mali - Libye",
+    "phone": "0918883403 / 0944831213",
+    "address": "Tripoli, Quartier Saraj",
+    "hours": "Dim - Jeu: 8:00 - 15:00"
+  },
+  "hero": {
+    "title": "Ambassade de la République du Mali",
+    "subtitle": "Représentation officielle auprès de la Libye et de la République de Malte. Nous offrons un large éventail de services consulaires à nos ressortissants.",
+    "visaButton": "Demande de Visa",
+    "servicesButton": "Nos Services",
+    "stats": {
+      "services": "Services Consulaires",
+      "assistance": "Assistance d'Urgence",
+      "representation": "Représentation Permanente"
+    }
+  },
+  "leadership": {
+    "title": "Direction & Équipe",
+    "subtitle": "Découvrez les dirigeants et l'équipe qui représentent la République du Mali en Libye et œuvrent pour le service de nos ressortissants.",
+    "president": "Président de la Transition",
+    "minister": "Ministre des Affaires Étrangères",
+    "ambassador": "Ambassadeur",
+    "team": "Notre Équipe"
+  },
+  "events": {
+    "title": "Derniers Événements de l'Ambassade",
+    "subtitle": "Découvrez les activités récentes et les rencontres diplomatiques importantes organisées par l'Ambassade du Mali en Libye.",
+    "upcoming": "Événements à venir",
+    "viewAll": "Voir tous les événements"
+  },
+  "articles": {
+    "title": "Articles de l'Ambassade",
+    "subtitle": "Découvrez les dernières actualités, analyses et informations importantes concernant les relations Mali-Libye et les services de l'ambassade.",
+    "categories": "Catégories",
+    "popular": "Articles Populaires",
+    "readMore": "Lire la suite",
+    "viewAll": "Voir toutes les rubriques"
+  },
+  "announcements": {
+    "title": "Annonces et Notes de Service",
+    "subtitle": "Restez informé des dernières communications officielles, avis importants et notes de service de l'ambassade."
+  },
+  "culture": {
+    "title": "Culture & Tourisme",
+    "subtitle": "Explorez la richesse culturelle du Mali et découvrez les opportunités touristiques exceptionnelles."
+  },
+  "contact": {
+    "title": "Contactez-nous",
+    "subtitle": "Nous sommes là pour vous aider. Contactez l'ambassade pour toute question ou assistance."
+  },
+  "aes": {
+    "title": "Confédération des États du Sahel",
+    "subtitle": "Organisation régionale créée le 16 septembre 2023 par le Mali, le Burkina Faso et le Niger, à travers la Charte du Liptako-Gourma.",
+    "about": "À propos de l'AES",
+    "timeline": "Chronologie de l'Alliance des États du Sahel",
+    "timelineSubtitle": "Le début marquant d'une coopération",
+    "members": "Pays Membres Fondateurs",
+    "membersSubtitle": "Les trois États du Sahel unis pour la souveraineté et le développement",
+    "news": "Dernières Nouvelles sur l'AES",
+    "newsSubtitle": "Découvrez les dernières actualités et publications sur l'Alliance des États du Sahel",
+    "contactInfo": "Pour plus d'informations sur l'AES",
+    "contactText": "Contactez l'Ambassade du Mali en Libye pour toute question concernant l'Alliance des États du Sahel et les opportunités de coopération.",
+    "contactButton": "Nous Contacter"
+  },
+  "common": {
+    "readMore": "Lire la suite",
+    "viewAll": "Voir tout",
+    "contact": "Contact",
+    "email": "Email",
+    "phone": "Téléphone",
+    "address": "Adresse",
+    "hours": "Horaires",
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "success": "Succès"
+  }
+}
