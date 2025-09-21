@@ -1,9 +1,13 @@
 import bcrypt from 'bcryptjs'
-import jwt from 'jsonwebtoken'
+import jwt, { SignOptions } from 'jsonwebtoken'
 import { prisma } from './prisma'
 
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret'
-const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d'
+const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d' as const
+
+if (!process.env.JWT_SECRET) {
+  console.warn('⚠️ JWT_SECRET not set, using fallback secret')
+}
 
 export interface AuthUser {
   id: string
@@ -21,16 +25,14 @@ export async function verifyPassword(password: string, hashedPassword: string): 
 }
 
 export function generateToken(user: AuthUser): string {
-  return jwt.sign(
-    { 
-      id: user.id, 
-      email: user.email, 
-      name: user.name, 
-      role: user.role 
-    },
-    JWT_SECRET,
-    { expiresIn: JWT_EXPIRES_IN }
-  )
+  const payload = { 
+    id: user.id, 
+    email: user.email, 
+    name: user.name, 
+    role: user.role 
+  }
+  
+  return jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' })
 }
 
 export function verifyToken(token: string): AuthUser | null {
