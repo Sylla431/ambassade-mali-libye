@@ -35,6 +35,18 @@ async function main() {
   // Créer quelques données d'exemple
   console.log('📝 Création des données d\'exemple...')
 
+  // Créer une catégorie d'exemple
+  const category = await prisma.category.create({
+    data: {
+      name: 'Actualités',
+      nameAr: 'أخبار',
+      description: 'Articles d\'actualité de l\'ambassade',
+      descriptionAr: 'مقالات إخبارية من السفارة',
+      color: '#3B82F6',
+      isActive: true
+    }
+  })
+
   // Article d'exemple
   await prisma.article.create({
     data: {
@@ -49,7 +61,7 @@ async function main() {
       publishedAt: new Date(),
       imageUrl: '/images/logo/logo-ambassade-mali.png',
       tags: JSON.stringify(['accueil', 'ambassade', 'mali', 'libye']),
-      category: 'actualités',
+      categoryId: category.id,
       authorId: admin.id
     }
   })
