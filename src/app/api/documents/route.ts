@@ -1,8 +1,6 @@
 import { NextRequest } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { createDocumentSchema } from '@/utils/validation'
-import { successResponse, errorResponse, validationErrorResponse, getPaginationParams, createPaginationResponse } from '@/utils/api'
-import { withAuth } from '@/middleware/auth'
+import { successResponse, errorResponse, getPaginationParams, createPaginationResponse } from '@/utils/api'
 
 // GET /api/documents - Récupérer tous les documents
 export async function GET(request: NextRequest) {
@@ -57,41 +55,4 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST /api/documents - Créer un nouveau document (admin seulement)
-export const POST = withAuth(async (request) => {
-  try {
-    const body = await request.json()
-    const user = request.user!
-
-    // Validation des données
-    const validationResult = createDocumentSchema.safeParse(body)
-    if (!validationResult.success) {
-      return validationErrorResponse(validationResult.error.errors)
-    }
-
-    const documentData = validationResult.data
-
-    // Créer le document
-    const document = await prisma.document.create({
-      data: {
-        ...documentData,
-        authorId: user.id
-      },
-      include: {
-        author: {
-          select: {
-            id: true,
-            name: true,
-            email: true
-          }
-        }
-      }
-    })
-
-    return successResponse(document, 'Document créé avec succès')
-
-  } catch (error) {
-    console.error('Erreur lors de la création du document:', error)
-    return errorResponse('Erreur interne du serveur', 500)
-  }
-})
+// Note: Pour créer des documents, utilisez /api/upload/documents
