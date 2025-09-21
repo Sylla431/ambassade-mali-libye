@@ -114,7 +114,7 @@ export async function parseMultipartFormData(request: NextRequest) {
     const files: File[] = []
     const fields: Record<string, string> = {}
 
-    for (const [key, value] of formData.entries()) {
+    for (const [key, value] of Array.from(formData.entries())) {
       if (value instanceof File) {
         files.push(value)
       } else {
