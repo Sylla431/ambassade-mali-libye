@@ -327,7 +327,7 @@ export default function VisaApplicationDetailPage() {
             <div className="bg-white rounded-lg shadow p-6">
               <h2 className="text-lg font-semibold text-gray-900 mb-4">Documents fournis</h2>
               <div className="space-y-3">
-                {application.documents.map((document, index) => (
+                {application.documents.map((doc, index) => (
                   <div key={index} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
                     <div className="flex items-center space-x-3">
                       <FileText className="w-5 h-5 text-gray-400" />
@@ -335,7 +335,7 @@ export default function VisaApplicationDetailPage() {
                     </div>
                     <div className="flex items-center space-x-2">
                       <button
-                        onClick={() => window.open(document, '_blank')}
+                        onClick={() => window.open(doc, '_blank')}
                         className="flex items-center space-x-1 text-blue-600 hover:text-blue-800"
                       >
                         <Eye className="w-4 h-4" />
@@ -344,7 +344,7 @@ export default function VisaApplicationDetailPage() {
                       <button
                         onClick={() => {
                           const link = document.createElement('a')
-                          link.href = document
+                          link.href = doc
                           link.download = `document-${index + 1}.pdf`
                           link.click()
                         }}
