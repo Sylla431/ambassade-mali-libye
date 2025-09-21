@@ -38,22 +38,38 @@ git push -u origin main
 5. Configuration automatique détectée (Next.js)
 6. Cliquez "Deploy"
 
-### Étape 4 : Configuration des variables d'environnement
+### Étape 4 : Génération des secrets sécurisés
+
+**⚠️ IMPORTANT : Ne jamais utiliser les mêmes secrets en production !**
+
+1. Générez des secrets uniques :
+```bash
+node generate-secrets.js
+```
+
+2. Copiez les secrets générés (ils seront différents à chaque exécution)
+
+### Étape 5 : Configuration des variables d'environnement
 
 Dans le dashboard Vercel :
 
 1. Allez dans "Settings" > "Environment Variables"
-2. Ajoutez ces variables :
+2. Ajoutez ces variables avec **vos propres secrets générés** :
 
 ```
 DATABASE_URL = "file:./dev.db"
-JWT_SECRET = "votre-cle-secrete-jwt-tres-longue-et-securisee"
+JWT_SECRET = "votre-secret-jwt-genere-uniquement"
 NEXTAUTH_URL = "https://votre-projet.vercel.app"
-NEXTAUTH_SECRET = "votre-secret-nextauth-tres-long-et-securise"
+NEXTAUTH_SECRET = "votre-secret-nextauth-genere-uniquement"
 ```
 
 3. Cliquez "Save"
 4. Allez dans "Deployments" et redéployez la dernière version
+
+**🔐 Sécurité :**
+- Chaque environnement doit avoir ses propres secrets
+- Ne partagez JAMAIS ces secrets
+- Régénérez-les si compromis
 
 ## 🎯 Option 2 : Déploiement Netlify
 
@@ -162,6 +178,26 @@ createAdmin()
 - [ ] Création d'articles fonctionne
 - [ ] Interface responsive sur mobile
 
+## 🔐 Sécurité
+
+### Bonnes pratiques :
+
+1. **Secrets uniques** : Chaque environnement (dev, staging, prod) doit avoir ses propres secrets
+2. **Rotation des secrets** : Changez les secrets régulièrement
+3. **Variables d'environnement** : Ne jamais commiter les vrais secrets
+4. **HTTPS obligatoire** : Toujours utiliser HTTPS en production
+5. **Mots de passe forts** : Changez le mot de passe admin par défaut
+
+### Génération de nouveaux secrets :
+
+```bash
+# Générer de nouveaux secrets
+node generate-secrets.js
+
+# Ou manuellement avec Node.js
+node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
+```
+
 ## 🚨 Dépannage
 
 ### Problèmes courants :
@@ -169,7 +205,8 @@ createAdmin()
 1. **Erreur de build** : Vérifiez les variables d'environnement
 2. **Base de données** : Assurez-vous que `DATABASE_URL` est correct
 3. **Upload d'images** : Vérifiez les permissions de fichiers
-4. **Authentification** : Vérifiez `JWT_SECRET`
+4. **Authentification** : Vérifiez `JWT_SECRET` et `NEXTAUTH_SECRET`
+5. **Erreur 500** : Vérifiez que tous les secrets sont configurés
 
 ### Logs de débogage :
 
