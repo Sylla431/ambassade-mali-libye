@@ -66,7 +66,7 @@ export function useEvents(params: UseEventsParams = {}) {
         published: params.published || newParams?.published
       })
 
-      if (response.success) {
+      if (response.success && response.data && response.data.data && response.data.pagination) {
         setEvents(response.data.data)
         setPagination(response.data.pagination)
       } else {
@@ -118,8 +118,8 @@ export function useEvent(id: string) {
     try {
       const response = await api.getEvent(id)
 
-      if (response.success) {
-        setEvent(response.data)
+      if (response.success && response.data && (response.data as any).id) {
+        setEvent(response.data as Event)
       } else {
         setError(response.error || 'Événement non trouvé')
       }
