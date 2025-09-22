@@ -3,6 +3,9 @@ import { prisma } from '@/lib/prisma'
 import { successResponse, errorResponse } from '@/utils/api'
 import { withAuth } from '@/middleware/auth'
 
+export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
+
 // GET /api/articles/[id]/gallery - Récupérer la galerie d'un article
 export async function GET(
   request: NextRequest,
