@@ -28,10 +28,10 @@ const leadership = [
   {
     id: 3,
     name: 'Mamadou Sylla',
-    position: 'Ambassadeur',
+    position: 'Charge d\'Affaires',
     image: '/images/leadership/ambassadeur.jpg',
     description: 'Représentant officiel de la République du Mali auprès de la Libye et de la République de Malte.',
-    email: 'ambassadeur@ambassade-mali-libye.ml',
+    email: 'charge@ambassade-mali-libye.ml',
     phone: '(+91)800238798',
     level: 'ambassador'
   }

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import AuthGuard from '@/components/admin/AuthGuard'
+import AdminLayout from '@/components/admin/AdminLayout'
 import { ArrowLeft, Save, Eye } from 'lucide-react'
 
 export default function NewEventPage() {
@@ -126,47 +127,10 @@ export default function NewEventPage() {
 
   return (
     <AuthGuard>
-      <div className="min-h-screen bg-gray-50">
-        {/* Header */}
-        <header className="bg-white shadow-sm border-b">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center py-4">
-              <div className="flex items-center space-x-4">
-                <button
-                  onClick={() => router.back()}
-                  className="flex items-center space-x-2 text-gray-600 hover:text-gray-900"
-                >
-                  <ArrowLeft className="w-4 h-4" />
-                  <span>Retour</span>
-                </button>
-                <div>
-                  <h1 className="text-2xl font-bold text-gray-900">Nouvel événement</h1>
-                  <p className="text-gray-600">Créez un nouvel événement pour l'ambassade</p>
-                </div>
-              </div>
-              <div className="flex items-center space-x-3">
-                <button
-                  type="button"
-                  className="flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
-                >
-                  <Eye className="w-4 h-4" />
-                  <span>Aperçu</span>
-                </button>
-                <button
-                  type="submit"
-                  form="event-form"
-                  disabled={loading}
-                  className="flex items-center space-x-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 disabled:opacity-50"
-                >
-                  <Save className="w-4 h-4" />
-                  <span>{loading ? 'Sauvegarde...' : 'Sauvegarder'}</span>
-                </button>
-              </div>
-            </div>
-          </div>
-        </header>
-
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <AdminLayout 
+        title="Nouvel événement" 
+        description="Créez un nouvel événement pour l'ambassade"
+      >
           {error && (
             <div className="bg-red-50 border border-red-200 rounded-md p-4 mb-6">
               <p className="text-red-800">{error}</p>
@@ -405,8 +369,7 @@ export default function NewEventPage() {
             </div>
             </div>
           </form>
-        </div>
-      </div>
+      </AdminLayout>
     </AuthGuard>
   )
 }
