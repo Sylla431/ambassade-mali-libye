@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { Star, MapPin, Users, Calendar } from 'lucide-react'
+import Image from 'next/image'
 
 const culturalHighlights = [
   {
@@ -35,19 +36,19 @@ const culturalRegions = [
     name: 'Région de Tombouctou',
     description: 'Ancienne cité caravanière et centre intellectuel de l\'Afrique de l\'Ouest',
     highlights: ['Manuscrits anciens', 'Architecture soudanaise', 'Traditions touarègues'],
-    image: '/images/culture/tombouctou-region.jpg'
+    image: '/images/culture_tourisme/tomboctou.jpg'
   },
   {
     name: 'Pays Dogon',
     description: 'Territoire des falaises de Bandiagara et de la culture dogon unique',
     highlights: ['Falaises de Bandiagara', 'Architecture dogon', 'Mythologie traditionnelle'],
-    image: '/images/culture/pays-dogon.jpg'
+    image: '/images/culture_tourisme/dogon.jpg'
   },
   {
     name: 'Région de Ségou',
     description: 'Centre culturel et artistique du Mali contemporain',
     highlights: ['Festival sur le Niger', 'Art contemporain', 'Traditions bambara'],
-    image: '/images/culture/segou-region.jpg'
+    image: '/images/culture_tourisme/segou.avif'
   }
 ]
 
@@ -144,8 +145,19 @@ export default function CultureOverview() {
                 viewport={{ once: true }}
                 className="card overflow-hidden hover:shadow-lg transition-shadow duration-300"
               >
-                <div className="h-48 bg-gradient-to-br from-gold-100 to-primary-100 dark:from-gold-900 dark:to-primary-900 flex items-center justify-center">
-                  <MapPin className="h-16 w-16 text-gold-600 dark:text-gold-400" />
+                <div className="h-48 relative overflow-hidden">
+                  <Image
+                    src={region.image}
+                    alt={region.name}
+                    fill
+                    className="object-cover hover:scale-105 transition-transform duration-300"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  />
+                  <div className="absolute inset-0 bg-black bg-opacity-20 flex items-center justify-center">
+                    <div className="bg-white bg-opacity-90 rounded-full p-3">
+                      <MapPin className="h-8 w-8 text-primary-600" />
+                    </div>
+                  </div>
                 </div>
                 <div className="p-6">
                   <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
