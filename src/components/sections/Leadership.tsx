@@ -7,7 +7,7 @@ import Image from 'next/image'
 const leadership = [
   {
     id: 1,
-    name: 'Son Excellence Colonel Assimi Goïta',
+    name: 'Son Excellence General d\'Armée Assimi Goïta',
     position: 'Président de la Transition',
     image: '/images/leadership/president.jpg',
     description: 'Chef de l\'État de la République du Mali, dirigeant la transition et représentant suprême de la nation malienne.',
