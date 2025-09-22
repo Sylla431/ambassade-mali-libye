@@ -33,8 +33,8 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     return NextResponse.json({
       success: false,
-      error: error.message,
-      errorType: error.constructor.name,
+      error: error instanceof Error ? error.message : 'Erreur inconnue',
+      errorType: error instanceof Error ? error.constructor.name : 'Unknown',
       timestamp: new Date().toISOString()
     }, { status: 500 })
   }
