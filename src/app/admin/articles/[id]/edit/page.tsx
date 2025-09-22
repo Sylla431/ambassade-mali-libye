@@ -175,8 +175,8 @@ export default function EditArticlePage() {
     })
     
     const data = await response.json()
-    if (data.success) {
-      return data.data.url
+    if (data.success && data.data.successful.length > 0) {
+      return data.data.successful[0].file.url
     }
     throw new Error(data.error || 'Erreur lors de l\'upload')
   }
