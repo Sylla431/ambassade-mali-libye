@@ -17,7 +17,7 @@ const leadership = [
   },
   {
     id: 2,
-    name: 'Monsieur le Ministre',
+    name: 'Monsieur Abdoulaye Diop',
     position: 'Ministre des Affaires Étrangères',
     image: '/images/leadership/ministre.jpg',
     description: 'Responsable de la politique étrangère du Mali et des relations diplomatiques internationales.',

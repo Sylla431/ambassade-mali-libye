@@ -16,7 +16,7 @@ export default function Hero() {
       </div>
       <MaliPattern variant="geometric" className="text-mali-green-600 z-10" />
       <div className="container-custom relative z-20 py-20">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+        <div className="grid lg:grid-cols-2 gap-8 items-center">
           {/* Contenu principal */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
@@ -24,11 +24,12 @@ export default function Hero() {
             transition={{ duration: 0.8 }}
             className="space-y-8"
           >
-            <div className="space-y-4">
-              <h1 className="text-4xl lg:text-6xl font-bold text-gray-900 dark:text-white leading-tight">
+            <div className="space-y-3 ">
+              <h2 className="text-4xl lg:text-6xl font-bold text-gray-900 dark:text-white leading-tight">
                 Ambassade de la{' '}
-                <span className="bg-mali-gradient bg-clip-text text-transparent">République du Mali</span>
-              </h1>
+                <span className="bg-mali-gradient bg-clip-text text-transparent">République du Mali auprès de la Libye 
+                et de la République de Malte</span>
+              </h2>
               <p className="text-xl text-white-600 dark:text-gray-300 leading-relaxed">
                 Représentation officielle auprès de la Libye et de la République de Malte.
                 Nous offrons un large éventail de services consulaires à nos ressortissants.
