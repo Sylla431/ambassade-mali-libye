@@ -109,7 +109,7 @@ export default function ArticleGalleryPage() {
         formData.append('files', file)
 
         // Uploader l'image
-        const uploadRes = await fetch('/api/upload/images', {
+        const uploadRes = await fetch('/api/upload/images-db', {
           method: 'POST',
           headers: { 'Authorization': `Bearer ${token}` },
           body: formData

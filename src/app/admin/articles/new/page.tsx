@@ -120,7 +120,7 @@ export default function NewArticlePage() {
     formData.append('file', file)
     
     const token = localStorage.getItem('admin_token')
-    const response = await fetch('/api/upload/images', {
+    const response = await fetch('/api/upload/images-db', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`
