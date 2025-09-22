@@ -109,7 +109,7 @@ export default function NewEventPage() {
     formData.append('file', file)
     
     const token = localStorage.getItem('admin_token')
-    const response = await fetch('/api/upload', {
+    const response = await fetch('/api/upload/images', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`
