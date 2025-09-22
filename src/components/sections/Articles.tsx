@@ -1,56 +1,34 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { FileText, Calendar, User, ArrowRight, Tag } from 'lucide-react'
 import Link from 'next/link'
 import { format } from 'date-fns'
+import Image from 'next/image'
 
-const articles = [
-  {
-    id: 1,
-    title: 'Coopération Mali-Libye : Renforcement des Relations Diplomatiques',
-    excerpt: 'Les relations entre le Mali et la Libye continuent de se renforcer avec de nouveaux accords de coopération signés cette année.',
-    image: '/images/articles/cooperation-mali-libye.jpg',
-    author: 'Service de Communication',
-    date: new Date('2025-01-15'),
-    category: 'Diplomatie',
-    readTime: '5 min',
-    featured: true
-  },
-  {
-    id: 2,
-    title: 'Services Consulaires : Nouvelles Procédures Simplifiées',
-    excerpt: 'L\'ambassade annonce la simplification des procédures pour les services consulaires afin de mieux servir nos ressortissants.',
-    image: '/images/articles/services-consulaires.jpg',
-    author: 'Service Consulaire',
-    date: new Date('2025-01-10'),
-    category: 'Services',
-    readTime: '3 min',
-    featured: false
-  },
-  {
-    id: 3,
-    title: 'Culture Malienne en Libye : Festival de la Diversité',
-    excerpt: 'Le festival de la diversité culturelle malienne a été un succès, mettant en valeur notre riche patrimoine culturel.',
-    image: '/images/articles/festival-culture.jpg',
-    author: 'Service Culturel',
-    date: new Date('2025-01-05'),
-    category: 'Culture',
-    readTime: '4 min',
-    featured: false
-  },
-  {
-    id: 4,
-    title: 'Économie : Opportunités d\'Investissement au Mali',
-    excerpt: 'Découvrez les secteurs porteurs d\'investissement au Mali et les opportunités pour les entreprises libyennes.',
-    image: '/images/articles/investissement-mali.jpg',
-    author: 'Service Économique',
-    date: new Date('2024-12-28'),
-    category: 'Économie',
-    readTime: '6 min',
-    featured: false
+interface Article {
+  id: number
+  title: string
+  excerpt: string
+  imageUrl?: string
+  author: string
+  date: string
+  category: string
+  readTime: string
+  featured: boolean
+  slug: string
+}
+
+interface ArticlesData {
+  articles: Article[]
+  pagination: {
+    total: number
+    limit: number
+    offset: number
+    hasMore: boolean
   }
-]
+}
 
 const categories = [
   { name: 'Diplomatie', count: 12, color: 'bg-mali-green-100 text-mali-green-800 dark:bg-mali-green-900 dark:text-mali-green-200' },
@@ -62,6 +40,69 @@ const categories = [
 ]
 
 export default function Articles() {
+  const [data, setData] = useState<ArticlesData | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    loadArticles()
+  }, [])
+
+  const loadArticles = async () => {
+    try {
+      const response = await fetch('/api/articles/diplomatic-activities?limit=4')
+      if (response.ok) {
+        const result = await response.json()
+        if (result.success) {
+          setData(result.data)
+        } else {
+          setError('Erreur lors du chargement des articles')
+        }
+      } else {
+        setError('Erreur lors du chargement des articles')
+      }
+    } catch (error) {
+      console.error('Erreur:', error)
+      setError('Erreur de connexion')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  if (loading) {
+    return (
+      <section className="py-20 bg-gray-50 dark:bg-gray-800">
+        <div className="container-custom">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+            <p className="mt-4 text-gray-600">Chargement des articles...</p>
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  if (error || !data) {
+    return (
+      <section className="py-20 bg-gray-50 dark:bg-gray-800">
+        <div className="container-custom">
+          <div className="text-center">
+            <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+              Articles de l'Ambassade
+            </h2>
+            <p className="text-gray-600 mb-6">{error}</p>
+            <button 
+              onClick={loadArticles}
+              className="btn-primary"
+            >
+              Réessayer
+            </button>
+          </div>
+        </div>
+      </section>
+    )
+  }
+
   return (
     <section className="py-20 bg-gray-50 dark:bg-gray-800">
       <div className="container-custom">
@@ -73,11 +114,11 @@ export default function Articles() {
           className="text-center mb-16"
         >
           <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-            Articles de l'Ambassade
+            Activités Diplomatiques
           </h2>
           <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-            Découvrez les dernières actualités, analyses et informations importantes 
-            concernant les relations Mali-Libye et les services de l'ambassade.
+            Découvrez les dernières activités diplomatiques, rencontres officielles et 
+            développements dans les relations Mali-Libye.
           </p>
         </motion.div>
 
@@ -85,7 +126,7 @@ export default function Articles() {
           {/* Articles principaux */}
           <div className="lg:col-span-3">
             <div className="grid md:grid-cols-2 gap-8">
-              {articles.map((article, index) => (
+              {data.articles.map((article, index) => (
                 <motion.article
                   key={article.id}
                   initial={{ opacity: 0, y: 50 }}
@@ -94,9 +135,19 @@ export default function Articles() {
                   viewport={{ once: true }}
                   className="card overflow-hidden hover:shadow-lg transition-shadow duration-300"
                 >
-                  <div className="h-48 bg-gradient-to-br from-mali-green-100 to-mali-gold-100 dark:from-mali-green-900 dark:to-mali-gold-900 flex items-center justify-center relative">
-                    <div className="absolute inset-0 bg-[url('/images/articles/cooperation-mali-libye.jpg')] bg-cover bg-center opacity-20"></div>
-                    <FileText className="h-16 w-16 text-mali-green-600 dark:text-mali-green-400 relative z-10" />
+                  <div className="h-48 relative overflow-hidden">
+                    {article.imageUrl ? (
+                      <Image
+                        src={article.imageUrl}
+                        alt={article.title}
+                        fill
+                        className="object-cover"
+                      />
+                    ) : (
+                      <div className="h-full bg-gradient-to-br from-mali-green-100 to-mali-gold-100 dark:from-mali-green-900 dark:to-mali-gold-900 flex items-center justify-center">
+                        <FileText className="h-16 w-16 text-mali-green-600 dark:text-mali-green-400" />
+                      </div>
+                    )}
                     {article.featured && (
                       <div className="absolute top-4 left-4 bg-mali-gold-600 text-white px-3 py-1 rounded-full text-xs font-bold">
                         À la une
@@ -128,12 +179,12 @@ export default function Articles() {
                       </div>
                       <div className="flex items-center space-x-1">
                         <Calendar className="h-3 w-3" />
-                        <span>{format(article.date, 'dd MMM yyyy')}</span>
+                        <span>{format(new Date(article.date), 'dd MMM yyyy')}</span>
                       </div>
                     </div>
                     
                     <Link
-                      href={`/articles/${article.id}`}
+                      href={`/articles/slug/${article.slug}`}
                       className="inline-flex items-center space-x-1 text-mali-green-600 dark:text-mali-green-400 font-medium text-sm hover:text-mali-green-700 dark:hover:text-mali-green-300 transition-colors"
                     >
                       <span>Lire la suite</span>
@@ -206,10 +257,10 @@ export default function Articles() {
               </h3>
               
               <div className="space-y-4">
-                {articles.slice(0, 3).map((article, index) => (
+                {data.articles.slice(0, 3).map((article, index) => (
                   <Link
                     key={article.id}
-                    href={`/articles/${article.id}`}
+                    href={`/articles/slug/${article.slug}`}
                     className="block p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                   >
                     <h4 className="font-medium text-gray-900 dark:text-white text-sm mb-2 line-clamp-2">
@@ -217,7 +268,7 @@ export default function Articles() {
                     </h4>
                     <div className="flex items-center space-x-2 text-xs text-gray-500 dark:text-gray-400">
                       <Calendar className="h-3 w-3" />
-                      <span>{format(article.date, 'dd MMM')}</span>
+                      <span>{format(new Date(article.date), 'dd MMM')}</span>
                       <span>•</span>
                       <span>{article.readTime}</span>
                     </div>
