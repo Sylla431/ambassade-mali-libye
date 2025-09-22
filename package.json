@@ -31,6 +31,7 @@
     "@types/nodemailer": "^7.0.1",
     "@types/react": "^18.2.45",
     "@types/react-dom": "^18.2.18",
+    "@vercel/blob": "^2.0.0",
     "autoprefixer": "^10.4.16",
     "bcryptjs": "^3.0.2",
     "better-sqlite3": "^12.2.0",
