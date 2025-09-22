@@ -1,32 +1,34 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
+import { createClient } from '@libsql/client'
 
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
 
 export async function GET(request: NextRequest) {
   try {
+    // Test de connexion directe à Turso
+    const client = createClient({
+      url: process.env.DATABASE_URL!,
+    })
+    
     // Test de connexion simple
-    const result = await prisma.$queryRaw`SELECT 1 as test`
+    const result = await client.execute('SELECT 1 as test')
     
     // Test de lecture des documents
-    const documents = await prisma.document.findMany({
-      take: 3,
-      select: {
-        id: true,
-        title: true,
-        category: true,
-        isPublic: true
-      }
-    })
+    const documentsResult = await client.execute(`
+      SELECT id, title, category, "isPublic" 
+      FROM Document 
+      WHERE "isPublic" = true 
+      LIMIT 3
+    `)
     
     return NextResponse.json({
       success: true,
       database: {
-        connection: '✅ Connexion réussie',
-        testQuery: result,
-        documentsCount: documents.length,
-        sampleDocuments: documents
+        connection: '✅ Connexion Turso réussie',
+        testQuery: result.rows,
+        documentsCount: documentsResult.rows.length,
+        sampleDocuments: documentsResult.rows
       },
       timestamp: new Date().toISOString()
     })
