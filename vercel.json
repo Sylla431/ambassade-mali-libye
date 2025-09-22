@@ -1,9 +1,0 @@
-{
-  "buildCommand": "npm run build",
-  "installCommand": "npm install && npx prisma generate",
-  "functions": {
-    "src/app/api/**/*.ts": {
-      "runtime": "nodejs18.x"
-    }
-  }
-}
