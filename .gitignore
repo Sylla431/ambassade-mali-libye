@@ -95,8 +95,8 @@ jspm_packages/
 Thumbs.db
 
 # Uploads (keep structure but ignore files)
-public/uploads/*
-!public/uploads/.gitkeep
+# public/uploads/*
+# !public/uploads/.gitkeep
 
 # Prisma
 prisma/migrations/
