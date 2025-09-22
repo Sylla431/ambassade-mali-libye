@@ -10,11 +10,13 @@ export default function Hero() {
     <section className="relative min-h-screen flex items-center bg-gradient-to-br from-mali-green-50 via-mali-gold-50 to-mali-red-50 dark:from-gray-900 dark:to-gray-800">
       {/* Image de l'ambassade en arrière-plan */}
       <div className="absolute inset-0 z-0">
-        <div className="w-full h-full bg-gradient-to-br from-mali-green-900/80 via-mali-gold-900/80 to-mali-red-900/80">
-          <div className="w-full h-full bg-[url('/images/ambassade/ambassade-mali-libye.jpg')] bg-cover bg-center bg-no-repeat opacity-20"></div>
+        <div className="w-full h-full bg-gradient-to-br from-mali-green-900/40 via-mali-gold-900/30 to-mali-red-900/40">
+          <div className="w-full h-full bg-[url('/images/ambassade/ambassade-mali-libye.jpg')] bg-cover bg-center bg-no-repeat opacity-60"></div>
         </div>
       </div>
-      <MaliPattern variant="geometric" className="text-mali-green-600 z-10" />
+      {/* Overlay pour améliorer la lisibilité */}
+      <div className="absolute inset-0 z-10 bg-black/20"></div>
+      <MaliPattern variant="geometric" className="text-mali-green-600 z-15" />
       <div className="container-custom relative z-20 py-20">
         <div className="grid lg:grid-cols-2 gap-8 items-center">
           {/* Contenu principal */}
@@ -25,12 +27,12 @@ export default function Hero() {
             className="space-y-8"
           >
             <div className="space-y-3 ">
-              <h2 className="text-4xl lg:text-6xl font-bold text-gray-900 dark:text-white leading-tight">
+              <h2 className="text-4xl lg:text-6xl font-bold text-white leading-tight drop-shadow-lg">
                 Ambassade de la{' '}
-                <span className="bg-mali-gradient bg-clip-text text-transparent">République du Mali auprès de la Libye 
+                <span className="bg-mali-gradient bg-clip-text text-transparent drop-shadow-md">République du Mali auprès de la Libye 
                 et de la République de Malte</span>
               </h2>
-              <p className="text-xl text-white-600 dark:text-gray-300 leading-relaxed">
+              <p className="text-xl text-white/90 leading-relaxed drop-shadow-md">
                 Représentation officielle auprès de la Libye et de la République de Malte.
                 Nous offrons un large éventail de services consulaires à nos ressortissants.
               </p>
