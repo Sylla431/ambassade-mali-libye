@@ -45,20 +45,16 @@ export const POST = withAuth(async (request) => {
         const extension = file.name.split('.').pop()
         const fileName = `${timestamp}-${randomString}.${extension}`
 
-        // Stocker en base de données (simulation d'un stockage)
-        // En réalité, on retourne juste l'URL simulée
-        const simulatedUrl = `/uploads/images/${fileName}`
-
+        // Utiliser directement la data URL pour l'affichage immédiat
         uploadResults.push({
           success: true,
           file: {
-            url: simulatedUrl,
+            url: dataUrl, // Utiliser la data URL directement
             fileName: fileName,
             originalName: file.name,
             size: file.size,
             type: file.type,
-            uploadedAt: new Date().toISOString(),
-            dataUrl: dataUrl // Stocké temporairement en base64
+            uploadedAt: new Date().toISOString()
           }
         })
 
