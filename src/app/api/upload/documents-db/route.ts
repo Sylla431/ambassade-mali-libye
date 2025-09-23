@@ -56,6 +56,19 @@ export async function POST(request: NextRequest) {
         const base64 = Buffer.from(arrayBuffer).toString('base64')
         const dataUrl = `data:${file.type};base64,${base64}`
 
+        // Trouver un admin existant ou utiliser un ID par défaut
+        let authorId = "1"
+        try {
+          const firstAdmin = await prisma.admin.findFirst({
+            select: { id: true }
+          })
+          if (firstAdmin) {
+            authorId = firstAdmin.id
+          }
+        } catch (adminError) {
+          console.log('Utilisation de l\'ID par défaut pour l\'auteur')
+        }
+
         // Créer l'entrée dans la base de données
         const document = await prisma.document.create({
           data: {
@@ -66,7 +79,7 @@ export async function POST(request: NextRequest) {
             mimeType: file.type,
             category: 'LEGAL_DOCUMENTS',
             isPublic: true,
-            authorId: "1" // ID par défaut - à adapter selon votre système d'auth
+            authorId: authorId
           }
         })
 
@@ -85,7 +98,7 @@ export async function POST(request: NextRequest) {
         console.error('Erreur lors du traitement du fichier:', fileError)
         uploadResults.push({
           success: false,
-          error: 'Erreur lors du traitement du fichier',
+          error: `Erreur lors du traitement du fichier: ${fileError instanceof Error ? fileError.message : 'Erreur inconnue'}`,
           originalName: file.name
         })
       }
