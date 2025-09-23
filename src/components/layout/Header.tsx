@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Menu, X, Phone, MapPin, Clock, ChevronDown } from 'lucide-react'
+import { Menu, X, Phone, MapPin, Clock, ChevronDown, ExternalLink } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTranslation } from '@/hooks/useTranslationSimple'
 import LanguageSwitcher from '@/components/ui/LanguageSwitcher'
@@ -61,6 +61,15 @@ export default function Header() {
                 <Clock className="h-4 w-4" />
                 <span>{t('header.hours')}</span>
               </div>
+              <a
+                href="https://www.diplomatiemdc.gouv.ml/vitrine"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-full text-sm font-medium transition-colors duration-200 flex items-center space-x-1"
+              >
+                <span>Demande de Visa</span>
+                <ExternalLink className="h-3 w-3" />
+              </a>
               <LanguageSwitcher />
             </div>
           </div>
@@ -155,6 +164,19 @@ export default function Header() {
               className="lg:hidden border-t border-gray-200 dark:border-gray-700"
             >
               <div className="py-4 space-y-2">
+                {/* Bouton Demande de Visa pour mobile */}
+                <div className="px-4 py-2">
+                  <a
+                    href="https://www.diplomatiemdc.gouv.ml/vitrine"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full bg-mali-green-600 hover:bg-mali-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center justify-center space-x-2"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <span>Demande de Visa</span>
+                    <ExternalLink className="h-4 w-4" />
+                  </a>
+                </div>
                 {navigation.map((item) => (
                   <div key={item.name}>
                     {item.submenu ? (
