@@ -3,61 +3,36 @@
 import { motion } from 'framer-motion'
 import { ArrowRight, MapPin, Star, Users } from 'lucide-react'
 import Link from 'next/link'
+import Image from 'next/image'
 
+// Seulement 3 éléments pour la page d'accueil
 const culturalSites = [
   {
     id: 1,
     title: 'Tombouctou',
     subtitle: 'La cité des 333 saints',
     description: 'Tombouctou, ancienne cité caravanière et centre intellectuel de l\'Afrique de l\'Ouest, abrite des trésors architecturaux et manuscrits historiques.',
-    image: '/images/culture/tombouctou.jpg',
+    image: '/images/culture_tourisme/tomboctou.jpg',
     features: ['Patrimoine UNESCO', 'Manuscrits anciens', 'Architecture soudanaise'],
     href: '/culture/tombouctou'
   },
   {
     id: 2,
-    title: 'Djenné & Gao',
-    subtitle: 'Les mosquées en banco',
-    description: 'Découvrez les magnifiques mosquées en terre crue de Djenné et Gao, chefs-d\'œuvre de l\'architecture soudanaise.',
-    image: '/images/culture/djenne-gao.jpg',
-    features: ['Architecture en terre', 'Patrimoine mondial', 'Artisanat traditionnel'],
-    href: '/culture/djenne-gao'
-  },
-  {
-    id: 3,
     title: 'Le Pays Dogon',
     subtitle: 'Falaises mythiques',
     description: 'Explorez les falaises de Bandiagara et découvrez la culture unique du peuple Dogon, ses traditions et son art.',
-    image: '/images/culture/pays-dogon.jpg',
+    image: '/images/culture_tourisme/dogon.jpg',
     features: ['Falaises de Bandiagara', 'Culture Dogon', 'Traditions ancestrales'],
     href: '/culture/pays-dogon'
   },
   {
-    id: 4,
-    title: 'Festivals Culturels',
-    subtitle: 'Festival sur le Niger, Festival au désert',
-    description: 'Participez aux grands festivals culturels du Mali qui célèbrent la musique, l\'art et les traditions maliennes.',
-    image: '/images/culture/festivals.jpg',
-    features: ['Musique traditionnelle', 'Art contemporain', 'Rencontres culturelles'],
-    href: '/culture/festivals'
-  },
-  {
-    id: 5,
-    title: 'Hospitalité Malienne',
-    subtitle: 'L\'hospitalité légendaire',
-    description: 'Découvrez l\'hospitalité légendaire du peuple malien et ses traditions d\'accueil chaleureux.',
-    image: '/images/culture/hospitalite.jpg',
-    features: ['Traditions d\'accueil', 'Cuisine malienne', 'Art de vivre'],
-    href: '/culture/hospitalite'
-  },
-  {
-    id: 6,
-    title: 'Culture & Recreation',
-    subtitle: 'Art et loisirs',
-    description: 'Explorez l\'art contemporain malien et les activités de loisirs qui enrichissent la vie culturelle.',
-    image: '/images/culture/art-recreation.jpg',
-    features: ['Art contemporain', 'Loisirs culturels', 'Éducation artistique'],
-    href: '/culture/art-recreation'
+    id: 3,
+    title: 'Région de Ségou',
+    subtitle: 'Centre culturel et artistique',
+    description: 'Découvrez Ségou, centre culturel et artistique du Mali contemporain, berceau du Festival sur le Niger.',
+    image: '/images/culture_tourisme/segou.avif',
+    features: ['Festival sur le Niger', 'Art contemporain', 'Traditions bambara'],
+    href: '/culture/segou'
   }
 ]
 
@@ -82,7 +57,7 @@ export default function Culture() {
           </p>
         </motion.div>
 
-        <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-8">
+        <div className="grid lg:grid-cols-3 gap-8">
           {culturalSites.map((site, index) => (
             <motion.div
               key={site.id}
@@ -93,8 +68,19 @@ export default function Culture() {
             >
               <Link href={site.href}>
                 <div className="card overflow-hidden hover:shadow-lg transition-shadow duration-300 group">
-                  <div className="h-48 bg-gradient-to-br from-gold-100 to-primary-100 dark:from-gold-900 dark:to-primary-900 flex items-center justify-center">
-                    <MapPin className="h-16 w-16 text-gold-600 dark:text-gold-400" />
+                  <div className="h-48 relative overflow-hidden">
+                    <Image
+                      src={site.image}
+                      alt={site.title}
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-300"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    />
+                    <div className="absolute inset-0 bg-black bg-opacity-20 flex items-center justify-center">
+                      <div className="bg-white bg-opacity-90 rounded-full p-3">
+                        <MapPin className="h-8 w-8 text-primary-600" />
+                      </div>
+                    </div>
                   </div>
                   <div className="p-6">
                     <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">

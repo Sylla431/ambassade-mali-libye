@@ -49,6 +49,24 @@ const culturalRegions = [
     description: 'Centre culturel et artistique du Mali contemporain',
     highlights: ['Festival sur le Niger', 'Art contemporain', 'Traditions bambara'],
     image: '/images/culture_tourisme/segou.avif'
+  },
+  {
+    name: 'Djenné',
+    description: 'Cité historique avec la plus grande mosquée en terre crue du monde',
+    highlights: ['Grande Mosquée', 'Architecture en terre', 'Patrimoine UNESCO'],
+    image: '/images/culture_tourisme/djenne.jpg'
+  },
+  {
+    name: 'Festivals Culturels',
+    description: 'Célébrations de la musique, de l\'art et des traditions maliennes',
+    highlights: ['Festival sur le Niger', 'Festival au désert', 'Musique traditionnelle'],
+    image: '/images/culture_tourisme/festival_niger.webp'
+  },
+  {
+    name: 'Hospitalité Malienne',
+    description: 'L\'hospitalité légendaire et les traditions d\'accueil chaleureux',
+    highlights: ['Traditions d\'accueil', 'Cuisine malienne', 'Art de vivre'],
+    image: '/images/culture_tourisme/hospitalite.jpeg'
   }
 ]
 
@@ -135,7 +153,7 @@ export default function CultureOverview() {
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white text-center mb-12">
             Régions Culturelles
           </h2>
-          <div className="grid lg:grid-cols-3 gap-8">
+          <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-8">
             {culturalRegions.map((region, index) => (
               <motion.div
                 key={region.name}
