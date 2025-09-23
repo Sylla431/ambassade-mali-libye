@@ -103,18 +103,14 @@ export default function AdminDocuments() {
 
     setUploading(true)
     try {
-      const token = localStorage.getItem('admin_token')
       const formData = new FormData()
       
       Array.from(files).forEach(file => {
         formData.append('files', file)
       })
 
-      const response = await fetch('/api/upload/documents', {
+      const response = await fetch('/api/upload/documents-db', {
         method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
         body: formData
       })
 
@@ -123,10 +119,13 @@ export default function AdminDocuments() {
         console.log('Fichiers uploadés:', result)
         loadDocuments() // Recharger la liste
       } else {
-        console.error('Erreur lors de l\'upload')
+        const errorData = await response.json()
+        console.error('Erreur lors de l\'upload:', errorData.error)
+        alert(`Erreur lors de l'upload: ${errorData.error}`)
       }
     } catch (error) {
       console.error('Erreur lors de l\'upload:', error)
+      alert('Erreur lors de l\'upload des documents')
     } finally {
       setUploading(false)
     }
