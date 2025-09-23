@@ -382,6 +382,26 @@ export default function NewArticlePage() {
                 </div>
               </div>
             </div>
+
+            {/* Boutons d'action */}
+            <div className="flex justify-end space-x-4 pt-6 border-t border-gray-200">
+              <button
+                type="button"
+                onClick={() => router.back()}
+                className="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors duration-200 flex items-center space-x-2"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                <span>Annuler</span>
+              </button>
+              <button
+                type="submit"
+                disabled={loading}
+                className="px-6 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white rounded-lg transition-colors duration-200 flex items-center space-x-2"
+              >
+                <Save className="h-4 w-4" />
+                <span>{loading ? 'Enregistrement...' : 'Enregistrer l\'article'}</span>
+              </button>
+            </div>
           </form>
       </AdminLayout>
     </AuthGuard>

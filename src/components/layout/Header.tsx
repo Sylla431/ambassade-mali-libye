@@ -55,12 +55,10 @@ export default function Header() {
                 <MapPin className="h-4 w-4" />
                 <span>{t('header.address')}</span>
               </div>
+            
             </div>
-            <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-1">
-                <Clock className="h-4 w-4" />
-                <span>{t('header.hours')}</span>
-              </div>
               <a
                 href="https://www.diplomatiemdc.gouv.ml/vitrine"
                 target="_blank"
@@ -70,8 +68,17 @@ export default function Header() {
                 <span>Demande de Visa</span>
                 <ExternalLink className="h-3 w-3" />
               </a>
+              </div>
+              </div>
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-1">
+                <Clock className="h-4 w-4" />
+                <span>{t('header.hours')}</span>
+              </div>
+           
               <LanguageSwitcher />
             </div>
+            
           </div>
         </div>
       </div>
