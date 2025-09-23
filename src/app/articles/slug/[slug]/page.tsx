@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
-import { Calendar, User, Tag, ArrowLeft, Share2, RefreshCw } from 'lucide-react'
+import { Calendar, User, Tag, ArrowLeft, Share2, RefreshCw, X, ChevronLeft, ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 
 interface Article {
@@ -43,12 +43,34 @@ export default function ArticleBySlugPage() {
   const [article, setArticle] = useState<Article | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null)
   const params = useParams()
   const slug = params.slug as string
 
   useEffect(() => {
     loadArticle()
   }, [slug])
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (selectedImageIndex !== null && article?.gallery) {
+        switch (event.key) {
+          case 'Escape':
+            closeImageModal()
+            break
+          case 'ArrowLeft':
+            prevImage()
+            break
+          case 'ArrowRight':
+            nextImage()
+            break
+        }
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [selectedImageIndex, article?.gallery])
 
   const loadArticle = async () => {
     try {
@@ -105,6 +127,26 @@ export default function ArticleBySlugPage() {
     setLoading(true)
     setError('')
     loadArticle()
+  }
+
+  const openImageModal = (index: number) => {
+    setSelectedImageIndex(index)
+  }
+
+  const closeImageModal = () => {
+    setSelectedImageIndex(null)
+  }
+
+  const nextImage = () => {
+    if (article?.gallery && selectedImageIndex !== null) {
+      setSelectedImageIndex((selectedImageIndex + 1) % article.gallery.length)
+    }
+  }
+
+  const prevImage = () => {
+    if (article?.gallery && selectedImageIndex !== null) {
+      setSelectedImageIndex(selectedImageIndex === 0 ? article.gallery.length - 1 : selectedImageIndex - 1)
+    }
   }
 
   if (loading) {
@@ -259,8 +301,12 @@ export default function ArticleBySlugPage() {
               <div className="mt-8 pt-6 border-t border-gray-200">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Galerie d'images</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {article.gallery.map((image) => (
-                    <div key={image.id} className="group relative">
+                  {article.gallery.map((image, index) => (
+                    <div 
+                      key={image.id} 
+                      className="group relative cursor-pointer"
+                      onClick={() => openImageModal(index)}
+                    >
                       <div className="aspect-w-16 aspect-h-9 bg-gray-200 rounded-lg overflow-hidden">
                         <img
                           src={image.imageUrl}
@@ -268,18 +314,16 @@ export default function ArticleBySlugPage() {
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
                         />
                       </div>
-                      {image.caption && (
-                        <div className="mt-2">
-                          <p className="text-sm text-gray-600 text-center">
-                            {image.caption}
-                          </p>
-                          {image.captionAr && (
-                            <p className="text-sm text-gray-600 text-center mt-1" dir="rtl">
-                              {image.captionAr}
-                            </p>
-                          )}
+                      {/* Overlay au survol */}
+                      <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-200 rounded-lg flex items-center justify-center">
+                        <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                          <div className="bg-white bg-opacity-90 rounded-full p-2">
+                            <svg className="w-6 h-6 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                            </svg>
+                          </div>
                         </div>
-                      )}
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -316,6 +360,69 @@ export default function ArticleBySlugPage() {
           </Link>
         </div>
       </main>
+
+      {/* Modal de visualisation d'image */}
+      {selectedImageIndex !== null && article?.gallery && (
+        <div className="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center">
+          <div className="relative max-w-7xl max-h-full p-4">
+            {/* Bouton fermer */}
+            <button
+              onClick={closeImageModal}
+              className="absolute top-4 right-4 z-10 bg-black bg-opacity-50 text-white rounded-full p-2 hover:bg-opacity-70 transition-all"
+            >
+              <X className="w-6 h-6" />
+            </button>
+
+            {/* Bouton précédent */}
+            {article.gallery.length > 1 && (
+              <button
+                onClick={prevImage}
+                className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10 bg-black bg-opacity-50 text-white rounded-full p-2 hover:bg-opacity-70 transition-all"
+              >
+                <ChevronLeft className="w-6 h-6" />
+              </button>
+            )}
+
+            {/* Bouton suivant */}
+            {article.gallery.length > 1 && (
+              <button
+                onClick={nextImage}
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 z-10 bg-black bg-opacity-50 text-white rounded-full p-2 hover:bg-opacity-70 transition-all"
+              >
+                <ChevronRight className="w-6 h-6" />
+              </button>
+            )}
+
+            {/* Image */}
+            <img
+              src={article.gallery[selectedImageIndex].imageUrl}
+              alt={article.gallery[selectedImageIndex].altText || article.gallery[selectedImageIndex].caption || article.title}
+              className="max-w-full max-h-full object-contain"
+            />
+
+            {/* Caption */}
+            {article.gallery[selectedImageIndex].caption && (
+              <div className="absolute bottom-4 left-4 right-4 bg-black bg-opacity-50 text-white p-3 rounded">
+                <p className="text-center">
+                  {article.gallery[selectedImageIndex].caption}
+                </p>
+                {article.gallery[selectedImageIndex].captionAr && (
+                  <p className="text-center mt-1" dir="rtl">
+                    {article.gallery[selectedImageIndex].captionAr}
+                  </p>
+                )}
+              </div>
+            )}
+
+            {/* Indicateur de position */}
+            {article.gallery.length > 1 && (
+              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-50 text-white px-3 py-1 rounded-full text-sm">
+                {selectedImageIndex + 1} / {article.gallery.length}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   )
 }
