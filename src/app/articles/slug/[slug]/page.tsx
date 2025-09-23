@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
-import { Calendar, User, Tag, ArrowLeft, Share2 } from 'lucide-react'
+import { Calendar, User, Tag, ArrowLeft, Share2, RefreshCw } from 'lucide-react'
 import Link from 'next/link'
 
 interface Article {
@@ -52,7 +52,14 @@ export default function ArticleBySlugPage() {
 
   const loadArticle = async () => {
     try {
-      const response = await fetch(`/api/articles/slug/${slug}`)
+      // Ajouter un paramètre de cache-busting pour forcer le rechargement
+      const cacheBuster = Date.now()
+      const response = await fetch(`/api/articles/slug/${slug}?t=${cacheBuster}`, {
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache'
+        }
+      })
       
       if (response.ok) {
         const data = await response.json()
@@ -92,6 +99,12 @@ export default function ArticleBySlugPage() {
       navigator.clipboard.writeText(window.location.href)
       alert('Lien copié dans le presse-papiers')
     }
+  }
+
+  const refreshArticle = () => {
+    setLoading(true)
+    setError('')
+    loadArticle()
   }
 
   if (loading) {
@@ -136,13 +149,23 @@ export default function ArticleBySlugPage() {
               <ArrowLeft className="w-4 h-4" />
               <span>Retour aux articles</span>
             </Link>
-            <button
-              onClick={shareArticle}
-              className="flex items-center space-x-2 text-gray-600 hover:text-gray-900"
-            >
-              <Share2 className="w-4 h-4" />
-              <span>Partager</span>
-            </button>
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={refreshArticle}
+                className="flex items-center space-x-2 text-gray-600 hover:text-gray-900"
+                title="Actualiser l'article"
+              >
+                <RefreshCw className="w-4 h-4" />
+                <span>Actualiser</span>
+              </button>
+              <button
+                onClick={shareArticle}
+                className="flex items-center space-x-2 text-gray-600 hover:text-gray-900"
+              >
+                <Share2 className="w-4 h-4" />
+                <span>Partager</span>
+              </button>
+            </div>
           </div>
         </div>
       </header>
