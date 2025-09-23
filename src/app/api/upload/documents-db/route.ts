@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
             mimeType: file.type,
             category: 'LEGAL_DOCUMENTS',
             isPublic: true,
-            authorId: 1 // ID par défaut - à adapter selon votre système d'auth
+            authorId: "1" // ID par défaut - à adapter selon votre système d'auth
           }
         })
 
