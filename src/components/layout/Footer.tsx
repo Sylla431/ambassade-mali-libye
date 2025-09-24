@@ -36,10 +36,10 @@ export default function Footer() {
   return (
     <footer className="bg-gradient-to-br from-mali-green-900 via-mali-gold-900 to-mali-red-900 text-white">
       <div className="container-custom py-16">
-        <div className="flex items-start justify-between gap-12">
+        <div className="flex flex-col lg:flex-row items-center lg:items-start justify-between gap-8 lg:gap-12">
           {/* Sceau du Mali à l'extrême gauche */}
           <div className="flex flex-col items-center space-y-2 flex-shrink-0">
-            <div className="relative w-36 h-36">
+            <div className="relative w-24 h-24 sm:w-32 sm:h-32 lg:w-36 lg:h-36">
               <Image
                 src="/images/seals/Armoiries_Mali-3-01-150x150-1.png"
                 alt="Sceau de la République du Mali"
@@ -53,7 +53,7 @@ export default function Footer() {
           </div>
 
           {/* Contenu central avec les liens */}
-          <div className="flex-1 grid lg:grid-cols-4 md:grid-cols-2 gap-10">
+          <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10 w-full">
             {/* Informations de contact */}
             <div className="space-y-6">
               <div>
@@ -155,7 +155,7 @@ export default function Footer() {
 
           {/* Sceau de l'AES à l'extrême droite */}
           <div className="flex flex-col items-center space-y-2 flex-shrink-0">
-            <div className="relative w-36 h-36">
+            <div className="relative w-24 h-24 sm:w-32 sm:h-32 lg:w-36 lg:h-36">
               <Image
                 src="/images/seals/Logo_of_the_Alliance_of_Sahel_States-removebg-preview (1).png"
                 alt="Sceau de l'Alliance des États du Sahel"

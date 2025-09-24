@@ -45,20 +45,18 @@ export default function Header() {
       {/* Top bar avec infos de contact */}
       <div className="bg-mali-gradient text-white py-2">
         <div className="container-custom">
-          <div className="flex flex-col sm:flex-row justify-between items-center text-sm">
-            <div className="flex items-center space-x-4">
+          <div className="flex flex-col sm:flex-row justify-between items-center text-sm gap-2">
+            <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-4">
               <div className="flex items-center space-x-1">
                 <Phone className="h-4 w-4" />
-                <span>{t('header.phone')}</span>
+                <span className="hidden sm:inline">{t('header.phone')}</span>
               </div>
               <div className="flex items-center space-x-1">
                 <MapPin className="h-4 w-4" />
-                <span>{t('header.address')}</span>
+                <span className="hidden sm:inline">{t('header.address')}</span>
               </div>
-            
             </div>
-              <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-1">
+            <div className="flex items-center space-x-4">
               <a
                 href="https://www.diplomatiemdc.gouv.ml/vitrine"
                 target="_blank"
@@ -68,14 +66,12 @@ export default function Header() {
                 <span>Demande de Visa</span>
                 <ExternalLink className="h-3 w-3" />
               </a>
-              </div>
-              </div>
+            </div>
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-1">
                 <Clock className="h-4 w-4" />
-                <span>{t('header.hours')}</span>
+                <span className="hidden sm:inline">{t('header.hours')}</span>
               </div>
-           
               <LanguageSwitcher />
             </div>
             

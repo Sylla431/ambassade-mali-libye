@@ -17,7 +17,7 @@ const leadership = [
   },
   {
     id: 2,
-    name: 'Monsieur Abdoulaye Diop',
+    name: 'SEM Abdoulaye Diop',
     position: 'Ministre des Affaires Étrangères',
     image: '/images/leadership/ministre.jpg',
     description: 'Responsable de la politique étrangère du Mali et des relations diplomatiques internationales.',
@@ -27,7 +27,7 @@ const leadership = [
   },
   {
     id: 3,
-    name: 'Mamadou Sylla',
+    name: 'Pr Adama Diawara',
     position: 'Charge d\'Affaires',
     image: '/images/leadership/ambassadeur.jpg',
     description: 'Représentant officiel de la République du Mali auprès de la Libye et de la République de Malte.',
