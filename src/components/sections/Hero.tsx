@@ -26,8 +26,8 @@ export default function Hero() {
             transition={{ duration: 0.8 }}
             className="space-y-8"
           >
-            <div className="space-y-3 ">
-              <h2 className="text-4xl lg:text-6xl font-bold text-white leading-tight drop-shadow-lg">
+            <div className="space-y-3">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-white leading-tight drop-shadow-lg break-words">
                 Ambassade de la{' '}
                 <span className="bg-mali-gradient bg-clip-text text-transparent drop-shadow-md">République du Mali auprès de la Libye 
                 et de la République de Malte</span>
