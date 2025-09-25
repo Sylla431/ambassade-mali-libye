@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import AuthGuard from '@/components/admin/AuthGuard'
 import AdminLayout from '@/components/admin/AdminLayout'
-// import { createFileUploader, UploadProgress } from '@/utils/fileUpload' // Plus utilisé
+import { createFileUploader, UploadProgress } from '@/utils/fileUpload'
 import { 
   Plus, 
   Edit, 
@@ -49,7 +49,7 @@ export default function AdminDocuments() {
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const [uploading, setUploading] = useState(false)
-  // const [uploadProgress, setUploadProgress] = useState<UploadProgress | null>(null) // Plus utilisé
+  const [uploadProgress, setUploadProgress] = useState<UploadProgress | null>(null)
   const router = useRouter()
 
   useEffect(() => {
@@ -103,51 +103,47 @@ export default function AdminDocuments() {
     const files = event.target.files
     if (!files || files.length === 0) return
 
-    // Vérifier la taille des fichiers côté client (limite Vercel Blob: 10MB)
-    const maxSize = 10 * 1024 * 1024 // 10MB
+    // Vérifier la taille des fichiers côté client (limite chunked upload: 100MB)
+    const maxSize = 100 * 1024 * 1024 // 100MB
     const oversizedFiles = Array.from(files).filter(file => file.size > maxSize)
     
     if (oversizedFiles.length > 0) {
       const fileNames = oversizedFiles.map(f => `${f.name} (${(f.size / 1024 / 1024).toFixed(1)}MB)`).join(', ')
-      alert(`❌ Fichiers trop volumineux: ${fileNames}\n\nTaille maximale autorisée: 10MB`)
+      alert(`❌ Fichiers trop volumineux: ${fileNames}\n\nTaille maximale autorisée: 100MB`)
       return
     }
 
     setUploading(true)
+    setUploadProgress(null)
 
     try {
-      const token = localStorage.getItem('admin_token')
-      const formData = new FormData()
-      
-      Array.from(files).forEach(file => {
-        formData.append('files', file)
-      })
-
-      const response = await fetch('/api/documents/upload', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
-        body: formData
-      })
-
-      if (response.ok) {
-        const result = await response.json()
-        if (result.success) {
-          alert(`✅ ${result.data.length} document(s) uploadé(s) avec succès`)
-          loadDocuments() // Recharger la liste
-        } else {
-          alert(`❌ Erreur d'upload: ${result.error}`)
+      const uploader = createFileUploader(2 * 1024 * 1024) // 2MB par chunk
+      const results = await uploader.uploadMultipleFiles(
+        Array.from(files),
+        (fileIndex, progress) => {
+          setUploadProgress(progress)
         }
-      } else {
-        const errorData = await response.json()
-        alert(`❌ Erreur d'upload: ${errorData.error}`)
+      )
+
+      const successfulUploads = results.filter(r => r.success)
+      const failedUploads = results.filter(r => !r.success)
+
+      if (successfulUploads.length > 0) {
+        alert(`✅ ${successfulUploads.length} document(s) uploadé(s) avec succès`)
+        loadDocuments() // Recharger la liste
       }
+
+      if (failedUploads.length > 0) {
+        const errorMessages = failedUploads.map(r => r.error).join('\n')
+        alert(`❌ ${failedUploads.length} document(s) ont échoué:\n${errorMessages}`)
+      }
+
     } catch (error) {
       console.error('Erreur lors de l\'upload:', error)
       alert('❌ Erreur de connexion lors de l\'upload')
     } finally {
       setUploading(false)
+      setUploadProgress(null)
     }
   }
 
@@ -266,7 +262,7 @@ export default function AdminDocuments() {
               onChange={handleFileUpload}
               className="hidden"
               accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
-              title="Taille maximale: 10MB"
+                     title="Taille maximale: 100MB"
             />
           </label>
         </div>
@@ -274,12 +270,30 @@ export default function AdminDocuments() {
         {/* Indicateur d'upload */}
         {uploading && (
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow mb-6 p-6">
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-3 mb-4">
               <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-mali-green-600"></div>
               <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                 Upload en cours...
               </span>
             </div>
+            
+            {uploadProgress && (
+              <div className="space-y-2">
+                <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
+                  <span>Chunk {uploadProgress.chunkIndex}/{uploadProgress.totalChunks}</span>
+                  <span>{uploadProgress.percentage}%</span>
+                </div>
+                <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                  <div 
+                    className="bg-mali-green-600 h-2 rounded-full transition-all duration-300"
+                    style={{ width: `${uploadProgress.percentage}%` }}
+                  ></div>
+                </div>
+                <div className="text-xs text-gray-500 dark:text-gray-400">
+                  {Math.round(uploadProgress.loaded / 1024 / 1024 * 10) / 10}MB / {Math.round(uploadProgress.total / 1024 / 1024 * 10) / 10}MB
+                </div>
+              </div>
+            )}
           </div>
         )}
         {/* Filtres et recherche */}

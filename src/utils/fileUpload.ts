@@ -59,8 +59,11 @@ export class ChunkedFileUploader {
 
         console.log(`Upload du chunk ${chunkIndex + 1}/${totalChunks} (${(chunk.size / 1024).toFixed(1)}KB)`)
 
-        const response = await fetch('/api/upload/documents-chunk', {
+        const response = await fetch('/api/upload/documents-chunk-v2', {
           method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('admin_token')}`
+          },
           body: formData
         })
 
