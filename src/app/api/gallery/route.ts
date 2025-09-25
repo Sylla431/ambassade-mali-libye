@@ -1,15 +1,11 @@
-import { NextRequest } from 'next/server'
-import { successResponse, errorResponse } from '@/utils/api'
-import { withAuth } from '@/middleware/auth'
-import fs from 'fs'
-import path from 'path'
+import { NextRequest, NextResponse } from 'next/server'
+import { prisma } from '@/lib/prisma'
 
-// Force dynamic rendering for this API route
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
 
-// GET /api/gallery - Récupérer toutes les images de la galerie
-export const GET = withAuth(async (request) => {
+// GET /api/gallery - Récupérer toutes les images de la galerie depuis Blob Storage
+export async function GET(request: NextRequest) {
   try {
     const { searchParams } = request.nextUrl
     const page = parseInt(searchParams.get('page') || '1')
@@ -17,74 +13,82 @@ export const GET = withAuth(async (request) => {
     const search = searchParams.get('search') || ''
     const type = searchParams.get('type') || 'all' // all, articles, events
 
-    const uploadsDir = path.join(process.cwd(), 'public', 'uploads')
-    const imagesDir = path.join(uploadsDir, 'images')
+    // Construire les conditions de recherche
+    const where: any = {}
     
-    // Vérifier si le dossier existe
-    if (!fs.existsSync(imagesDir)) {
-      return successResponse({
-        data: [],
-        pagination: {
-          page: 1,
-          limit,
-          total: 0,
-          totalPages: 0
-        }
-      })
-    }
-
-    // Lire tous les fichiers du dossier images
-    const files = fs.readdirSync(imagesDir)
-    const imageFiles = files.filter(file => {
-      const ext = path.extname(file).toLowerCase()
-      return ['.jpg', '.jpeg', '.png', '.gif', '.webp'].includes(ext)
-    })
-
-    // Filtrer par recherche si fournie
-    let filteredFiles = imageFiles
     if (search) {
-      filteredFiles = imageFiles.filter(file => 
-        file.toLowerCase().includes(search.toLowerCase())
-      )
+      where.OR = [
+        { altText: { contains: search, mode: 'insensitive' } },
+        { caption: { contains: search, mode: 'insensitive' } },
+        { captionAr: { contains: search, mode: 'insensitive' } }
+      ]
     }
 
-    // Pagination
-    const startIndex = (page - 1) * limit
-    const endIndex = startIndex + limit
-    const paginatedFiles = filteredFiles.slice(startIndex, endIndex)
+    if (type === 'articles') {
+      where.articleId = { not: null }
+    } else if (type === 'general') {
+      where.articleId = null
+    }
 
-    // Créer les objets d'images
-    const images = paginatedFiles.map((file, index) => {
-      const filePath = path.join(imagesDir, file)
-      const stats = fs.statSync(filePath)
-      
-      // Extraire l'ID et le nom original du nom de fichier
-      const [timestamp, originalName] = file.split('-', 2)
-      
-      return {
-        id: timestamp,
-        imageUrl: `/uploads/images/${file}`,
-        fileName: originalName || file,
-        fileSize: stats.size,
-        createdAt: new Date(parseInt(timestamp)).toISOString(),
-        order: startIndex + index + 1,
-        altText: originalName ? originalName.replace(/\.[^/.]+$/, '') : file.replace(/\.[^/.]+$/, ''),
-        caption: originalName ? originalName.replace(/\.[^/.]+$/, '') : file.replace(/\.[^/.]+$/, '')
-      }
-    })
+    // Récupérer les images avec pagination
+    const [images, total] = await Promise.all([
+      prisma.articleGallery.findMany({
+        where,
+        select: {
+          id: true,
+          imageUrl: true,
+          altText: true,
+          caption: true,
+          captionAr: true,
+          order: true,
+          createdAt: true,
+          article: {
+            select: {
+              id: true,
+              title: true,
+              slug: true
+            }
+          }
+        },
+        orderBy: { createdAt: 'desc' },
+        skip: (page - 1) * limit,
+        take: limit
+      }),
+      prisma.articleGallery.count({ where })
+    ])
 
-    return successResponse({
-      data: images,
+    // Formater les données
+    const formattedImages = images.map(image => ({
+      id: image.id,
+      imageUrl: image.imageUrl,
+      altText: image.altText,
+      caption: image.caption,
+      captionAr: image.captionAr,
+      order: image.order,
+      createdAt: image.createdAt,
+      article: image.article ? {
+        id: image.article.id,
+        title: image.article.title,
+        slug: image.article.slug
+      } : null
+    }))
+
+    return NextResponse.json({
+      success: true,
+      data: formattedImages,
       pagination: {
         page,
         limit,
-        total: filteredFiles.length,
-        totalPages: Math.ceil(filteredFiles.length / limit)
+        total,
+        totalPages: Math.ceil(total / limit)
       }
     })
 
   } catch (error) {
     console.error('Erreur lors de la récupération des images:', error)
-    return errorResponse('Erreur lors de la récupération des images', 500)
+    return NextResponse.json(
+      { success: false, error: 'Erreur lors de la récupération des images' },
+      { status: 500 }
+    )
   }
-})
+}

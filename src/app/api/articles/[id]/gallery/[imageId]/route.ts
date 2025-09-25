@@ -1,52 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { del } from '@vercel/blob'
 import { prisma } from '@/lib/prisma'
 
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
 
-// DELETE /api/articles/[id]/gallery/[imageId] - Supprimer une image de la galerie
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string; imageId: string } }
-) {
-  try {
-    const { id: articleId, imageId } = params
-
-    // Vérifier que l'image appartient à l'article
-    const galleryImage = await prisma.articleGallery.findFirst({
-      where: {
-        id: imageId,
-        articleId: articleId
-      }
-    })
-
-    if (!galleryImage) {
-      return NextResponse.json(
-        { success: false, error: 'Image non trouvée' },
-        { status: 404 }
-      )
-    }
-
-    // Supprimer l'image
-    await prisma.articleGallery.delete({
-      where: { id: imageId }
-    })
-
-    return NextResponse.json({
-      success: true,
-      message: 'Image supprimée de la galerie avec succès'
-    })
-
-  } catch (error) {
-    console.error('Erreur lors de la suppression de l\'image:', error)
-    return NextResponse.json(
-      { success: false, error: 'Erreur lors de la suppression de l\'image' },
-      { status: 500 }
-    )
-  }
-}
-
-// PUT /api/articles/[id]/gallery/[imageId] - Mettre à jour une image de la galerie
+// PUT /api/articles/[id]/gallery/[imageId] - Mettre à jour une image de galerie
 export async function PUT(
   request: NextRequest,
   { params }: { params: { id: string; imageId: string } }
@@ -57,16 +16,16 @@ export async function PUT(
     const { altText, caption, captionAr, order } = body
 
     // Vérifier que l'image appartient à l'article
-    const galleryImage = await prisma.articleGallery.findFirst({
+    const image = await prisma.articleGallery.findFirst({
       where: {
         id: imageId,
         articleId: articleId
       }
     })
 
-    if (!galleryImage) {
+    if (!image) {
       return NextResponse.json(
-        { success: false, error: 'Image non trouvée' },
+        { success: false, error: 'Image non trouvée dans cet article' },
         { status: 404 }
       )
     }
@@ -92,6 +51,57 @@ export async function PUT(
     console.error('Erreur lors de la mise à jour de l\'image:', error)
     return NextResponse.json(
       { success: false, error: 'Erreur lors de la mise à jour de l\'image' },
+      { status: 500 }
+    )
+  }
+}
+
+// DELETE /api/articles/[id]/gallery/[imageId] - Supprimer une image de galerie
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { id: string; imageId: string } }
+) {
+  try {
+    const { id: articleId, imageId } = params
+
+    // Vérifier que l'image appartient à l'article
+    const image = await prisma.articleGallery.findFirst({
+      where: {
+        id: imageId,
+        articleId: articleId
+      }
+    })
+
+    if (!image) {
+      return NextResponse.json(
+        { success: false, error: 'Image non trouvée dans cet article' },
+        { status: 404 }
+      )
+    }
+
+    try {
+      // Supprimer le fichier de Vercel Blob Storage
+      await del(image.imageUrl)
+    } catch (blobError) {
+      console.warn('Impossible de supprimer le fichier de Blob Storage:', blobError)
+      // On continue même si la suppression du blob échoue
+    }
+
+    // Supprimer l'entrée de la base de données
+    await prisma.articleGallery.delete({
+      where: { id: imageId }
+    })
+
+    return NextResponse.json({
+      success: true,
+      data: { deletedImageId: imageId },
+      message: 'Image supprimée avec succès'
+    })
+
+  } catch (error) {
+    console.error('Erreur lors de la suppression de l\'image:', error)
+    return NextResponse.json(
+      { success: false, error: 'Erreur lors de la suppression de l\'image' },
       { status: 500 }
     )
   }

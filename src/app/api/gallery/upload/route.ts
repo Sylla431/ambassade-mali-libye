@@ -1,74 +1,39 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { put } from '@vercel/blob'
 import { prisma } from '@/lib/prisma'
 
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
 
-// GET /api/articles/[id]/gallery - Récupérer la galerie d'un article
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+// POST /api/gallery/upload - Upload d'images vers Vercel Blob Storage
+export async function POST(request: NextRequest) {
   try {
-    const articleId = params.id
-
-    const gallery = await prisma.articleGallery.findMany({
-      where: { articleId },
-      select: {
-        id: true,
-        imageUrl: true,
-        altText: true,
-        caption: true,
-        captionAr: true,
-        order: true
-      },
-      orderBy: { order: 'asc' }
-    })
-
-    return NextResponse.json({
-      success: true,
-      data: gallery
-    })
-
-  } catch (error) {
-    console.error('Erreur lors de la récupération de la galerie:', error)
-    return NextResponse.json(
-      { success: false, error: 'Erreur lors de la récupération de la galerie' },
-      { status: 500 }
-    )
-  }
-}
-
-// POST /api/articles/[id]/gallery - Ajouter une image à la galerie d'un article
-export async function POST(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  try {
-    const articleId = params.id
     const formData = await request.formData()
     const files = formData.getAll('files') as File[]
+    const articleId = formData.get('articleId') as string
     const altText = formData.get('altText') as string
     const caption = formData.get('caption') as string
     const captionAr = formData.get('captionAr') as string
-
-    // Vérifier que l'article existe
-    const article = await prisma.article.findUnique({
-      where: { id: articleId }
-    })
-
-    if (!article) {
-      return NextResponse.json(
-        { success: false, error: 'Article non trouvé' },
-        { status: 404 }
-      )
-    }
 
     if (!files || files.length === 0) {
       return NextResponse.json(
         { success: false, error: 'Aucun fichier fourni' },
         { status: 400 }
       )
+    }
+
+    // Vérifier que l'article existe si articleId est fourni
+    if (articleId) {
+      const article = await prisma.article.findUnique({
+        where: { id: articleId }
+      })
+
+      if (!article) {
+        return NextResponse.json(
+          { success: false, error: 'Article non trouvé' },
+          { status: 404 }
+        )
+      }
     }
 
     const uploadedImages = []
@@ -95,12 +60,10 @@ export async function POST(
       }
 
       try {
-        // Importer put depuis @vercel/blob
-        const { put } = await import('@vercel/blob')
-        
         // Générer un nom de fichier unique
         const timestamp = Date.now()
-        const fileName = `gallery-${articleId}-${timestamp}-${i}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`
+        const fileExtension = file.name.split('.').pop()
+        const fileName = `${timestamp}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`
 
         // Upload vers Vercel Blob Storage
         const blob = await put(fileName, file, {
@@ -108,19 +71,44 @@ export async function POST(
           contentType: file.type
         })
 
-        // Créer l'image de galerie
-        const galleryImage = await prisma.articleGallery.create({
-          data: {
-            articleId,
+        // Si c'est pour un article, créer l'entrée dans la galerie
+        if (articleId) {
+          const galleryImage = await prisma.articleGallery.create({
+            data: {
+              articleId,
+              imageUrl: blob.url,
+              altText: altText || file.name.replace(/\.[^/.]+$/, ''),
+              caption: caption || file.name.replace(/\.[^/.]+$/, ''),
+              captionAr: captionAr || '',
+              order: i
+            }
+          })
+
+          uploadedImages.push({
+            id: galleryImage.id,
+            imageUrl: blob.url,
+            altText: galleryImage.altText,
+            caption: galleryImage.caption,
+            captionAr: galleryImage.captionAr,
+            order: galleryImage.order,
+            fileName: file.name,
+            fileSize: file.size,
+            fileType: file.type
+          })
+        } else {
+          // Image générale de galerie
+          uploadedImages.push({
+            id: timestamp.toString(),
             imageUrl: blob.url,
             altText: altText || file.name.replace(/\.[^/.]+$/, ''),
             caption: caption || file.name.replace(/\.[^/.]+$/, ''),
             captionAr: captionAr || '',
-            order: i
-          }
-        })
-
-        uploadedImages.push(galleryImage)
+            fileName: file.name,
+            fileSize: file.size,
+            fileType: file.type,
+            uploadedAt: new Date().toISOString()
+          })
+        }
 
       } catch (uploadError) {
         console.error(`Erreur lors de l'upload de ${file.name}:`, uploadError)
@@ -134,13 +122,13 @@ export async function POST(
     return NextResponse.json({
       success: true,
       data: uploadedImages,
-      message: `${uploadedImages.length} image(s) ajoutée(s) à la galerie avec succès`
+      message: `${uploadedImages.length} image(s) uploadée(s) avec succès`
     })
 
   } catch (error) {
-    console.error('Erreur lors de l\'ajout de l\'image à la galerie:', error)
+    console.error('Erreur lors de l\'upload des images:', error)
     return NextResponse.json(
-      { success: false, error: 'Erreur lors de l\'ajout de l\'image' },
+      { success: false, error: 'Erreur lors de l\'upload des images' },
       { status: 500 }
     )
   }
