@@ -72,11 +72,20 @@ export default function AdminArticles() {
           'Authorization': `Bearer ${token}`
         }
       })
+      
+      console.log('Token utilisé:', token ? 'Présent' : 'Absent')
+      console.log('URL appelée:', `/api/articles?${params}`)
 
       if (response.ok) {
         const data = await response.json()
+        console.log('Réponse API articles:', data)
+        console.log('Articles reçus:', data.data?.articles?.length || 0)
         setArticles(data.data.articles)
         setTotalPages(data.data.pagination.totalPages)
+      } else {
+        console.error('Erreur API articles:', response.status, response.statusText)
+        const errorData = await response.text()
+        console.error('Détails erreur:', errorData)
       }
     } catch (error) {
       console.error('Erreur lors du chargement des articles:', error)
