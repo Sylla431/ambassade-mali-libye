@@ -114,7 +114,7 @@ export default function AdminSidebar({ user, onLogout }: AdminSidebarProps) {
   return (
     <div className={`bg-gray-900 text-white transition-all duration-300 ${
       collapsed ? 'w-16' : 'w-64'
-    } min-h-screen flex flex-col`}>
+    } h-screen flex flex-col flex-shrink-0`}>
       {/* Header */}
       <div className="p-4 border-b border-gray-700">
         <div className="flex items-center justify-between">
@@ -155,7 +155,7 @@ export default function AdminSidebar({ user, onLogout }: AdminSidebarProps) {
       )}
 
       {/* Navigation */}
-      <nav className="flex-1 p-4">
+      <nav className="flex-1 p-4 overflow-y-auto">
         <ul className="space-y-2">
           {menuItems.map((item) => {
             const Icon = item.icon
