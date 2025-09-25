@@ -80,7 +80,7 @@ export default function AdminDashboard() {
       const recentData = await recentRes.json()
       
       if (recentData.success) {
-        setRecentActivity(recentData.data.data.map((article: any) => ({
+        setRecentActivity(recentData.data.articles.map((article: any) => ({
           id: article.id,
           type: 'article' as const,
           title: article.title,

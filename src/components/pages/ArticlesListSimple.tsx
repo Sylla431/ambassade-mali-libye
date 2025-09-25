@@ -13,7 +13,7 @@ export default function ArticlesListSimple() {
         const data = await response.json()
         
         if (data.success) {
-          setStatus(`✅ API fonctionne - ${data.data.data.length} articles trouvés`)
+          setStatus(`✅ API fonctionne - ${data.data.articles.length} articles trouvés`)
         } else {
           setStatus(`❌ Erreur API: ${data.error}`)
         }
