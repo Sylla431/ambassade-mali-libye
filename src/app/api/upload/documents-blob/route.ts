@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { put } from '@vercel/blob'
 import { prisma } from '@/lib/prisma'
 
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
 
-// POST /api/upload/documents-db - Upload de documents avec stockage en base de données
+// POST /api/upload/documents-blob - Upload de documents vers Vercel Blob Storage
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData()
@@ -41,7 +42,7 @@ export async function POST(request: NextRequest) {
         }
 
         // Vérifier la taille (max 4.5MB pour Vercel)
-        const maxSize = 4.5 * 1024 * 1024 // 4.5MB (limite Vercel)
+        const maxSize = 4.5 * 1024 * 1024 // 4.5MB
         if (file.size > maxSize) {
           uploadResults.push({
             success: false,
@@ -51,10 +52,10 @@ export async function POST(request: NextRequest) {
           continue
         }
 
-        // Convertir le fichier en base64 pour le stockage
-        const arrayBuffer = await file.arrayBuffer()
-        const base64 = Buffer.from(arrayBuffer).toString('base64')
-        const dataUrl = `data:${file.type};base64,${base64}`
+        // Upload vers Vercel Blob Storage
+        const blob = await put(file.name, file, {
+          access: 'public',
+        })
 
         // Trouver un admin existant ou utiliser un ID par défaut
         let authorId = "1"
@@ -69,11 +70,11 @@ export async function POST(request: NextRequest) {
           console.log('Utilisation de l\'ID par défaut pour l\'auteur')
         }
 
-        // Créer l'entrée dans la base de données
+        // Créer l'entrée dans la base de données avec l'URL du blob
         const document = await prisma.document.create({
           data: {
             title: file.name.replace(/\.[^/.]+$/, ""), // Nom sans extension
-            fileUrl: dataUrl,
+            fileUrl: blob.url,
             fileName: file.name,
             fileSize: file.size,
             mimeType: file.type,
@@ -89,7 +90,7 @@ export async function POST(request: NextRequest) {
             name: file.name,
             size: file.size,
             type: file.type,
-            url: dataUrl
+            url: blob.url
           },
           document: document
         })
@@ -116,11 +117,11 @@ export async function POST(request: NextRequest) {
         successfulCount: successfulUploads.length,
         failedCount: failedUploads.length
       },
-      message: `${successfulUploads.length} document(s) uploadé(s) avec succès`
+      message: `${successfulUploads.length} document(s) uploadé(s) avec succès vers Vercel Blob Storage`
     })
 
   } catch (error) {
-    console.error('Erreur lors de l\'upload de documents:', error)
+    console.error('Erreur lors de l\'upload de documents vers Blob Storage:', error)
     const errorMessage = error instanceof Error ? error.message : 'Erreur inconnue'
     return NextResponse.json(
       { 
