@@ -50,6 +50,14 @@ export async function GET(request: NextRequest) {
     // Récupération simple d'abord
     console.log('Récupération simple des articles...')
     const simpleArticles = await prisma.article.findMany({
+      select: {
+        id: true,
+        title: true,
+        excerpt: true,
+        slug: true,
+        published: true,
+        createdAt: true
+      },
       take: limit,
       skip: (page - 1) * limit,
       orderBy: { createdAt: 'desc' }
@@ -60,7 +68,15 @@ export async function GET(request: NextRequest) {
     console.log('Test avec includes...')
     const articles = await prisma.article.findMany({
       where,
-      include: {
+      select: {
+        id: true,
+        title: true,
+        excerpt: true,
+        slug: true,
+        published: true,
+        createdAt: true,
+        updatedAt: true,
+        imageUrl: true,
         author: {
           select: {
             id: true,
@@ -68,9 +84,25 @@ export async function GET(request: NextRequest) {
             email: true
           }
         },
-        category: true,
+        category: {
+          select: {
+            id: true,
+            name: true,
+            nameAr: true,
+            color: true
+          }
+        },
         gallery: {
-          orderBy: { order: 'asc' }
+          select: {
+            id: true,
+            imageUrl: true,
+            altText: true,
+            caption: true,
+            captionAr: true,
+            order: true
+          },
+          orderBy: { order: 'asc' },
+          take: 3 // Limiter à 3 images max pour éviter les réponses trop volumineuses
         }
       },
       orderBy: [
