@@ -1,8 +1,5 @@
-import { NextRequest } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { createArticleSchema } from '@/utils/validation'
-import { successResponse, errorResponse, validationErrorResponse, getPaginationParams, createPaginationResponse } from '@/utils/api'
-import { withAuth } from '@/middleware/auth'
 
 // Force dynamic rendering for this API route
 export const dynamic = 'force-dynamic'
@@ -12,7 +9,10 @@ export const runtime = 'nodejs'
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = request.nextUrl
-    const { page, limit, search, category } = getPaginationParams(searchParams)
+    const page = Math.max(1, parseInt(searchParams.get('page') || '1'))
+    const limit = Math.min(100, Math.max(1, parseInt(searchParams.get('limit') || '10')))
+    const search = searchParams.get('search') || undefined
+    const category = searchParams.get('category') || undefined
     const published = searchParams.get('published') === 'true'
 
     const where: any = {}
@@ -59,65 +59,43 @@ export async function GET(request: NextRequest) {
       prisma.article.count({ where })
     ])
 
-    const response = createPaginationResponse(articles, total, page, limit)
-    return successResponse(response)
+    const totalPages = Math.ceil(total / limit)
+    
+    const response = {
+      success: true,
+      data: {
+        articles,
+        pagination: {
+          page,
+          limit,
+          total,
+          totalPages
+        }
+      }
+    }
+
+    return NextResponse.json(response)
 
   } catch (error) {
     console.error('Erreur lors de la récupération des articles:', error)
-    return errorResponse('Erreur interne du serveur', 500)
+    return NextResponse.json(
+      { 
+        success: false, 
+        error: 'Erreur interne du serveur',
+        details: error instanceof Error ? error.message : 'Erreur inconnue'
+      },
+      { status: 500 }
+    )
   }
 }
 
-// POST /api/articles - Créer un nouvel article
-export const POST = withAuth(async (request) => {
-  try {
-    const body = await request.json()
-    const user = request.user!
-
-    // Validation des données
-    const validationResult = createArticleSchema.safeParse(body)
-    if (!validationResult.success) {
-      return validationErrorResponse(validationResult.error.errors)
-    }
-
-    const articleData = validationResult.data
-
-    // Vérifier si le slug existe déjà
-    const existingArticle = await prisma.article.findUnique({
-      where: { slug: articleData.slug }
-    })
-
-    if (existingArticle) {
-      return errorResponse('Un article avec ce slug existe déjà', 400)
-    }
-
-    // Créer l'article
-    const article = await prisma.article.create({
-      data: {
-        ...articleData,
-        authorId: user.id,
-        publishedAt: articleData.published ? new Date() : null,
-        categoryId: articleData.categoryId || null
-      },
-    include: {
-      author: {
-        select: {
-          id: true,
-          name: true,
-          email: true
-        }
-      },
-      category: true,
-      gallery: {
-        orderBy: { order: 'asc' }
-      }
-    }
-    })
-
-    return successResponse(article, 'Article créé avec succès')
-
-  } catch (error) {
-    console.error('Erreur lors de la création de l\'article:', error)
-    return errorResponse('Erreur interne du serveur', 500)
-  }
-})
+// POST /api/articles - Créer un nouvel article (désactivé temporairement)
+export async function POST(request: NextRequest) {
+  return NextResponse.json(
+    { 
+      success: false, 
+      error: 'Création d\'articles temporairement désactivée pour maintenance' 
+    },
+    { status: 503 }
+  )
+}
