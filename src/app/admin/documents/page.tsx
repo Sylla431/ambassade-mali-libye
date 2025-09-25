@@ -101,13 +101,13 @@ export default function AdminDocuments() {
     const files = event.target.files
     if (!files || files.length === 0) return
 
-    // Vérifier la taille des fichiers côté client
-    const maxSize = 4.5 * 1024 * 1024 // 4.5MB
+    // Vérifier la taille des fichiers côté client (limite augmentée à 50MB)
+    const maxSize = 50 * 1024 * 1024 // 50MB
     const oversizedFiles = Array.from(files).filter(file => file.size > maxSize)
     
     if (oversizedFiles.length > 0) {
       const fileNames = oversizedFiles.map(f => `${f.name} (${(f.size / 1024 / 1024).toFixed(1)}MB)`).join(', ')
-      alert(`❌ Fichiers trop volumineux: ${fileNames}\n\nTaille maximale autorisée: 4.5MB`)
+      alert(`❌ Fichiers trop volumineux: ${fileNames}\n\nTaille maximale autorisée: 50MB`)
       return
     }
 
@@ -121,7 +121,7 @@ export default function AdminDocuments() {
       })
 
       console.log('Envoi de la requête d\'upload...')
-      const response = await fetch('/api/upload/documents-blob', {
+      const response = await fetch('/api/upload/documents-large', {
         method: 'POST',
         body: formData
       })
@@ -252,7 +252,7 @@ export default function AdminDocuments() {
               onChange={handleFileUpload}
               className="hidden"
               accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
-              title="Taille maximale: 4.5MB"
+              title="Taille maximale: 50MB"
             />
           </label>
         </div>
