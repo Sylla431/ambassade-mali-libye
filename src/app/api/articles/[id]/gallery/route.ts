@@ -1,7 +1,5 @@
-import { NextRequest } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { successResponse, errorResponse } from '@/utils/api'
-import { withAuth } from '@/middleware/auth'
 
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
@@ -20,21 +18,26 @@ export async function GET(
       orderBy: { order: 'asc' }
     })
 
-    return successResponse(gallery)
+    return NextResponse.json({
+      success: true,
+      data: gallery
+    })
 
   } catch (error) {
     console.error('Erreur lors de la récupération de la galerie:', error)
-    return errorResponse('Erreur lors de la récupération de la galerie', 500)
+    return NextResponse.json(
+      { success: false, error: 'Erreur lors de la récupération de la galerie' },
+      { status: 500 }
+    )
   }
 }
 
 // POST /api/articles/[id]/gallery - Ajouter une image à la galerie d'un article
-export const POST = withAuth(async (
+export async function POST(
   request: NextRequest,
-  context: { params: { id: string } }
-) => {
+  { params }: { params: { id: string } }
+) {
   try {
-    const { params } = context
     const articleId = params.id
     const body = await request.json()
     const { imageUrl, altText, caption, captionAr, order } = body
@@ -45,7 +48,10 @@ export const POST = withAuth(async (
     })
 
     if (!article) {
-      return errorResponse('Article non trouvé', 404)
+      return NextResponse.json(
+        { success: false, error: 'Article non trouvé' },
+        { status: 404 }
+      )
     }
 
     // Créer l'image de galerie
@@ -60,10 +66,17 @@ export const POST = withAuth(async (
       }
     })
 
-    return successResponse(galleryImage, 'Image ajoutée à la galerie avec succès')
+    return NextResponse.json({
+      success: true,
+      data: galleryImage,
+      message: 'Image ajoutée à la galerie avec succès'
+    })
 
   } catch (error) {
     console.error('Erreur lors de l\'ajout de l\'image à la galerie:', error)
-    return errorResponse('Erreur lors de l\'ajout de l\'image', 500)
+    return NextResponse.json(
+      { success: false, error: 'Erreur lors de l\'ajout de l\'image' },
+      { status: 500 }
+    )
   }
-})
+}

@@ -1,9 +1,7 @@
-import { NextRequest } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { updateArticleSchema } from '@/utils/validation'
-import { successResponse, errorResponse, validationErrorResponse, notFoundResponse } from '@/utils/api'
-import { withAuth, AuthenticatedRequest } from '@/middleware/auth'
 
+export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
 
 // GET /api/articles/[id] - Récupérer un article par ID
@@ -29,37 +27,34 @@ export async function GET(
     })
 
     if (!article) {
-      return notFoundResponse()
+      return NextResponse.json(
+        { success: false, error: 'Article non trouvé' },
+        { status: 404 }
+      )
     }
 
-    return successResponse(article)
+    return NextResponse.json({
+      success: true,
+      data: article
+    })
 
   } catch (error) {
     console.error('Erreur lors de la récupération de l\'article:', error)
-    return errorResponse('Erreur interne du serveur', 500)
+    return NextResponse.json(
+      { success: false, error: 'Erreur interne du serveur' },
+      { status: 500 }
+    )
   }
 }
 
 // PUT /api/articles/[id] - Mettre à jour un article
-export const PUT = withAuth(async (
-  request: AuthenticatedRequest,
-  context: { params: { id: string } }
-) => {
-  const { params } = context
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
     const body = await request.json()
-    const user = request.user!
-
-    // Validation des données
-    const validationResult = updateArticleSchema.safeParse({
-      ...body,
-      id: params.id
-    })
-    if (!validationResult.success) {
-      return validationErrorResponse(validationResult.error.errors)
-    }
-
-    const updateData = validationResult.data
+    const { title, content, excerpt, imageUrl, published, slug, categoryId } = body
 
     // Vérifier si l'article existe
     const existingArticle = await prisma.article.findUnique({
@@ -67,17 +62,23 @@ export const PUT = withAuth(async (
     })
 
     if (!existingArticle) {
-      return notFoundResponse()
+      return NextResponse.json(
+        { success: false, error: 'Article non trouvé' },
+        { status: 404 }
+      )
     }
 
     // Vérifier si le slug existe déjà (si modifié)
-    if (updateData.slug && updateData.slug !== existingArticle.slug) {
+    if (slug && slug !== existingArticle.slug) {
       const slugExists = await prisma.article.findUnique({
-        where: { slug: updateData.slug }
+        where: { slug: slug }
       })
 
       if (slugExists) {
-        return errorResponse('Un article avec ce slug existe déjà', 400)
+        return NextResponse.json(
+          { success: false, error: 'Un article avec ce slug existe déjà' },
+          { status: 400 }
+        )
       }
     }
 
@@ -85,8 +86,14 @@ export const PUT = withAuth(async (
     const article = await prisma.article.update({
       where: { id: params.id },
       data: {
-        ...updateData,
-        publishedAt: updateData.published && !existingArticle.published ? new Date() : existingArticle.publishedAt
+        title,
+        content,
+        excerpt,
+        imageUrl,
+        published,
+        slug,
+        categoryId,
+        publishedAt: published && !existingArticle.published ? new Date() : existingArticle.publishedAt
       },
       include: {
         author: {
@@ -102,20 +109,26 @@ export const PUT = withAuth(async (
       }
     })
 
-    return successResponse(article, 'Article mis à jour avec succès')
+    return NextResponse.json({
+      success: true,
+      data: article,
+      message: 'Article mis à jour avec succès'
+    })
 
   } catch (error) {
     console.error('Erreur lors de la mise à jour de l\'article:', error)
-    return errorResponse('Erreur interne du serveur', 500)
+    return NextResponse.json(
+      { success: false, error: 'Erreur interne du serveur' },
+      { status: 500 }
+    )
   }
-})
+}
 
 // DELETE /api/articles/[id] - Supprimer un article
-export const DELETE = withAuth(async (
-  request: AuthenticatedRequest,
-  context: { params: { id: string } }
-) => {
-  const { params } = context
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
     // Vérifier si l'article existe
     const existingArticle = await prisma.article.findUnique({
@@ -123,7 +136,10 @@ export const DELETE = withAuth(async (
     })
 
     if (!existingArticle) {
-      return notFoundResponse()
+      return NextResponse.json(
+        { success: false, error: 'Article non trouvé' },
+        { status: 404 }
+      )
     }
 
     // Supprimer l'article
@@ -131,10 +147,16 @@ export const DELETE = withAuth(async (
       where: { id: params.id }
     })
 
-    return successResponse(null, 'Article supprimé avec succès')
+    return NextResponse.json({
+      success: true,
+      message: 'Article supprimé avec succès'
+    })
 
   } catch (error) {
     console.error('Erreur lors de la suppression de l\'article:', error)
-    return errorResponse('Erreur interne du serveur', 500)
+    return NextResponse.json(
+      { success: false, error: 'Erreur interne du serveur' },
+      { status: 500 }
+    )
   }
-})
+}

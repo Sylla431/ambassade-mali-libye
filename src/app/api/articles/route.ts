@@ -128,13 +128,87 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST /api/articles - Créer un nouvel article (désactivé temporairement)
+// POST /api/articles - Créer un nouvel article
 export async function POST(request: NextRequest) {
-  return NextResponse.json(
-    { 
-      success: false, 
-      error: 'Création d\'articles temporairement désactivée pour maintenance' 
-    },
-    { status: 503 }
-  )
+  try {
+    console.log('=== DÉBUT CRÉATION ARTICLE ===')
+    
+    const body = await request.json()
+    const { title, content, excerpt, imageUrl, published, slug, categoryId, authorId } = body
+
+    console.log('Données reçues:', { title, published, slug, categoryId, authorId })
+
+    // Validation basique
+    if (!title || !content) {
+      return NextResponse.json(
+        { success: false, error: 'Le titre et le contenu sont requis' },
+        { status: 400 }
+      )
+    }
+
+    // Vérifier si le slug existe déjà
+    if (slug) {
+      const existingSlug = await prisma.article.findUnique({
+        where: { slug: slug }
+      })
+
+      if (existingSlug) {
+        return NextResponse.json(
+          { success: false, error: 'Un article avec ce slug existe déjà' },
+          { status: 400 }
+        )
+      }
+    }
+
+    // Créer l'article
+    const article = await prisma.article.create({
+      data: {
+        title,
+        content,
+        excerpt,
+        imageUrl,
+        published: published || false,
+        slug: slug || title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+        categoryId: categoryId || null,
+        authorId: authorId || "1", // ID par défaut
+        publishedAt: published ? new Date() : null
+      },
+      include: {
+        author: {
+          select: {
+            id: true,
+            name: true,
+            email: true
+          }
+        },
+        category: true,
+        gallery: {
+          orderBy: { order: 'asc' }
+        }
+      }
+    })
+
+    console.log('✅ Article créé avec succès:', article.id)
+    console.log('=== FIN CRÉATION ARTICLE ===')
+
+    return NextResponse.json({
+      success: true,
+      data: article,
+      message: 'Article créé avec succès'
+    })
+
+  } catch (error) {
+    console.error('=== ERREUR CRÉATION ARTICLE ===')
+    console.error('Erreur:', error)
+    console.error('=== FIN ERREUR ===')
+    
+    return NextResponse.json(
+      { 
+        success: false, 
+        error: 'Erreur lors de la création de l\'article',
+        details: error instanceof Error ? error.message : 'Erreur inconnue'
+      },
+      { status: 500 }
+    )
+  }
 }

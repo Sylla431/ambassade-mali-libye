@@ -1,18 +1,15 @@
-import { NextRequest } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { successResponse, errorResponse } from '@/utils/api'
-import { withAuth } from '@/middleware/auth'
 
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
 
 // DELETE /api/articles/[id]/gallery/[imageId] - Supprimer une image de la galerie
-export const DELETE = withAuth(async (
+export async function DELETE(
   request: NextRequest,
-  context: { params: { id: string; imageId: string } }
-) => {
+  { params }: { params: { id: string; imageId: string } }
+) {
   try {
-    const { params } = context
     const { id: articleId, imageId } = params
 
     // Vérifier que l'image appartient à l'article
@@ -24,7 +21,10 @@ export const DELETE = withAuth(async (
     })
 
     if (!galleryImage) {
-      return errorResponse('Image non trouvée', 404)
+      return NextResponse.json(
+        { success: false, error: 'Image non trouvée' },
+        { status: 404 }
+      )
     }
 
     // Supprimer l'image
@@ -32,21 +32,26 @@ export const DELETE = withAuth(async (
       where: { id: imageId }
     })
 
-    return successResponse(null, 'Image supprimée de la galerie avec succès')
+    return NextResponse.json({
+      success: true,
+      message: 'Image supprimée de la galerie avec succès'
+    })
 
   } catch (error) {
     console.error('Erreur lors de la suppression de l\'image:', error)
-    return errorResponse('Erreur lors de la suppression de l\'image', 500)
+    return NextResponse.json(
+      { success: false, error: 'Erreur lors de la suppression de l\'image' },
+      { status: 500 }
+    )
   }
-})
+}
 
 // PUT /api/articles/[id]/gallery/[imageId] - Mettre à jour une image de la galerie
-export const PUT = withAuth(async (
+export async function PUT(
   request: NextRequest,
-  context: { params: { id: string; imageId: string } }
-) => {
+  { params }: { params: { id: string; imageId: string } }
+) {
   try {
-    const { params } = context
     const { id: articleId, imageId } = params
     const body = await request.json()
     const { altText, caption, captionAr, order } = body
@@ -60,7 +65,10 @@ export const PUT = withAuth(async (
     })
 
     if (!galleryImage) {
-      return errorResponse('Image non trouvée', 404)
+      return NextResponse.json(
+        { success: false, error: 'Image non trouvée' },
+        { status: 404 }
+      )
     }
 
     // Mettre à jour l'image
@@ -74,10 +82,17 @@ export const PUT = withAuth(async (
       }
     })
 
-    return successResponse(updatedImage, 'Image mise à jour avec succès')
+    return NextResponse.json({
+      success: true,
+      data: updatedImage,
+      message: 'Image mise à jour avec succès'
+    })
 
   } catch (error) {
     console.error('Erreur lors de la mise à jour de l\'image:', error)
-    return errorResponse('Erreur lors de la mise à jour de l\'image', 500)
+    return NextResponse.json(
+      { success: false, error: 'Erreur lors de la mise à jour de l\'image' },
+      { status: 500 }
+    )
   }
-})
+}
