@@ -103,8 +103,8 @@ export default function AdminGalleries() {
       if (response.ok) {
         const data = await response.json()
         if (data.success) {
-          setImages(data.data.data)
-          setTotalPages(data.data.pagination.totalPages)
+          setImages(data.data)
+          setTotalPages(data.pagination.totalPages)
         } else {
           showError('Erreur de chargement', data.error || 'Erreur lors du chargement des images')
         }
@@ -133,7 +133,7 @@ export default function AdminGalleries() {
         formData.append('files', file)
       })
 
-      const response = await fetch('/api/upload/images', {
+      const response = await fetch('/api/gallery/upload', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -144,7 +144,7 @@ export default function AdminGalleries() {
       if (response.ok) {
         const result = await response.json()
         if (result.success) {
-          showSuccess('Upload réussi', `${result.data.successfulCount} image(s) uploadée(s) avec succès`)
+          showSuccess('Upload réussi', `${result.data.length} image(s) uploadée(s) avec succès`)
           loadImages() // Recharger la liste
         } else {
           showError('Erreur d\'upload', result.error || 'Erreur lors de l\'upload des images')

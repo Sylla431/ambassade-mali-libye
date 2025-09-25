@@ -103,47 +103,28 @@ export default function ArticleGalleryPage() {
     try {
       const token = localStorage.getItem('admin_token')
       
-      const filesArray = Array.from(files)
-      for (const file of filesArray) {
-        const formData = new FormData()
+      const formData = new FormData()
+      Array.from(files).forEach(file => {
         formData.append('files', file)
+      })
 
-        // Uploader l'image
-        const uploadRes = await fetch('/api/upload/images-db', {
-          method: 'POST',
-          headers: { 'Authorization': `Bearer ${token}` },
-          body: formData
-        })
+      // Uploader les images directement vers la galerie de l'article
+      const uploadRes = await fetch(`/api/articles/${articleId}/gallery`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` },
+        body: formData
+      })
 
-        if (uploadRes.ok) {
-          const uploadData = await uploadRes.json()
-          if (uploadData.success && uploadData.data.successful.length > 0) {
-            const imageUrl = uploadData.data.successful[0].file.url
-            
-            // Ajouter à la galerie de l'article
-            const galleryRes = await fetch(`/api/articles/${articleId}/gallery`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-              },
-              body: JSON.stringify({
-                imageUrl,
-                altText: file.name.replace(/\.[^/.]+$/, ''),
-                caption: file.name.replace(/\.[^/.]+$/, ''),
-                order: gallery.length
-              })
-            })
-
-            if (galleryRes.ok) {
-              showSuccess('Image ajoutée', 'L\'image a été ajoutée à la galerie')
-            } else {
-              showError('Erreur', 'Impossible d\'ajouter l\'image à la galerie')
-            }
-          }
+      if (uploadRes.ok) {
+        const uploadData = await uploadRes.json()
+        if (uploadData.success) {
+          showSuccess('Images ajoutées', `${uploadData.data.length} image(s) ajoutée(s) à la galerie`)
         } else {
-          showError('Erreur d\'upload', 'Impossible d\'uploader l\'image')
+          showError('Erreur d\'upload', uploadData.error || 'Impossible d\'uploader les images')
         }
+      } else {
+        const errorData = await uploadRes.json()
+        showError('Erreur d\'upload', errorData.error || 'Impossible d\'uploader les images')
       }
 
       loadData() // Recharger la galerie
