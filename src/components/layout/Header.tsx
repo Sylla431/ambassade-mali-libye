@@ -168,7 +168,7 @@ export default function Header() {
             >
               <div className="py-4 space-y-2">
                 {/* Top bar mobile - Bouton Visa et Language Switcher seulement */}
-                <div className="px-4 py-2 flex items-center justify-between space-x-4 border-b border-gray-200 dark:border-gray-700 pb-3">
+                <div className="px-4 py-2 justify-between space-x-4 border-b border-gray-200 dark:border-gray-700 pb-3">
                   <a
                     href="https://www.diplomatiemdc.gouv.ml/vitrine"
                     target="_blank"
