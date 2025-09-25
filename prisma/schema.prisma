@@ -135,6 +135,7 @@ model Document {
 enum DocumentCategory {
   VISA_FORMS
   LEGAL_DOCUMENTS
+  NOTE_DE_SERVICE
   NEWS
   ANNOUNCEMENTS
   CULTURAL

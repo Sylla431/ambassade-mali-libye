@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import AuthGuard from '@/components/admin/AuthGuard'
 import AdminLayout from '@/components/admin/AdminLayout'
-import { createFileUploader, UploadProgress } from '@/utils/fileUpload'
+// import { createFileUploader, UploadProgress } from '@/utils/fileUpload' // Plus utilisé
 import { 
   Plus, 
   Edit, 
@@ -49,7 +49,7 @@ export default function AdminDocuments() {
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const [uploading, setUploading] = useState(false)
-  const [uploadProgress, setUploadProgress] = useState<UploadProgress | null>(null)
+  // const [uploadProgress, setUploadProgress] = useState<UploadProgress | null>(null) // Plus utilisé
   const router = useRouter()
 
   useEffect(() => {
@@ -103,52 +103,51 @@ export default function AdminDocuments() {
     const files = event.target.files
     if (!files || files.length === 0) return
 
-    // Vérifier la taille des fichiers côté client (limite augmentée à 50MB)
-    const maxSize = 50 * 1024 * 1024 // 50MB
+    // Vérifier la taille des fichiers côté client (limite Vercel Blob: 10MB)
+    const maxSize = 10 * 1024 * 1024 // 10MB
     const oversizedFiles = Array.from(files).filter(file => file.size > maxSize)
     
     if (oversizedFiles.length > 0) {
       const fileNames = oversizedFiles.map(f => `${f.name} (${(f.size / 1024 / 1024).toFixed(1)}MB)`).join(', ')
-      alert(`❌ Fichiers trop volumineux: ${fileNames}\n\nTaille maximale autorisée: 50MB`)
+      alert(`❌ Fichiers trop volumineux: ${fileNames}\n\nTaille maximale autorisée: 10MB`)
       return
     }
 
     setUploading(true)
-    setUploadProgress(null)
 
     try {
-      const uploader = createFileUploader()
-      const fileArray = Array.from(files)
+      const token = localStorage.getItem('admin_token')
+      const formData = new FormData()
       
-      console.log(`Début de l'upload de ${fileArray.length} fichier(s) par chunks...`)
+      Array.from(files).forEach(file => {
+        formData.append('files', file)
+      })
 
-      const results = await uploader.uploadMultipleFiles(
-        fileArray,
-        (fileIndex, progress) => {
-          setUploadProgress(progress)
-          console.log(`Fichier ${fileIndex + 1}: ${progress.percentage}% (chunk ${progress.chunkIndex}/${progress.totalChunks})`)
+      const response = await fetch('/api/documents/upload', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: formData
+      })
+
+      if (response.ok) {
+        const result = await response.json()
+        if (result.success) {
+          alert(`✅ ${result.data.length} document(s) uploadé(s) avec succès`)
+          loadDocuments() // Recharger la liste
+        } else {
+          alert(`❌ Erreur d'upload: ${result.error}`)
         }
-      )
-
-      const successfulUploads = results.filter(r => r.success)
-      const failedUploads = results.filter(r => !r.success)
-
-      if (successfulUploads.length > 0) {
-        alert(`✅ ${successfulUploads.length} document(s) uploadé(s) avec succès!`)
-        loadDocuments() // Recharger la liste
+      } else {
+        const errorData = await response.json()
+        alert(`❌ Erreur d'upload: ${errorData.error}`)
       }
-
-      if (failedUploads.length > 0) {
-        const errorMessages = failedUploads.map(f => f.error).join('\n')
-        alert(`❌ ${failedUploads.length} document(s) ont échoué:\n${errorMessages}`)
-      }
-
     } catch (error) {
       console.error('Erreur lors de l\'upload:', error)
-      alert(`❌ Erreur lors de l'upload des documents: ${error instanceof Error ? error.message : 'Erreur inconnue'}`)
+      alert('❌ Erreur de connexion lors de l\'upload')
     } finally {
       setUploading(false)
-      setUploadProgress(null)
     }
   }
 
@@ -204,6 +203,20 @@ export default function AdminDocuments() {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
   }
 
+  const getCategoryLabel = (category: string) => {
+    const categoryLabels: { [key: string]: string } = {
+      'VISA_FORMS': 'Formulaires de visa',
+      'LEGAL_DOCUMENTS': 'Documents légaux',
+      'NOTE_DE_SERVICE': 'Notes de service',
+      'NEWS': 'Actualités',
+      'ANNOUNCEMENTS': 'Annonces',
+      'CULTURAL': 'Culturel',
+      'ECONOMIC': 'Économique',
+      'POLITICAL': 'Politique'
+    }
+    return categoryLabels[category] || category
+  }
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('fr-FR', {
       year: 'numeric',
@@ -253,31 +266,19 @@ export default function AdminDocuments() {
               onChange={handleFileUpload}
               className="hidden"
               accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
-              title="Taille maximale: 50MB"
+              title="Taille maximale: 10MB"
             />
           </label>
         </div>
 
-        {/* Barre de progrès d'upload */}
-        {uploading && uploadProgress && (
+        {/* Indicateur d'upload */}
+        {uploading && (
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow mb-6 p-6">
-            <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center space-x-3">
+              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-mali-green-600"></div>
               <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                 Upload en cours...
               </span>
-              <span className="text-sm text-gray-500 dark:text-gray-400">
-                {uploadProgress.percentage}%
-              </span>
-            </div>
-            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-              <div 
-                className="bg-mali-green-600 h-2 rounded-full transition-all duration-300"
-                style={{ width: `${uploadProgress.percentage}%` }}
-              ></div>
-            </div>
-            <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">
-              Chunk {uploadProgress.chunkIndex}/{uploadProgress.totalChunks} • 
-              {(uploadProgress.loaded / 1024 / 1024).toFixed(1)}MB / {(uploadProgress.total / 1024 / 1024).toFixed(1)}MB
             </div>
           </div>
         )}
@@ -304,10 +305,14 @@ export default function AdminDocuments() {
                   className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                 >
                   <option value="">Toutes les catégories</option>
-                  <option value="official">Documents officiels</option>
-                  <option value="forms">Formulaires</option>
-                  <option value="announcements">Annonces</option>
-                  <option value="other">Autres</option>
+                  <option value="VISA_FORMS">Formulaires de visa</option>
+                  <option value="LEGAL_DOCUMENTS">Documents légaux</option>
+                  <option value="NOTE_DE_SERVICE">Notes de service</option>
+                  <option value="NEWS">Actualités</option>
+                  <option value="ANNOUNCEMENTS">Annonces</option>
+                  <option value="CULTURAL">Culturel</option>
+                  <option value="ECONOMIC">Économique</option>
+                  <option value="POLITICAL">Politique</option>
                 </select>
                 <select
                   value={filterVisibility}
@@ -362,7 +367,7 @@ export default function AdminDocuments() {
                             )}
                           </span>
                           <span className="bg-gray-100 px-2 py-1 rounded text-xs">
-                            {document.category}
+                            {getCategoryLabel(document.category)}
                           </span>
                         </div>
                         {document.titleAr && (

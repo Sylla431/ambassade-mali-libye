@@ -91,11 +91,7 @@ export default function AdminSidebar({ user, onLogout }: AdminSidebarProps) {
       title: 'Galeries',
       href: '/admin/galleries',
       icon: Image,
-      active: pathname.startsWith('/admin/galleries'),
-      children: [
-        { title: 'Gestion des galeries', href: '/admin/galleries' },
-        { title: 'Migration Blob Storage', href: '/admin/gallery/migrate' }
-      ]
+      active: pathname.startsWith('/admin/galleries')
     },
     {
       title: 'Catégories',
