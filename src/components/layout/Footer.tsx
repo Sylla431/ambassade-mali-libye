@@ -36,10 +36,40 @@ export default function Footer() {
   return (
     <footer className="bg-gradient-to-br from-mali-green-900 via-mali-gold-900 to-mali-red-900 text-white">
       <div className="container-custom py-16">
+        {/* Sceaux côte à côte en haut sur mobile uniquement */}
+        <div className="flex justify-center items-center space-x-8 mb-8 lg:hidden">
+          <div className="flex flex-col items-center space-y-2">
+            <div className="relative w-20 h-20">
+              <Image
+                src="/images/seals/Armoiries_Mali-3-01-150x150-1.png"
+                alt="Sceau de la République du Mali"
+                fill
+                className="object-contain"
+              />
+            </div>
+            <p className="text-gray-300 text-xs text-center max-w-20">
+              République du Mali
+            </p>
+          </div>
+          <div className="flex flex-col items-center space-y-2">
+            <div className="relative w-20 h-20">
+              <Image
+                src="/images/seals/Logo_of_the_Alliance_of_Sahel_States-removebg-preview (1).png"
+                alt="Sceau de l'Alliance des États du Sahel"
+                fill
+                className="object-contain"
+              />
+            </div>
+            <p className="text-gray-300 text-xs text-center max-w-20">
+              Confédération des États du Sahel
+            </p>
+          </div>
+        </div>
+
         <div className="flex flex-col lg:flex-row items-center lg:items-start justify-between gap-8 lg:gap-12">
-          {/* Sceau du Mali à l'extrême gauche */}
-          <div className="flex flex-col items-center space-y-2 flex-shrink-0">
-            <div className="relative w-24 h-24 sm:w-32 sm:h-32 lg:w-36 lg:h-36">
+          {/* Sceau du Mali à l'extrême gauche - Desktop uniquement */}
+          <div className="hidden lg:flex flex-col items-center space-y-2 flex-shrink-0">
+            <div className="relative w-36 h-36">
               <Image
                 src="/images/seals/Armoiries_Mali-3-01-150x150-1.png"
                 alt="Sceau de la République du Mali"
@@ -153,9 +183,9 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Sceau de l'AES à l'extrême droite */}
-          <div className="flex flex-col items-center space-y-2 flex-shrink-0">
-            <div className="relative w-24 h-24 sm:w-32 sm:h-32 lg:w-36 lg:h-36">
+          {/* Sceau de l'AES à l'extrême droite - Desktop uniquement */}
+          <div className="hidden lg:flex flex-col items-center space-y-2 flex-shrink-0">
+            <div className="relative w-36 h-36">
               <Image
                 src="/images/seals/Logo_of_the_Alliance_of_Sahel_States-removebg-preview (1).png"
                 alt="Sceau de l'Alliance des États du Sahel"
