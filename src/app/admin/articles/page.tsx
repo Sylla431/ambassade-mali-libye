@@ -75,7 +75,7 @@ export default function AdminArticles() {
 
       if (response.ok) {
         const data = await response.json()
-        setArticles(data.data.data)
+        setArticles(data.data.articles)
         setTotalPages(data.data.pagination.totalPages)
       }
     } catch (error) {
