@@ -7,14 +7,21 @@ export const runtime = 'nodejs'
 // GET /api/articles/[id]/gallery - Récupérer la galerie d'un article
 export async function GET(
   request: NextRequest,
-  context: { params: { id: string } }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const { params } = context
     const articleId = params.id
 
     const gallery = await prisma.articleGallery.findMany({
       where: { articleId },
+      select: {
+        id: true,
+        imageUrl: true,
+        altText: true,
+        caption: true,
+        captionAr: true,
+        order: true
+      },
       orderBy: { order: 'asc' }
     })
 

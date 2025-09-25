@@ -64,8 +64,8 @@ export async function GET(request: NextRequest) {
     })
     console.log('✅ Articles simples récupérés:', simpleArticles.length)
 
-    // Test avec includes
-    console.log('Test avec includes...')
+    // Requête optimisée pour éviter de dépasser la limite de 5MB
+    console.log('Requête optimisée...')
     const articles = await prisma.article.findMany({
       where,
       select: {
@@ -74,36 +74,24 @@ export async function GET(request: NextRequest) {
         excerpt: true,
         slug: true,
         published: true,
+        featured: true,
         createdAt: true,
         updatedAt: true,
         imageUrl: true,
         author: {
           select: {
             id: true,
-            name: true,
-            email: true
+            name: true
           }
         },
         category: {
           select: {
             id: true,
             name: true,
-            nameAr: true,
             color: true
           }
-        },
-        gallery: {
-          select: {
-            id: true,
-            imageUrl: true,
-            altText: true,
-            caption: true,
-            captionAr: true,
-            order: true
-          },
-          orderBy: { order: 'asc' },
-          take: 3 // Limiter à 3 images max pour éviter les réponses trop volumineuses
         }
+        // Suppression de la galerie pour réduire la taille de la réponse
       },
       orderBy: [
         { createdAt: 'desc' },
