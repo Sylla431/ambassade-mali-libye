@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { put } from '@vercel/blob'
 import { prisma } from '@/lib/prisma'
+import { verifyToken } from '@/lib/auth'
 
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
@@ -8,6 +9,23 @@ export const runtime = 'nodejs'
 // POST /api/documents/upload - Upload de documents vers Vercel Blob Storage
 export async function POST(request: NextRequest) {
   try {
+    // Vérifier l'authentification
+    const authHeader = request.headers.get('authorization')
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return NextResponse.json(
+        { success: false, error: 'Token d\'authentification requis' },
+        { status: 401 }
+      )
+    }
+
+    const token = authHeader.substring(7)
+    const decoded = verifyToken(token)
+    if (!decoded) {
+      return NextResponse.json(
+        { success: false, error: 'Token d\'authentification invalide' },
+        { status: 401 }
+      )
+    }
     const formData = await request.formData()
     const files = formData.getAll('files') as File[]
     const title = formData.get('title') as string
@@ -70,18 +88,8 @@ export async function POST(request: NextRequest) {
           contentType: file.type
         })
 
-        // Trouver un admin existant pour l'auteur
-        let authorId = "cmfs521ju0000nrbswqlx0lwq" // ID par défaut
-        try {
-          const firstAdmin = await prisma.admin.findFirst({
-            select: { id: true }
-          })
-          if (firstAdmin) {
-            authorId = firstAdmin.id
-          }
-        } catch (adminError) {
-          console.log('Utilisation de l\'ID par défaut pour l\'auteur')
-        }
+        // Utiliser l'ID de l'utilisateur authentifié
+        const authorId = decoded.id
 
         // Créer l'entrée dans la base de données
         const document = await prisma.document.create({
