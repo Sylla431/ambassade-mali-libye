@@ -66,9 +66,9 @@ export function useEvents(params: UseEventsParams = {}) {
         published: params.published || newParams?.published
       })
 
-      if (response.success && response.data && response.data.data && response.data.pagination) {
-        setEvents(response.data.data)
-        setPagination(response.data.pagination)
+      if (response.success && response.data && (response.data as any).data && (response.data as any).pagination) {
+        setEvents((response.data as any).data)
+        setPagination((response.data as any).pagination)
       } else {
         setError(response.error || 'Erreur lors du chargement des événements')
       }
