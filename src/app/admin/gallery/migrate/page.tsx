@@ -333,7 +333,7 @@ export default function GalleryMigratePage() {
           </div>
         </div>
 
-        <ToastContainer toasts={toasts} onRemove={removeToast} />
+        <ToastContainer toasts={toasts} onClose={removeToast} />
       </AdminLayout>
     </AuthGuard>
   )
