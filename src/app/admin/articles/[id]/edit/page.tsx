@@ -5,6 +5,7 @@ import { useRouter, useParams } from 'next/navigation'
 import AuthGuard from '@/components/admin/AuthGuard'
 import AdminLayout from '@/components/admin/AdminLayout'
 import { ArrowLeft, Save, Eye } from 'lucide-react'
+import { verifyToken } from '@/lib/auth'
 
 export default function EditArticlePage() {
   const [formData, setFormData] = useState({
@@ -96,6 +97,13 @@ export default function EditArticlePage() {
     try {
       const token = localStorage.getItem('admin_token')
       
+      // Récupérer l'ID de l'utilisateur connecté
+      const user = verifyToken(token || '')
+      if (!user) {
+        setError('Session expirée. Veuillez vous reconnecter.')
+        return
+      }
+      
       // Upload image if provided
       let imageUrl = formData.imageUrl
       if (imageFile) {
@@ -115,7 +123,8 @@ export default function EditArticlePage() {
       const articleData = {
         ...formData,
         slug,
-        imageUrl
+        imageUrl,
+        authorId: user.id
       }
       
       const response = await fetch(`/api/articles/${articleId}`, {
