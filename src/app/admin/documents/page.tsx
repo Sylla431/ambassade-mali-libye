@@ -107,25 +107,35 @@ export default function AdminDocuments() {
       
       Array.from(files).forEach(file => {
         formData.append('files', file)
+        console.log('Ajout du fichier:', file.name, 'Taille:', file.size, 'Type:', file.type)
       })
 
+      console.log('Envoi de la requête d\'upload...')
       const response = await fetch('/api/upload/documents-db', {
         method: 'POST',
         body: formData
       })
 
+      console.log('Réponse reçue:', response.status, response.statusText)
+
       if (response.ok) {
         const result = await response.json()
-        console.log('Fichiers uploadés:', result)
+        console.log('Fichiers uploadés avec succès:', result)
+        alert(`✅ ${result.message || 'Documents uploadés avec succès!'}`)
         loadDocuments() // Recharger la liste
       } else {
-        const errorData = await response.json()
-        console.error('Erreur lors de l\'upload:', errorData.error)
-        alert(`Erreur lors de l'upload: ${errorData.error}`)
+        const errorText = await response.text()
+        console.error('Erreur lors de l\'upload:', errorText)
+        try {
+          const errorData = JSON.parse(errorText)
+          alert(`❌ Erreur lors de l'upload: ${errorData.error || 'Erreur inconnue'}`)
+        } catch (parseError) {
+          alert(`❌ Erreur lors de l'upload: ${errorText}`)
+        }
       }
     } catch (error) {
       console.error('Erreur lors de l\'upload:', error)
-      alert('Erreur lors de l\'upload des documents')
+      alert(`❌ Erreur lors de l'upload des documents: ${error instanceof Error ? error.message : 'Erreur inconnue'}`)
     } finally {
       setUploading(false)
     }

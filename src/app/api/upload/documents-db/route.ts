@@ -121,8 +121,13 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('Erreur lors de l\'upload de documents:', error)
+    const errorMessage = error instanceof Error ? error.message : 'Erreur inconnue'
     return NextResponse.json(
-      { success: false, error: 'Erreur interne du serveur' },
+      { 
+        success: false, 
+        error: `Erreur interne du serveur: ${errorMessage}`,
+        details: error instanceof Error ? error.stack : undefined
+      },
       { status: 500 }
     )
   }

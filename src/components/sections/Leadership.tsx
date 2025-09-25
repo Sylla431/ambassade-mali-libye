@@ -88,7 +88,7 @@ export default function Leadership() {
           </h2>
           <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
             Découvrez les dirigeants et l'équipe qui représentent la République du Mali 
-            en Libye et œuvrent pour le service de nos ressortissants.
+            en Libye et en Malte et œuvrent pour le service de nos ressortissants.
           </p>
         </motion.div>
 
