@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import AuthGuard from '@/components/admin/AuthGuard'
 import AdminLayout from '@/components/admin/AdminLayout'
+import { createFileUploader, UploadProgress } from '@/utils/fileUpload'
 import { 
   Plus, 
   Edit, 
@@ -48,6 +49,7 @@ export default function AdminDocuments() {
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const [uploading, setUploading] = useState(false)
+  const [uploadProgress, setUploadProgress] = useState<UploadProgress | null>(null)
   const router = useRouter()
 
   useEffect(() => {
@@ -112,42 +114,41 @@ export default function AdminDocuments() {
     }
 
     setUploading(true)
+    setUploadProgress(null)
+
     try {
-      const formData = new FormData()
+      const uploader = createFileUploader()
+      const fileArray = Array.from(files)
       
-      Array.from(files).forEach(file => {
-        formData.append('files', file)
-        console.log('Ajout du fichier:', file.name, 'Taille:', file.size, 'Type:', file.type)
-      })
+      console.log(`Début de l'upload de ${fileArray.length} fichier(s) par chunks...`)
 
-      console.log('Envoi de la requête d\'upload...')
-      const response = await fetch('/api/upload/documents-large', {
-        method: 'POST',
-        body: formData
-      })
-
-      console.log('Réponse reçue:', response.status, response.statusText)
-
-      if (response.ok) {
-        const result = await response.json()
-        console.log('Fichiers uploadés avec succès:', result)
-        alert(`✅ ${result.message || 'Documents uploadés avec succès!'}`)
-        loadDocuments() // Recharger la liste
-      } else {
-        const errorText = await response.text()
-        console.error('Erreur lors de l\'upload:', errorText)
-        try {
-          const errorData = JSON.parse(errorText)
-          alert(`❌ Erreur lors de l'upload: ${errorData.error || 'Erreur inconnue'}`)
-        } catch (parseError) {
-          alert(`❌ Erreur lors de l'upload: ${errorText}`)
+      const results = await uploader.uploadMultipleFiles(
+        fileArray,
+        (fileIndex, progress) => {
+          setUploadProgress(progress)
+          console.log(`Fichier ${fileIndex + 1}: ${progress.percentage}% (chunk ${progress.chunkIndex}/${progress.totalChunks})`)
         }
+      )
+
+      const successfulUploads = results.filter(r => r.success)
+      const failedUploads = results.filter(r => !r.success)
+
+      if (successfulUploads.length > 0) {
+        alert(`✅ ${successfulUploads.length} document(s) uploadé(s) avec succès!`)
+        loadDocuments() // Recharger la liste
       }
+
+      if (failedUploads.length > 0) {
+        const errorMessages = failedUploads.map(f => f.error).join('\n')
+        alert(`❌ ${failedUploads.length} document(s) ont échoué:\n${errorMessages}`)
+      }
+
     } catch (error) {
       console.error('Erreur lors de l\'upload:', error)
       alert(`❌ Erreur lors de l'upload des documents: ${error instanceof Error ? error.message : 'Erreur inconnue'}`)
     } finally {
       setUploading(false)
+      setUploadProgress(null)
     }
   }
 
@@ -256,6 +257,30 @@ export default function AdminDocuments() {
             />
           </label>
         </div>
+
+        {/* Barre de progrès d'upload */}
+        {uploading && uploadProgress && (
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow mb-6 p-6">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                Upload en cours...
+              </span>
+              <span className="text-sm text-gray-500 dark:text-gray-400">
+                {uploadProgress.percentage}%
+              </span>
+            </div>
+            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+              <div 
+                className="bg-mali-green-600 h-2 rounded-full transition-all duration-300"
+                style={{ width: `${uploadProgress.percentage}%` }}
+              ></div>
+            </div>
+            <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+              Chunk {uploadProgress.chunkIndex}/{uploadProgress.totalChunks} • 
+              {(uploadProgress.loaded / 1024 / 1024).toFixed(1)}MB / {(uploadProgress.total / 1024 / 1024).toFixed(1)}MB
+            </div>
+          </div>
+        )}
         {/* Filtres et recherche */}
         <div className="bg-white rounded-lg shadow mb-6">
           <div className="p-6">
