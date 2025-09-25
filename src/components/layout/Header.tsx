@@ -167,13 +167,13 @@ export default function Header() {
               className="lg:hidden border-t border-gray-200 dark:border-gray-700"
             >
               <div className="py-4 space-y-2">
-                {/* Top bar mobile - Bouton Visa et Language Switcher */}
+                {/* Top bar mobile - Bouton Visa et Language Switcher seulement */}
                 <div className="px-4 py-2 flex items-center justify-between space-x-4 border-b border-gray-200 dark:border-gray-700 pb-3">
                   <a
                     href="https://www.diplomatiemdc.gouv.ml/vitrine"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 bg-mali-green-600 hover:bg-mali-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center justify-center space-x-2"
+                    className="bg-mali-green-600 hover:bg-mali-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center space-x-2"
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     <span>Demande de Visa</span>
