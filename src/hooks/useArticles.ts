@@ -75,7 +75,7 @@ export function useArticles(params: UseArticlesParams = {}) {
       })
 
       if (response.success && response.data) {
-        setArticles(response.data!.data)
+        setArticles(response.data!.articles)
         setPagination(response.data!.pagination)
       } else {
         setError(response.error || 'Erreur lors du chargement des articles')
@@ -104,7 +104,7 @@ export function useArticles(params: UseArticlesParams = {}) {
         })
 
         if (response.success && response.data) {
-          setArticles(prev => [...prev, ...response.data!.data])
+          setArticles(prev => [...prev, ...response.data!.articles])
           setPagination(prev => ({
             ...prev,
             page: response.data!.pagination.page,

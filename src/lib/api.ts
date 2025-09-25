@@ -10,7 +10,7 @@ interface ApiResponse<T = any> {
 }
 
 interface PaginatedResponse<T> {
-  data: T[]
+  articles: T[]
   pagination: {
     page: number
     limit: number
