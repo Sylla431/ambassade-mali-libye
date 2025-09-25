@@ -5,7 +5,7 @@ import { useRouter, useParams } from 'next/navigation'
 import AuthGuard from '@/components/admin/AuthGuard'
 import AdminLayout from '@/components/admin/AdminLayout'
 import { ArrowLeft, Save, Eye } from 'lucide-react'
-import { verifyToken } from '@/lib/auth'
+import { getCurrentUser } from '@/utils/token'
 
 export default function EditArticlePage() {
   const [formData, setFormData] = useState({
@@ -95,11 +95,9 @@ export default function EditArticlePage() {
     setError('')
 
     try {
-      const token = localStorage.getItem('admin_token')
-      
       // Récupérer l'ID de l'utilisateur connecté
-      const user = verifyToken(token || '')
-      if (!user) {
+      const user = getCurrentUser()
+      if (!user || !user.id) {
         setError('Session expirée. Veuillez vous reconnecter.')
         return
       }
@@ -127,6 +125,7 @@ export default function EditArticlePage() {
         authorId: user.id
       }
       
+      const token = localStorage.getItem('admin_token')
       const response = await fetch(`/api/articles/${articleId}`, {
         method: 'PUT',
         headers: {
