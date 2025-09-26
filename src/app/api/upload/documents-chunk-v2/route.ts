@@ -157,7 +157,7 @@ export async function POST(request: NextRequest) {
             fileName: fileName,
             fileSize: fileSize,
             mimeType: fileType,
-            category: (category as any) || 'NOTE_DE_SERVICE',
+            category: (category as any) || 'LEGAL_DOCUMENTS',
             isPublic: true,
             authorId: decoded.id
           },
