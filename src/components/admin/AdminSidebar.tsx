@@ -59,12 +59,12 @@ export default function AdminSidebar({ user, onLogout }: AdminSidebarProps) {
         { title: 'Nouvel événement', href: '/admin/events/new' }
       ]
     },
-    {
-      title: 'Demandes de visa',
-      href: '/admin/visa',
-      icon: Users,
-      active: pathname.startsWith('/admin/visa')
-    },
+    // {
+    //   title: 'Demandes de visa',
+    //   href: '/admin/visa',
+    //   icon: Users,
+    //   active: pathname.startsWith('/admin/visa')
+    // },
     {
       title: 'Messages',
       href: '/admin/contact',
