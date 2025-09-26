@@ -225,9 +225,26 @@ Le tableau de bord affiche :
 - **URL** : `/admin/settings`
 
 ### **Fonctionnalités**
-- **Profil utilisateur** : Modifier vos informations
-- **Préférences** : Paramètres d'affichage
-- **Sécurité** : Changer le mot de passe
+
+#### **Profil Utilisateur**
+1. **Modifier vos informations** :
+   - Nom complet
+   - Adresse email
+   - Cliquez sur "Mettre à jour le profil"
+
+#### **Changer le Mot de Passe**
+1. **Onglet "Mot de passe"** :
+   - Mot de passe actuel (obligatoire)
+   - Nouveau mot de passe (minimum 6 caractères)
+   - Confirmer le nouveau mot de passe
+   - Boutons pour afficher/masquer les mots de passe
+2. **Cliquez sur "Modifier le mot de passe"**
+
+### **Sécurité**
+- **Validation** : Vérification du mot de passe actuel
+- **Confirmation** : Les nouveaux mots de passe doivent correspondre
+- **Longueur minimale** : 6 caractères
+- **Messages d'erreur** : Indications claires en cas de problème
 
 ---
 

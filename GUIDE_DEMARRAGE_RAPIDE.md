@@ -59,6 +59,20 @@
 
 ---
 
+## 🔒 **Changer Votre Mot de Passe**
+
+### **Étapes rapides :**
+1. **Cliquez** sur "Paramètres" dans le menu latéral
+2. **Onglet "Mot de passe"** :
+   - Entrez votre mot de passe actuel
+   - Tapez votre nouveau mot de passe (min 6 caractères)
+   - Confirmez le nouveau mot de passe
+3. **Cliquez** sur "Modifier le mot de passe"
+
+### **✅ Résultat :** Votre mot de passe sera mis à jour en toute sécurité !
+
+---
+
 ## 🎯 **Actions Essentielles**
 
 ### **Chaque jour :**
@@ -88,6 +102,7 @@
 | **Créer une annonce** | Annonces → Nouvelle annonce | 🔴 Rouge |
 | **Voir les messages** | Messages | 💬 |
 | **Gérer les visas** | Demandes de visa | 👥 |
+| **Changer mot de passe** | Paramètres → Mot de passe | 🔒 |
 
 ---
 
