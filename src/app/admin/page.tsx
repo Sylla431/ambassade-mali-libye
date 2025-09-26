@@ -140,7 +140,7 @@ export default function AdminDashboard() {
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow p-6">
+          {/* <div className="bg-white rounded-lg shadow p-6">
             <div className="flex items-center">
               <div className="p-2 bg-yellow-100 rounded-lg">
                 <Users className="w-6 h-6 text-yellow-600" />
@@ -150,7 +150,7 @@ export default function AdminDashboard() {
                 <p className="text-2xl font-bold text-gray-900">{stats?.visaApplications || 0}</p>
               </div>
             </div>
-          </div>
+          </div> */}
 
           <div className="bg-white rounded-lg shadow p-6">
             <div className="flex items-center">
