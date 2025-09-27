@@ -66,7 +66,7 @@ export default function Culture() {
               transition={{ duration: 0.5, delay: index * 0.1 }}
               viewport={{ once: true }}
             >
-              <Link href={site.href}>
+              {/* <Link href={site.href}> */}
                 <div className="card overflow-hidden hover:shadow-lg transition-shadow duration-300 group">
                   <div className="h-48 relative overflow-hidden">
                     <Image
@@ -108,7 +108,7 @@ export default function Culture() {
                     </div>
                   </div>
                 </div>
-              </Link>
+              {/* </Link> */}
             </motion.div>
           ))}
         </div>
