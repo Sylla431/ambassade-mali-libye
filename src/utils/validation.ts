@@ -100,7 +100,7 @@ export const loginSchema = z.object({
 
 // Schémas de validation pour les galeries d'images
 export const createGalleryImageSchema = z.object({
-  imageUrl: z.string().url('URL d\'image invalide'),
+  mediaUrl: z.string().url('URL d\'image invalide'),
   altText: z.string().optional(),
   caption: z.string().optional(),
   captionAr: z.string().optional(),

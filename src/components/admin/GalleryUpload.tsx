@@ -48,11 +48,14 @@ export default function GalleryUpload({
     }
 
     // Validation des types de fichiers
-    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp']
+    const allowedTypes = [
+      'image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp',
+      'video/mp4', 'video/webm', 'video/ogg', 'video/quicktime'
+    ]
     const invalidFiles = fileArray.filter(file => !allowedTypes.includes(file.type))
     if (invalidFiles.length > 0) {
       const fileNames = invalidFiles.map(f => f.name).join(', ')
-      onUploadError?.(`Types de fichiers non autorisés: ${fileNames}\n\nTypes autorisés: JPG, PNG, GIF, WebP`)
+      onUploadError?.(`Types de fichiers non autorisés: ${fileNames}\n\nTypes autorisés: JPG, PNG, GIF, WebP, MP4, WebM, OGG, MOV`)
       return
     }
 
@@ -161,7 +164,7 @@ export default function GalleryUpload({
           ref={fileInputRef}
           type="file"
           multiple
-          accept="image/*"
+            accept="image/*,video/*"
           onChange={handleFileInput}
           className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
           disabled={uploading}

@@ -33,7 +33,7 @@ export async function GET(
         gallery: {
           select: {
             id: true,
-            imageUrl: true,
+            mediaUrl: true,
             altText: true,
             caption: true,
             captionAr: true,

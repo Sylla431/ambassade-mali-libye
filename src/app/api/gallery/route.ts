@@ -30,13 +30,14 @@ export async function GET(request: NextRequest) {
       where.articleId = null
     }
 
-    // Récupérer les images avec pagination
-    const [images, total] = await Promise.all([
+    // Récupérer les médias avec pagination
+    const [media, total] = await Promise.all([
       prisma.articleGallery.findMany({
         where,
         select: {
           id: true,
-          imageUrl: true,
+          mediaUrl: true,
+          mediaType: true,
           altText: true,
           caption: true,
           captionAr: true,
@@ -58,24 +59,25 @@ export async function GET(request: NextRequest) {
     ])
 
     // Formater les données
-    const formattedImages = images.map(image => ({
-      id: image.id,
-      imageUrl: image.imageUrl,
-      altText: image.altText,
-      caption: image.caption,
-      captionAr: image.captionAr,
-      order: image.order,
-      createdAt: image.createdAt,
-      article: image.article ? {
-        id: image.article.id,
-        title: image.article.title,
-        slug: image.article.slug
+    const formattedMedia = media.map(mediaItem => ({
+      id: mediaItem.id,
+      mediaUrl: mediaItem.mediaUrl,
+      mediaType: mediaItem.mediaType,
+      altText: mediaItem.altText,
+      caption: mediaItem.caption,
+      captionAr: mediaItem.captionAr,
+      order: mediaItem.order,
+      createdAt: mediaItem.createdAt,
+      article: mediaItem.article ? {
+        id: mediaItem.article.id,
+        title: mediaItem.article.title,
+        slug: mediaItem.article.slug
       } : null
     }))
 
     return NextResponse.json({
       success: true,
-      data: formattedImages,
+      data: formattedMedia,
       pagination: {
         page,
         limit,
@@ -85,9 +87,9 @@ export async function GET(request: NextRequest) {
     })
 
   } catch (error) {
-    console.error('Erreur lors de la récupération des images:', error)
+    console.error('Erreur lors de la récupération des médias:', error)
     return NextResponse.json(
-      { success: false, error: 'Erreur lors de la récupération des images' },
+      { success: false, error: 'Erreur lors de la récupération des médias' },
       { status: 500 }
     )
   }

@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
         gallery: {
           select: {
             id: true,
-            imageUrl: true,
+            mediaUrl: true,
             caption: true,
             order: true
           },
@@ -61,7 +61,7 @@ export async function GET(request: NextRequest) {
       id: article.id,
       title: article.title,
       excerpt: article.excerpt || article.content?.substring(0, 150) + '...',
-      imageUrl: article.imageUrl || article.gallery?.[0]?.imageUrl || null,
+      imageUrl: article.imageUrl || article.gallery?.[0]?.mediaUrl || null,
       author: article.author?.name || 'Service de Communication',
       date: article.createdAt,
       category: article.category?.name || 'Non classé',

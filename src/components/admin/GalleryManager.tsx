@@ -4,9 +4,10 @@ import { useState, useEffect } from 'react'
 import { Trash2, Edit, Eye, Plus, Search, Filter } from 'lucide-react'
 import Image from 'next/image'
 
-interface GalleryImage {
+interface GalleryMedia {
   id: string
-  imageUrl: string
+  mediaUrl: string
+  mediaType: 'IMAGE' | 'VIDEO'
   altText: string
   caption: string
   captionAr: string
@@ -21,9 +22,9 @@ interface GalleryImage {
 
 interface GalleryManagerProps {
   articleId?: string
-  onImageSelect?: (image: GalleryImage) => void
+  onImageSelect?: (media: GalleryMedia) => void
   onImageDelete?: (imageId: string) => void
-  onImageEdit?: (image: GalleryImage) => void
+  onImageEdit?: (media: GalleryMedia) => void
 }
 
 export default function GalleryManager({
@@ -32,14 +33,14 @@ export default function GalleryManager({
   onImageDelete,
   onImageEdit
 }: GalleryManagerProps) {
-  const [images, setImages] = useState<GalleryImage[]>([])
+  const [media, setMedia] = useState<GalleryMedia[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [filterType, setFilterType] = useState<'all' | 'articles' | 'general'>('all')
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
-  const [selectedImages, setSelectedImages] = useState<string[]>([])
+  const [selectedMedia, setSelectedMedia] = useState<string[]>([])
 
   const loadImages = async (page = 1, search = '', type = 'all') => {
     setLoading(true)
@@ -58,11 +59,11 @@ export default function GalleryManager({
       const data = await response.json()
 
       if (data.success) {
-        setImages(data.data)
+        setMedia(data.data)
         setTotalPages(data.pagination.totalPages)
         setCurrentPage(page)
       } else {
-        setError(data.error || 'Erreur lors du chargement des images')
+        setError(data.error || 'Erreur lors du chargement des médias')
       }
     } catch (err) {
       setError('Erreur de connexion')
@@ -84,7 +85,7 @@ export default function GalleryManager({
       const data = await response.json()
 
       if (data.success) {
-        setImages(prev => prev.filter(img => img.id !== imageId))
+        setMedia(prev => prev.filter(media => media.id !== imageId))
         onImageDelete?.(imageId)
       } else {
         setError(data.error || 'Erreur lors de la suppression')
@@ -118,7 +119,7 @@ export default function GalleryManager({
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
               <input
                 type="text"
-                placeholder="Rechercher des images..."
+                placeholder="Rechercher des médias..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-mali-green-500 focus:border-transparent dark:bg-gray-800 dark:text-white"
@@ -141,9 +142,9 @@ export default function GalleryManager({
               onChange={(e) => handleFilterChange(e.target.value as any)}
               className="pl-10 pr-8 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-mali-green-500 focus:border-transparent dark:bg-gray-800 dark:text-white"
             >
-              <option value="all">Toutes les images</option>
-              <option value="articles">Images d'articles</option>
-              <option value="general">Images générales</option>
+              <option value="all">Tous les médias</option>
+              <option value="articles">Médias d'articles</option>
+              <option value="general">Médias généraux</option>
             </select>
           </div>
         </div>
@@ -163,35 +164,46 @@ export default function GalleryManager({
             <div key={i} className="aspect-square bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse"></div>
           ))}
         </div>
-      ) : images.length === 0 ? (
+      ) : media.length === 0 ? (
         <div className="text-center py-12">
           <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
             <Plus className="w-8 h-8 text-gray-400" />
           </div>
-          <p className="text-gray-500 dark:text-gray-400">Aucune image trouvée</p>
+          <p className="text-gray-500 dark:text-gray-400">Aucun média trouvé</p>
         </div>
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {images.map((image) => (
+          {media.map((mediaItem) => (
             <div
-              key={image.id}
+              key={mediaItem.id}
               className="group relative bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow"
             >
-              {/* Image */}
+              {/* Média */}
               <div className="aspect-square relative">
-                <Image
-                  src={image.imageUrl}
-                  alt={image.altText}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                />
+                {mediaItem.mediaType === 'IMAGE' ? (
+                  <Image
+                    src={mediaItem.mediaUrl}
+                    alt={mediaItem.altText}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                  />
+                ) : (
+                  <video
+                    src={mediaItem.mediaUrl}
+                    className="w-full h-full object-cover"
+                    controls={false}
+                    muted
+                    loop
+                    playsInline
+                  />
+                )}
                 
                 {/* Overlay avec actions */}
                 <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-200 flex items-center justify-center opacity-0 group-hover:opacity-100">
                   <div className="flex gap-2">
                     <button
-                      onClick={() => onImageSelect?.(image)}
+                      onClick={() => onImageSelect?.(mediaItem)}
                       className="p-2 bg-white bg-opacity-90 rounded-full hover:bg-opacity-100 transition-all"
                       title="Sélectionner"
                     >
@@ -199,7 +211,7 @@ export default function GalleryManager({
                     </button>
                     
                     <button
-                      onClick={() => onImageEdit?.(image)}
+                      onClick={() => onImageEdit?.(mediaItem)}
                       className="p-2 bg-white bg-opacity-90 rounded-full hover:bg-opacity-100 transition-all"
                       title="Modifier"
                     >
@@ -207,7 +219,7 @@ export default function GalleryManager({
                     </button>
                     
                     <button
-                      onClick={() => deleteImage(image.id)}
+                      onClick={() => deleteImage(mediaItem.id)}
                       className="p-2 bg-red-500 bg-opacity-90 rounded-full hover:bg-opacity-100 transition-all"
                       title="Supprimer"
                     >
@@ -217,20 +229,29 @@ export default function GalleryManager({
                 </div>
               </div>
 
-              {/* Informations de l'image */}
+              {/* Informations du média */}
               <div className="p-3">
-                <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
-                  {image.caption || image.altText}
-                </p>
+                <div className="flex items-center justify-between mb-1">
+                  <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                    {mediaItem.caption || mediaItem.altText}
+                  </p>
+                  <span className={`text-xs px-2 py-1 rounded-full ${
+                    mediaItem.mediaType === 'IMAGE' 
+                      ? 'bg-blue-100 text-blue-800' 
+                      : 'bg-purple-100 text-purple-800'
+                  }`}>
+                    {mediaItem.mediaType === 'IMAGE' ? 'Image' : 'Vidéo'}
+                  </span>
+                </div>
                 
-                {image.article && (
+                {mediaItem.article && (
                   <p className="text-xs text-mali-green-600 dark:text-mali-green-400 truncate">
-                    {image.article.title}
+                    {mediaItem.article.title}
                   </p>
                 )}
                 
                 <p className="text-xs text-gray-500 dark:text-gray-400">
-                  {new Date(image.createdAt).toLocaleDateString('fr-FR')}
+                  {new Date(mediaItem.createdAt).toLocaleDateString('fr-FR')}
                 </p>
               </div>
             </div>

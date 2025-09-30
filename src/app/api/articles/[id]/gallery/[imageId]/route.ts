@@ -64,24 +64,29 @@ export async function DELETE(
   try {
     const { id: articleId, imageId } = params
 
-    // Vérifier que l'image appartient à l'article
-    const image = await prisma.articleGallery.findFirst({
+    // Vérifier que le média appartient à l'article
+    const media = await prisma.articleGallery.findFirst({
       where: {
         id: imageId,
         articleId: articleId
+      },
+      select: {
+        id: true,
+        mediaUrl: true,
+        mediaType: true
       }
     })
 
-    if (!image) {
+    if (!media) {
       return NextResponse.json(
-        { success: false, error: 'Image non trouvée dans cet article' },
+        { success: false, error: 'Média non trouvé dans cet article' },
         { status: 404 }
       )
     }
 
     try {
       // Supprimer le fichier de Vercel Blob Storage
-      await del(image.imageUrl)
+      await del(media.mediaUrl)
     } catch (blobError) {
       console.warn('Impossible de supprimer le fichier de Blob Storage:', blobError)
       // On continue même si la suppression du blob échoue
@@ -95,13 +100,13 @@ export async function DELETE(
     return NextResponse.json({
       success: true,
       data: { deletedImageId: imageId },
-      message: 'Image supprimée avec succès'
+      message: 'Média supprimé avec succès'
     })
 
   } catch (error) {
-    console.error('Erreur lors de la suppression de l\'image:', error)
+    console.error('Erreur lors de la suppression du média:', error)
     return NextResponse.json(
-      { success: false, error: 'Erreur lors de la suppression de l\'image' },
+      { success: false, error: 'Erreur lors de la suppression du média' },
       { status: 500 }
     )
   }

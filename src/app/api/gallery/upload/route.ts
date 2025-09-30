@@ -42,7 +42,10 @@ export async function POST(request: NextRequest) {
       const file = files[i]
       
       // Validation du type de fichier
-      const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp']
+      const allowedTypes = [
+        'image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp',
+        'video/mp4', 'video/webm', 'video/ogg', 'video/quicktime'
+      ]
       if (!allowedTypes.includes(file.type)) {
         return NextResponse.json(
           { success: false, error: `Type de fichier non autorisé: ${file.type}` },
@@ -50,11 +53,13 @@ export async function POST(request: NextRequest) {
         )
       }
 
-      // Validation de la taille (max 10MB par fichier)
-      const maxSize = 10 * 1024 * 1024 // 10MB
+      // Validation de la taille (max 50MB pour les vidéos, 10MB pour les images)
+      const isVideo = file.type.startsWith('video/')
+      const maxSize = isVideo ? 50 * 1024 * 1024 : 10 * 1024 * 1024 // 50MB pour vidéos, 10MB pour images
       if (file.size > maxSize) {
+        const maxSizeMB = isVideo ? '50MB' : '10MB'
         return NextResponse.json(
-          { success: false, error: `Fichier trop volumineux: ${file.name} (${(file.size / 1024 / 1024).toFixed(1)}MB). Maximum autorisé: 10MB` },
+          { success: false, error: `Fichier trop volumineux: ${file.name} (${(file.size / 1024 / 1024).toFixed(1)}MB). Maximum autorisé: ${maxSizeMB}` },
           { status: 400 }
         )
       }
@@ -72,11 +77,15 @@ export async function POST(request: NextRequest) {
         })
 
         // Si c'est pour un article, créer l'entrée dans la galerie
+        // Déterminer le type de média
+        const mediaType = isVideo ? 'VIDEO' : 'IMAGE'
+
         if (articleId) {
-          const galleryImage = await prisma.articleGallery.create({
+          const galleryMedia = await prisma.articleGallery.create({
             data: {
               articleId,
-              imageUrl: blob.url,
+              mediaUrl: blob.url,
+              mediaType: mediaType,
               altText: altText || file.name.replace(/\.[^/.]+$/, ''),
               caption: caption || file.name.replace(/\.[^/.]+$/, ''),
               captionAr: captionAr || '',
@@ -85,21 +94,23 @@ export async function POST(request: NextRequest) {
           })
 
           uploadedImages.push({
-            id: galleryImage.id,
-            imageUrl: blob.url,
-            altText: galleryImage.altText,
-            caption: galleryImage.caption,
-            captionAr: galleryImage.captionAr,
-            order: galleryImage.order,
+            id: galleryMedia.id,
+            mediaUrl: blob.url,
+            mediaType: mediaType,
+            altText: galleryMedia.altText,
+            caption: galleryMedia.caption,
+            captionAr: galleryMedia.captionAr,
+            order: galleryMedia.order,
             fileName: file.name,
             fileSize: file.size,
             fileType: file.type
           })
         } else {
-          // Image générale de galerie
+          // Média général de galerie
           uploadedImages.push({
             id: timestamp.toString(),
-            imageUrl: blob.url,
+            mediaUrl: blob.url,
+            mediaType: mediaType,
             altText: altText || file.name.replace(/\.[^/.]+$/, ''),
             caption: caption || file.name.replace(/\.[^/.]+$/, ''),
             captionAr: captionAr || '',

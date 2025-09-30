@@ -16,7 +16,8 @@ export async function GET(
       where: { articleId },
       select: {
         id: true,
-        imageUrl: true,
+        mediaUrl: true,
+        mediaType: true,
         altText: true,
         caption: true,
         captionAr: true,
@@ -77,7 +78,10 @@ export async function POST(
       const file = files[i]
       
       // Validation du type de fichier
-      const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp']
+      const allowedTypes = [
+        'image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp',
+        'video/mp4', 'video/webm', 'video/ogg', 'video/quicktime'
+      ]
       if (!allowedTypes.includes(file.type)) {
         return NextResponse.json(
           { success: false, error: `Type de fichier non autorisé: ${file.type}` },
@@ -85,11 +89,13 @@ export async function POST(
         )
       }
 
-      // Validation de la taille (max 10MB par fichier)
-      const maxSize = 10 * 1024 * 1024 // 10MB
+      // Validation de la taille (max 50MB pour les vidéos, 10MB pour les images)
+      const isVideo = file.type.startsWith('video/')
+      const maxSize = isVideo ? 50 * 1024 * 1024 : 10 * 1024 * 1024 // 50MB pour vidéos, 10MB pour images
       if (file.size > maxSize) {
+        const maxSizeMB = isVideo ? '50MB' : '10MB'
         return NextResponse.json(
-          { success: false, error: `Fichier trop volumineux: ${file.name} (${(file.size / 1024 / 1024).toFixed(1)}MB). Maximum autorisé: 10MB` },
+          { success: false, error: `Fichier trop volumineux: ${file.name} (${(file.size / 1024 / 1024).toFixed(1)}MB). Maximum autorisé: ${maxSizeMB}` },
           { status: 400 }
         )
       }
@@ -108,11 +114,15 @@ export async function POST(
           contentType: file.type
         })
 
-        // Créer l'image de galerie
-        const galleryImage = await prisma.articleGallery.create({
+        // Déterminer le type de média
+        const mediaType = isVideo ? 'VIDEO' : 'IMAGE'
+
+        // Créer le média de galerie
+        const galleryMedia = await prisma.articleGallery.create({
           data: {
             articleId,
-            imageUrl: blob.url,
+            mediaUrl: blob.url,
+            mediaType: mediaType,
             altText: altText || file.name.replace(/\.[^/.]+$/, ''),
             caption: caption || file.name.replace(/\.[^/.]+$/, ''),
             captionAr: captionAr || '',
@@ -120,7 +130,7 @@ export async function POST(
           }
         })
 
-        uploadedImages.push(galleryImage)
+        uploadedImages.push(galleryMedia)
 
       } catch (uploadError) {
         console.error(`Erreur lors de l'upload de ${file.name}:`, uploadError)
@@ -134,13 +144,13 @@ export async function POST(
     return NextResponse.json({
       success: true,
       data: uploadedImages,
-      message: `${uploadedImages.length} image(s) ajoutée(s) à la galerie avec succès`
+      message: `${uploadedImages.length} média(s) ajouté(s) à la galerie avec succès`
     })
 
   } catch (error) {
-    console.error('Erreur lors de l\'ajout de l\'image à la galerie:', error)
+    console.error('Erreur lors de l\'ajout du média à la galerie:', error)
     return NextResponse.json(
-      { success: false, error: 'Erreur lors de l\'ajout de l\'image' },
+      { success: false, error: 'Erreur lors de l\'ajout du média' },
       { status: 500 }
     )
   }
