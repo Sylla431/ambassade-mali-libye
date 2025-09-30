@@ -116,7 +116,7 @@ export interface LoginResponse {
 // Types pour les galeries d'images
 export interface GalleryImage {
   id: string
-  imageUrl: string
+  mediaUrl: string
   altText?: string
   caption?: string
   captionAr?: string
@@ -125,7 +125,7 @@ export interface GalleryImage {
 }
 
 export interface CreateGalleryImageRequest {
-  imageUrl: string
+  mediaUrl: string
   altText?: string
   caption?: string
   captionAr?: string

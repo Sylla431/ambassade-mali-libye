@@ -19,7 +19,7 @@ import {
 
 interface GalleryImage {
   id: string
-  imageUrl: string
+  mediaUrl: string
   altText?: string
   caption?: string
   captionAr?: string
@@ -195,18 +195,18 @@ export default function ArticleGalleryPage() {
         {/* Upload d'images */}
         <div className="bg-white rounded-lg shadow mb-6">
           <div className="px-6 py-4 border-b">
-            <h2 className="text-lg font-semibold text-gray-900">Ajouter des images</h2>
+            <h2 className="text-lg font-semibold text-gray-900">Ajouter des médias</h2>
           </div>
           <div className="p-6">
             <label className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 cursor-pointer w-fit">
               <Plus className="w-4 h-4" />
-              <span>Sélectionner des images</span>
+              <span>Sélectionner des médias</span>
               <input
                 type="file"
                 multiple
                 onChange={handleFileUpload}
                 className="hidden"
-                accept="image/*"
+                accept="image/*,video/*"
               />
             </label>
           </div>
@@ -227,7 +227,7 @@ export default function ArticleGalleryPage() {
                   <div key={image.id} className="group relative">
                     <div className="aspect-w-16 aspect-h-9 bg-gray-200 rounded-lg overflow-hidden">
                       <img
-                        src={image.imageUrl}
+                        src={image.mediaUrl}
                         alt={image.altText || ''}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
                       />
@@ -235,7 +235,7 @@ export default function ArticleGalleryPage() {
                     <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-200 rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100">
                       <div className="flex items-center space-x-2">
                         <button
-                          onClick={() => window.open(image.imageUrl, '_blank')}
+                          onClick={() => window.open(image.mediaUrl, '_blank')}
                           className="p-2 bg-white rounded-full text-gray-700 hover:bg-gray-100"
                           title="Voir"
                         >

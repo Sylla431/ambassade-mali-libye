@@ -39,7 +39,7 @@ export function useGallery({ articleId, eventId, isAdmin = false }: UseGalleryPr
 
   // Ajouter une image à la galerie
   const addImage = async (
-    imageUrl: string,
+    mediaUrl: string,
     altText?: string,
     caption?: string,
     captionAr?: string
@@ -57,7 +57,7 @@ export function useGallery({ articleId, eventId, isAdmin = false }: UseGalleryPr
           'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
-          imageUrl,
+          mediaUrl,
           altText,
           caption,
           captionAr,

@@ -9,7 +9,7 @@ interface ImageGalleryProps {
   eventId?: string
   images: GalleryImage[]
   onImagesChange: (images: GalleryImage[]) => void
-  onAddImage: (imageUrl: string, altText?: string, caption?: string, captionAr?: string) => Promise<void>
+  onAddImage: (mediaUrl: string, altText?: string, caption?: string, captionAr?: string) => Promise<void>
   onUpdateImage: (imageId: string, altText?: string, caption?: string, captionAr?: string, order?: number) => Promise<void>
   onDeleteImage: (imageId: string) => Promise<void>
   isAdmin?: boolean
@@ -116,7 +116,7 @@ export default function ImageGallery({
             >
               <div className="aspect-square rounded-lg overflow-hidden bg-gray-100">
                 <img
-                  src={image.imageUrl}
+                  src={image.mediaUrl}
                   alt={image.altText || ''}
                   className="w-full h-full object-cover hover:scale-105 transition-transform duration-200"
                 />
@@ -167,7 +167,7 @@ export default function ImageGallery({
               <div className="flex-1 p-6">
                 <div className="relative">
                   <img
-                    src={selectedImage.imageUrl}
+                    src={selectedImage.mediaUrl}
                     alt={selectedImage.altText || ''}
                     className="w-full h-auto max-h-[60vh] object-contain"
                   />

@@ -25,7 +25,7 @@ import {
 
 interface GalleryImage {
   id: string
-  imageUrl: string
+  mediaUrl: string
   fileName: string
   fileSize: number
   altText?: string
@@ -248,7 +248,7 @@ export default function AdminGalleries() {
               multiple
               onChange={handleFileUpload}
               className="hidden"
-              accept="image/*"
+              accept="image/*,video/*"
             />
           </label>
         </div>
@@ -313,7 +313,7 @@ export default function AdminGalleries() {
                     <div key={image.id} className="group relative">
                       <div className="aspect-w-16 aspect-h-9 bg-gray-200 rounded-lg overflow-hidden">
                         <img
-                          src={image.imageUrl}
+                          src={image.mediaUrl}
                           alt={image.altText || ''}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
                         />
@@ -321,7 +321,7 @@ export default function AdminGalleries() {
                       <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-200 rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100">
                         <div className="flex items-center space-x-2">
                           <button
-                            onClick={() => window.open(image.imageUrl, '_blank')}
+                            onClick={() => window.open(image.mediaUrl, '_blank')}
                             className="p-2 bg-white rounded-full text-gray-700 hover:bg-gray-100"
                             title="Voir"
                           >
@@ -385,7 +385,7 @@ export default function AdminGalleries() {
                     <div className="flex items-center space-x-4">
                       <div className="flex-shrink-0">
                         <img
-                          src={image.imageUrl}
+                          src={image.mediaUrl}
                           alt={image.altText || ''}
                           className="w-16 h-16 object-cover rounded-lg"
                         />
@@ -424,7 +424,7 @@ export default function AdminGalleries() {
                       </div>
                       <div className="flex items-center space-x-2">
                         <button
-                          onClick={() => window.open(image.imageUrl, '_blank')}
+                          onClick={() => window.open(image.mediaUrl, '_blank')}
                           className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg"
                           title="Voir"
                         >
