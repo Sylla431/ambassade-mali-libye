@@ -186,7 +186,7 @@ export default function GalleryUpload({
           
           <div className="text-xs text-gray-400 dark:text-gray-500">
             <p>Types autorisés: JPG, PNG, GIF, WebP, MP4, WebM, OGG, MOV</p>
-            <p>Taille maximale: {maxSize}MB par fichier</p>
+            <p>Taille maximale: Images {maxSize}MB | Vidéos 100MB</p>
             <p>Maximum: {maxFiles} fichiers</p>
           </div>
         </div>
