@@ -9,7 +9,6 @@ import { useToast } from '@/components/ui/Toast'
 import ToastContainer from '@/components/ui/ToastContainer'
 import { 
   Plus, 
-  Edit, 
   Trash2, 
   Eye, 
   Search,
@@ -354,13 +353,6 @@ export default function AdminGalleries() {
                             <Eye className="w-4 h-4" />
                           </button>
                           <button
-                            onClick={() => router.push(`/admin/galleries/${media.id}/edit`)}
-                            className="p-2 bg-white rounded-full text-blue-600 hover:bg-blue-100"
-                            title="Modifier"
-                          >
-                            <Edit className="w-4 h-4" />
-                          </button>
-                          <button
                             onClick={() => deleteImage(media.id)}
                             className="p-2 bg-white rounded-full text-red-600 hover:bg-red-100"
                             title="Supprimer"
@@ -466,13 +458,6 @@ export default function AdminGalleries() {
                           title="Voir"
                         >
                           <Eye className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => router.push(`/admin/galleries/${media.id}/edit`)}
-                          className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg"
-                          title="Modifier"
-                        >
-                          <Edit className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => deleteImage(media.id)}

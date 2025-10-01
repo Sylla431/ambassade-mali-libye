@@ -192,6 +192,22 @@ model EventGallery {
   @@map("event_gallery")
 }
 
+model GeneralGallery {
+  id        String    @id @default(cuid())
+  mediaUrl  String
+  mediaType MediaType @default(IMAGE)
+  altText   String?
+  caption   String?
+  captionAr String?
+  fileName  String?
+  fileSize  Int?
+  order     Int       @default(0)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@map("general_gallery")
+}
+
 enum AdminRole {
   SUPER_ADMIN
   ADMIN
