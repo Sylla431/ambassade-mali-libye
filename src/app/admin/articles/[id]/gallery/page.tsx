@@ -20,6 +20,7 @@ import {
 interface GalleryImage {
   id: string
   mediaUrl: string
+  mediaType: 'IMAGE' | 'VIDEO'
   altText?: string
   caption?: string
   captionAr?: string
@@ -223,26 +224,35 @@ export default function ArticleGalleryPage() {
           {gallery.length > 0 ? (
             <div className="p-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                {gallery.map((image) => (
-                  <div key={image.id} className="group relative">
+                {gallery.map((media) => (
+                  <div key={media.id} className="group relative">
                     <div className="aspect-w-16 aspect-h-9 bg-gray-200 rounded-lg overflow-hidden">
-                      <img
-                        src={image.mediaUrl}
-                        alt={image.altText || ''}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
-                      />
+                      {media.mediaType === 'VIDEO' ? (
+                        <video
+                          src={media.mediaUrl}
+                          className="w-full h-full object-cover"
+                          controls
+                          playsInline
+                        />
+                      ) : (
+                        <img
+                          src={media.mediaUrl}
+                          alt={media.altText || ''}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                        />
+                      )}
                     </div>
                     <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-200 rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100">
                       <div className="flex items-center space-x-2">
                         <button
-                          onClick={() => window.open(image.mediaUrl, '_blank')}
+                          onClick={() => window.open(media.mediaUrl, '_blank')}
                           className="p-2 bg-white rounded-full text-gray-700 hover:bg-gray-100"
                           title="Voir"
                         >
                           <Eye className="w-4 h-4" />
                         </button>
                         <button
-                          onClick={() => deleteImage(image.id)}
+                          onClick={() => deleteImage(media.id)}
                           className="p-2 bg-white rounded-full text-red-600 hover:bg-red-100"
                           title="Supprimer"
                         >
@@ -252,10 +262,11 @@ export default function ArticleGalleryPage() {
                     </div>
                     <div className="mt-2">
                       <p className="text-sm font-medium text-gray-900 truncate">
-                        {image.caption || 'Sans légende'}
+                        {media.caption || 'Sans légende'} 
+                        {media.mediaType === 'VIDEO' && <span className="ml-1 text-purple-600">📹</span>}
                       </p>
                       <p className="text-xs text-gray-500">
-                        Ordre: {image.order}
+                        Ordre: {media.order}
                       </p>
                     </div>
                   </div>

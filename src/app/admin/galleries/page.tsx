@@ -26,6 +26,7 @@ import {
 interface GalleryImage {
   id: string
   mediaUrl: string
+  mediaType: 'IMAGE' | 'VIDEO'
   fileName: string
   fileSize: number
   altText?: string
@@ -309,33 +310,42 @@ export default function AdminGalleries() {
             <div className="p-6">
               {filteredImages.length > 0 ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                  {filteredImages.map((image) => (
-                    <div key={image.id} className="group relative">
+                  {filteredImages.map((media) => (
+                    <div key={media.id} className="group relative">
                       <div className="aspect-w-16 aspect-h-9 bg-gray-200 rounded-lg overflow-hidden">
-                        <img
-                          src={image.mediaUrl}
-                          alt={image.altText || ''}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
-                        />
+                        {media.mediaType === 'VIDEO' ? (
+                          <video
+                            src={media.mediaUrl}
+                            className="w-full h-full object-cover"
+                            controls
+                            playsInline
+                          />
+                        ) : (
+                          <img
+                            src={media.mediaUrl}
+                            alt={media.altText || ''}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                          />
+                        )}
                       </div>
                       <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-200 rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100">
                         <div className="flex items-center space-x-2">
                           <button
-                            onClick={() => window.open(image.mediaUrl, '_blank')}
+                            onClick={() => window.open(media.mediaUrl, '_blank')}
                             className="p-2 bg-white rounded-full text-gray-700 hover:bg-gray-100"
                             title="Voir"
                           >
                             <Eye className="w-4 h-4" />
                           </button>
                           <button
-                            onClick={() => router.push(`/admin/galleries/${image.id}/edit`)}
+                            onClick={() => router.push(`/admin/galleries/${media.id}/edit`)}
                             className="p-2 bg-white rounded-full text-blue-600 hover:bg-blue-100"
                             title="Modifier"
                           >
                             <Edit className="w-4 h-4" />
                           </button>
                           <button
-                            onClick={() => deleteImage(image.id)}
+                            onClick={() => deleteImage(media.id)}
                             className="p-2 bg-white rounded-full text-red-600 hover:bg-red-100"
                             title="Supprimer"
                           >
@@ -345,16 +355,17 @@ export default function AdminGalleries() {
                       </div>
                       <div className="mt-2">
                         <p className="text-sm font-medium text-gray-900 truncate">
-                          {image.caption || 'Sans légende'}
+                          {media.caption || 'Sans légende'}
+                          {media.mediaType === 'VIDEO' && <span className="ml-1 text-purple-600">📹</span>}
                         </p>
                         <div className="flex items-center space-x-2 mt-1">
-                          {image.article && (
+                          {media.article && (
                             <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                               <Tag className="w-3 h-3 mr-1" />
                               Article
                             </span>
                           )}
-                          {image.event && (
+                          {media.event && (
                             <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
                               <Tag className="w-3 h-3 mr-1" />
                               Événement
@@ -380,65 +391,75 @@ export default function AdminGalleries() {
           ) : (
             <div className="divide-y divide-gray-200">
               {filteredImages.length > 0 ? (
-                filteredImages.map((image) => (
-                  <div key={image.id} className="p-6 hover:bg-gray-50">
+                filteredImages.map((media) => (
+                  <div key={media.id} className="p-6 hover:bg-gray-50">
                     <div className="flex items-center space-x-4">
                       <div className="flex-shrink-0">
-                        <img
-                          src={image.mediaUrl}
-                          alt={image.altText || ''}
-                          className="w-16 h-16 object-cover rounded-lg"
-                        />
+                        {media.mediaType === 'VIDEO' ? (
+                          <video
+                            src={media.mediaUrl}
+                            className="w-16 h-16 object-cover rounded-lg"
+                            controls={false}
+                            muted
+                          />
+                        ) : (
+                          <img
+                            src={media.mediaUrl}
+                            alt={media.altText || ''}
+                            className="w-16 h-16 object-cover rounded-lg"
+                          />
+                        )}
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center space-x-3">
                           <h3 className="text-lg font-medium text-gray-900">
-                            {image.caption || 'Sans légende'}
+                            {media.caption || 'Sans légende'}
+                            {media.mediaType === 'VIDEO' && <span className="ml-2 text-purple-600">📹</span>}
                           </h3>
-                          {image.article && (
+                          {media.article && (
                             <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                               <Tag className="w-3 h-3 mr-1" />
-                              Article: {image.article.title}
+                              Article: {media.article.title}
                             </span>
                           )}
-                          {image.event && (
+                          {media.event && (
                             <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                               <Tag className="w-3 h-3 mr-1" />
-                              Événement: {image.event.title}
+                              Événement: {media.event.title}
                             </span>
                           )}
                         </div>
-                        {image.altText && (
+                        {media.altText && (
                           <p className="text-sm text-gray-600 mt-1">
-                            {image.altText}
+                            {media.altText}
                           </p>
                         )}
                         <div className="flex items-center space-x-4 mt-2 text-sm text-gray-500">
                           <span className="flex items-center">
                             <Calendar className="w-4 h-4 mr-1" />
-                            {formatDate(image.createdAt)}
+                            {formatDate(media.createdAt)}
                           </span>
-                          <span>{formatFileSize(image.fileSize)}</span>
-                          <span>Ordre: {image.order}</span>
+                          <span>{formatFileSize(media.fileSize)}</span>
+                          <span>Ordre: {media.order}</span>
                         </div>
                       </div>
                       <div className="flex items-center space-x-2">
                         <button
-                          onClick={() => window.open(image.mediaUrl, '_blank')}
+                          onClick={() => window.open(media.mediaUrl, '_blank')}
                           className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg"
                           title="Voir"
                         >
                           <Eye className="w-4 h-4" />
                         </button>
                         <button
-                          onClick={() => router.push(`/admin/galleries/${image.id}/edit`)}
+                          onClick={() => router.push(`/admin/galleries/${media.id}/edit`)}
                           className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg"
                           title="Modifier"
                         >
                           <Edit className="w-4 h-4" />
                         </button>
                         <button
-                          onClick={() => deleteImage(image.id)}
+                          onClick={() => deleteImage(media.id)}
                           className="p-2 text-red-600 hover:bg-red-50 rounded-lg"
                           title="Supprimer"
                         >
