@@ -34,6 +34,7 @@ export async function GET(
           select: {
             id: true,
             mediaUrl: true,
+            mediaType: true,
             altText: true,
             caption: true,
             captionAr: true,

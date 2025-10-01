@@ -31,7 +31,8 @@ interface Article {
   }
   gallery?: Array<{
     id: string
-    imageUrl: string
+    mediaUrl: string
+    mediaType: 'IMAGE' | 'VIDEO'
     altText?: string
     caption?: string
     captionAr?: string
@@ -296,31 +297,48 @@ export default function ArticleBySlugPage() {
               )}
             </div>
 
-            {/* Galerie d'images */}
+            {/* Galerie de médias */}
             {article.gallery && article.gallery.length > 0 && (
               <div className="mt-8 pt-6 border-t border-gray-200">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Galerie d'images</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Galerie de médias</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {article.gallery.map((image, index) => (
+                  {article.gallery.map((media, index) => (
                     <div 
-                      key={image.id} 
+                      key={media.id} 
                       className="group relative cursor-pointer"
                       onClick={() => openImageModal(index)}
                     >
                       <div className="aspect-w-16 aspect-h-9 bg-gray-200 rounded-lg overflow-hidden">
-                        <img
-                          src={image.imageUrl}
-                          alt={image.altText || image.caption || article.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
-                        />
+                        {media.mediaType === 'VIDEO' ? (
+                          <video
+                            src={media.mediaUrl}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                            controls={false}
+                            muted
+                            loop
+                            playsInline
+                          />
+                        ) : (
+                          <img
+                            src={media.mediaUrl}
+                            alt={media.altText || media.caption || article.title}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                          />
+                        )}
                       </div>
                       {/* Overlay au survol */}
                       <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-200 rounded-lg flex items-center justify-center">
                         <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                           <div className="bg-white bg-opacity-90 rounded-full p-2">
-                            <svg className="w-6 h-6 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
-                            </svg>
+                            {media.mediaType === 'VIDEO' ? (
+                              <svg className="w-6 h-6 text-gray-800" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M8 5v14l11-7z"/>
+                              </svg>
+                            ) : (
+                              <svg className="w-6 h-6 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                              </svg>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -393,12 +411,23 @@ export default function ArticleBySlugPage() {
               </button>
             )}
 
-            {/* Image */}
-            <img
-              src={article.gallery[selectedImageIndex].imageUrl}
-              alt={article.gallery[selectedImageIndex].altText || article.gallery[selectedImageIndex].caption || article.title}
-              className="max-w-full max-h-full object-contain"
-            />
+            {/* Média */}
+            {article.gallery[selectedImageIndex].mediaType === 'VIDEO' ? (
+              <video
+                src={article.gallery[selectedImageIndex].mediaUrl}
+                className="max-w-full max-h-full object-contain"
+                controls
+                autoPlay
+                loop
+                playsInline
+              />
+            ) : (
+              <img
+                src={article.gallery[selectedImageIndex].mediaUrl}
+                alt={article.gallery[selectedImageIndex].altText || article.gallery[selectedImageIndex].caption || article.title}
+                className="max-w-full max-h-full object-contain"
+              />
+            )}
 
             {/* Caption */}
             {article.gallery[selectedImageIndex].caption && (

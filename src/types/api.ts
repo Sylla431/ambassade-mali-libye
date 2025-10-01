@@ -117,6 +117,7 @@ export interface LoginResponse {
 export interface GalleryImage {
   id: string
   mediaUrl: string
+  mediaType: 'IMAGE' | 'VIDEO'
   altText?: string
   caption?: string
   captionAr?: string
