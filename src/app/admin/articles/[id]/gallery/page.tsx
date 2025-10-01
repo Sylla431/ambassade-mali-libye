@@ -16,6 +16,7 @@ import {
   Image as ImageIcon,
   Upload
 } from 'lucide-react'
+import { uploadFileInChunks, shouldUseChunkedUpload, formatFileSize } from '@/utils/chunkedUpload'
 
 interface GalleryImage {
   id: string
@@ -101,34 +102,53 @@ export default function ArticleGalleryPage() {
     if (!files || files.length === 0) return
 
     setUploading(true)
+    const fileArray = Array.from(files)
+    let successCount = 0
+    
     try {
-      const token = localStorage.getItem('admin_token')
-      
-      const formData = new FormData()
-      Array.from(files).forEach(file => {
-        formData.append('files', file)
-      })
-
-      // Uploader les images directement vers la galerie de l'article
-      const uploadRes = await fetch(`/api/articles/${articleId}/gallery`, {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${token}` },
-        body: formData
-      })
-
-      if (uploadRes.ok) {
-        const uploadData = await uploadRes.json()
-        if (uploadData.success) {
-          showSuccess('Images ajoutées', `${uploadData.data.length} image(s) ajoutée(s) à la galerie`)
-        } else {
-          showError('Erreur d\'upload', uploadData.error || 'Impossible d\'uploader les images')
+      // Uploader chaque fichier individuellement
+      for (const file of fileArray) {
+        const useChunked = shouldUseChunkedUpload(file, 4) // > 4MB = chunked
+        
+        try {
+          if (useChunked) {
+            console.log(`Upload par chunks: ${file.name} (${formatFileSize(file.size)})`)
+            await uploadFileInChunks(file, {
+              articleId: articleId,
+              altText: file.name.replace(/\.[^/.]+$/, ''),
+              caption: file.name.replace(/\.[^/.]+$/, '')
+            })
+            successCount++
+          } else {
+            console.log(`Upload standard: ${file.name} (${formatFileSize(file.size)})`)
+            const token = localStorage.getItem('admin_token')
+            const formData = new FormData()
+            formData.append('files', file)
+            
+            const uploadRes = await fetch(`/api/articles/${articleId}/gallery`, {
+              method: 'POST',
+              headers: { 'Authorization': `Bearer ${token}` },
+              body: formData
+            })
+            
+            if (uploadRes.ok) {
+              const uploadData = await uploadRes.json()
+              if (uploadData.success) {
+                successCount++
+              }
+            }
+          }
+        } catch (fileError) {
+          console.error(`Erreur pour ${file.name}:`, fileError)
         }
-      } else {
-        const errorData = await uploadRes.json()
-        showError('Erreur d\'upload', errorData.error || 'Impossible d\'uploader les images')
       }
-
-      loadData() // Recharger la galerie
+      
+      if (successCount > 0) {
+        showSuccess('Médias ajoutés', `${successCount}/${fileArray.length} média(s) ajouté(s) à la galerie`)
+        loadData() // Recharger la galerie
+      } else {
+        showError('Erreur d\'upload', 'Aucun fichier n\'a pu être uploadé')
+      }
     } catch (error) {
       console.error('Erreur lors de l\'upload:', error)
       showError('Erreur de connexion', 'Impossible de se connecter au serveur')

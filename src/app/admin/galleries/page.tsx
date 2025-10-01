@@ -22,6 +22,7 @@ import {
   Grid,
   List
 } from 'lucide-react'
+import { uploadFileInChunks, shouldUseChunkedUpload, formatFileSize } from '@/utils/chunkedUpload'
 
 interface GalleryImage {
   id: string
@@ -126,33 +127,48 @@ export default function AdminGalleries() {
     if (!files || files.length === 0) return
 
     setUploading(true)
+    const fileArray = Array.from(files)
+    let successCount = 0
+    
     try {
-      const token = localStorage.getItem('admin_token')
-      const formData = new FormData()
-      
-      Array.from(files).forEach(file => {
-        formData.append('files', file)
-      })
-
-      const response = await fetch('/api/gallery/upload', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
-        body: formData
-      })
-
-      if (response.ok) {
-        const result = await response.json()
-        if (result.success) {
-          showSuccess('Upload réussi', `${result.data.length} image(s) uploadée(s) avec succès`)
-          loadImages() // Recharger la liste
-        } else {
-          showError('Erreur d\'upload', result.error || 'Erreur lors de l\'upload des images')
+      // Uploader chaque fichier individuellement
+      for (const file of fileArray) {
+        const useChunked = shouldUseChunkedUpload(file, 4) // > 4MB = chunked
+        
+        try {
+          if (useChunked) {
+            console.log(`Upload par chunks: ${file.name} (${formatFileSize(file.size)})`)
+            await uploadFileInChunks(file, {})
+            successCount++
+          } else {
+            console.log(`Upload standard: ${file.name} (${formatFileSize(file.size)})`)
+            const token = localStorage.getItem('admin_token')
+            const formData = new FormData()
+            formData.append('files', file)
+            
+            const response = await fetch('/api/gallery/upload', {
+              method: 'POST',
+              headers: { 'Authorization': `Bearer ${token}` },
+              body: formData
+            })
+            
+            if (response.ok) {
+              const result = await response.json()
+              if (result.success) {
+                successCount++
+              }
+            }
+          }
+        } catch (fileError) {
+          console.error(`Erreur pour ${file.name}:`, fileError)
         }
+      }
+      
+      if (successCount > 0) {
+        showSuccess('Upload réussi', `${successCount}/${fileArray.length} fichier(s) uploadé(s) avec succès`)
+        loadImages() // Recharger la liste
       } else {
-        const errorData = await response.json()
-        showError('Erreur d\'upload', errorData.error || 'Erreur lors de l\'upload')
+        showError('Erreur d\'upload', 'Aucun fichier n\'a pu être uploadé')
       }
     } catch (error) {
       console.error('Erreur lors de l\'upload:', error)

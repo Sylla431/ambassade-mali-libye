@@ -79,7 +79,8 @@ export default function GalleryUpload({
       // Uploader chaque fichier individuellement
       for (let i = 0; i < fileArray.length; i++) {
         const file = fileArray[i]
-        const useChunked = shouldUseChunkedUpload(file, 10) // > 10MB = chunked
+        // Utiliser chunks pour tout ce qui dépasse 4MB (limite Vercel)
+        const useChunked = shouldUseChunkedUpload(file, 4) // > 4MB = chunked
         
         try {
           if (useChunked) {
@@ -234,7 +235,7 @@ export default function GalleryUpload({
           <div className="text-xs text-gray-400 dark:text-gray-500">
             <p>Types autorisés: JPG, PNG, GIF, WebP, MP4, WebM, OGG, MOV</p>
             <p>Taille maximale: Images {maxSize}MB | Vidéos 500MB</p>
-            <p>Les fichiers {'>'}  10MB utilisent l'upload par chunks (plus stable)</p>
+            <p>Les fichiers {'>'}  4MB utilisent l'upload par chunks (contourne limite Vercel)</p>
             <p>Maximum: {maxFiles} fichiers</p>
           </div>
         </div>
