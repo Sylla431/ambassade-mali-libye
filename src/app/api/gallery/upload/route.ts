@@ -5,7 +5,7 @@ import { prisma } from '@/lib/prisma'
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
 // Augmenter la limite de taille pour les uploads de vidéos
-export const maxDuration = 60 // secondes
+export const maxDuration = 300 // secondes
 
 // POST /api/gallery/upload - Upload d'images vers Vercel Blob Storage
 export async function POST(request: NextRequest) {
@@ -55,11 +55,12 @@ export async function POST(request: NextRequest) {
         )
       }
 
-      // Validation de la taille (max 100MB pour les vidéos, 10MB pour les images)
+      // Validation de la taille (max 50MB pour les vidéos, 10MB pour les images)
+      // Note: Vercel limite les requêtes à 4.5MB (hobby) ou 50MB (pro)
       const isVideo = file.type.startsWith('video/')
-      const maxSize = isVideo ? 100 * 1024 * 1024 : 10 * 1024 * 1024 // 100MB pour vidéos, 10MB pour images
+      const maxSize = isVideo ? 50 * 1024 * 1024 : 10 * 1024 * 1024 // 50MB pour vidéos, 10MB pour images
       if (file.size > maxSize) {
-        const maxSizeMB = isVideo ? '100MB' : '10MB'
+        const maxSizeMB = isVideo ? '50MB' : '10MB'
         return NextResponse.json(
           { success: false, error: `Fichier trop volumineux: ${file.name} (${(file.size / 1024 / 1024).toFixed(1)}MB). Maximum autorisé: ${maxSizeMB}` },
           { status: 400 }

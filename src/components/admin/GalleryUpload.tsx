@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react'
 import { Upload, X, Image as ImageIcon, AlertCircle } from 'lucide-react'
+import { uploadFileInChunks, shouldUseChunkedUpload, formatFileSize } from '@/utils/chunkedUpload'
 
 interface GalleryUploadProps {
   articleId?: string
@@ -39,11 +40,17 @@ export default function GalleryUpload({
       return
     }
 
-    // Validation de la taille des fichiers
-    const oversizedFiles = fileArray.filter(file => file.size > maxSize * 1024 * 1024)
+    // Validation de la taille des fichiers (500MB max pour vidéos)
+    const maxVideoSize = 500 * 1024 * 1024 // 500MB pour vidéos
+    const maxImageSize = maxSize * 1024 * 1024 // maxSize MB pour images
+    const oversizedFiles = fileArray.filter(file => {
+      const isVideo = file.type.startsWith('video/')
+      const limit = isVideo ? maxVideoSize : maxImageSize
+      return file.size > limit
+    })
     if (oversizedFiles.length > 0) {
-      const fileNames = oversizedFiles.map(f => `${f.name} (${(f.size / 1024 / 1024).toFixed(1)}MB)`).join(', ')
-      onUploadError?.(`Fichiers trop volumineux: ${fileNames}\n\nTaille maximale autorisée: ${maxSize}MB`)
+      const fileNames = oversizedFiles.map(f => `${f.name} (${formatFileSize(f.size)})`).join(', ')
+      onUploadError?.(`Fichiers trop volumineux: ${fileNames}\n\nLimites: Images ${maxSize}MB, Vidéos 500MB`)
       return
     }
 
@@ -67,44 +74,83 @@ export default function GalleryUpload({
     })))
 
     try {
-      const formData = new FormData()
-      fileArray.forEach(file => {
-        formData.append('files', file)
-      })
-
-      if (articleId) {
-        formData.append('articleId', articleId)
-      }
-
-      const response = await fetch('/api/gallery/upload', {
-        method: 'POST',
-        body: formData
-      })
-
-      const data = await response.json()
-
-      if (data.success) {
-        setUploadProgress(prev => prev.map(item => ({
-          ...item,
-          progress: 100,
-          status: 'success' as const
-        })))
+      const uploadedFiles = []
+      
+      // Uploader chaque fichier individuellement
+      for (let i = 0; i < fileArray.length; i++) {
+        const file = fileArray[i]
+        const useChunked = shouldUseChunkedUpload(file, 10) // > 10MB = chunked
         
-        onUploadSuccess?.(data.data)
-        
-        // Réinitialiser après 2 secondes
-        setTimeout(() => {
-          setUploadProgress([])
-          setUploading(false)
-        }, 2000)
-      } else {
-        setUploadProgress(prev => prev.map(item => ({
-          ...item,
-          status: 'error' as const,
-          error: data.error
-        })))
-        onUploadError?.(data.error)
+        try {
+          if (useChunked) {
+            // Upload par chunks pour les gros fichiers
+            console.log(`Upload par chunks pour ${file.name} (${formatFileSize(file.size)})`)
+            
+            const result = await uploadFileInChunks(
+              file,
+              {
+                articleId,
+                altText: file.name.replace(/\.[^/.]+$/, ''),
+                caption: file.name.replace(/\.[^/.]+$/, '')
+              },
+              (progress) => {
+                // Mettre à jour la progression du fichier actuel
+                setUploadProgress(prev => prev.map((item, index) => 
+                  index === i ? { ...item, progress } : item
+                ))
+              }
+            )
+            
+            uploadedFiles.push(result)
+            
+            // Marquer comme réussi
+            setUploadProgress(prev => prev.map((item, index) =>
+              index === i ? { ...item, progress: 100, status: 'success' as const } : item
+            ))
+            
+          } else {
+            // Upload normal pour les petits fichiers
+            console.log(`Upload standard pour ${file.name} (${formatFileSize(file.size)})`)
+            
+            const formData = new FormData()
+            formData.append('files', file)
+            if (articleId) formData.append('articleId', articleId)
+            
+            const response = await fetch('/api/gallery/upload', {
+              method: 'POST',
+              body: formData
+            })
+            
+            const data = await response.json()
+            
+            if (data.success) {
+              uploadedFiles.push(...data.data)
+              setUploadProgress(prev => prev.map((item, index) =>
+                index === i ? { ...item, progress: 100, status: 'success' as const } : item
+              ))
+            } else {
+              throw new Error(data.error)
+            }
+          }
+        } catch (fileError) {
+          console.error(`Erreur pour ${file.name}:`, fileError)
+          setUploadProgress(prev => prev.map((item, index) =>
+            index === i ? { ...item, status: 'error' as const, error: fileError instanceof Error ? fileError.message : 'Erreur' } : item
+          ))
+        }
       }
+      
+      // Notifier du succès si au moins un fichier a été uploadé
+      if (uploadedFiles.length > 0) {
+        onUploadSuccess?.(uploadedFiles)
+      }
+      
+      // Réinitialiser après 2 secondes
+      setTimeout(() => {
+        setUploadProgress([])
+        setUploading(false)
+      }, 2000)
+      
     } catch (error) {
       console.error('Erreur lors de l\'upload:', error)
       setUploadProgress(prev => prev.map(item => ({
@@ -113,6 +159,7 @@ export default function GalleryUpload({
         error: 'Erreur de connexion'
       })))
       onUploadError?.('Erreur de connexion lors de l\'upload')
+      setUploading(false)
     }
   }
 
@@ -186,7 +233,8 @@ export default function GalleryUpload({
           
           <div className="text-xs text-gray-400 dark:text-gray-500">
             <p>Types autorisés: JPG, PNG, GIF, WebP, MP4, WebM, OGG, MOV</p>
-            <p>Taille maximale: Images {maxSize}MB | Vidéos 100MB</p>
+            <p>Taille maximale: Images {maxSize}MB | Vidéos 500MB</p>
+            <p>Les fichiers {'>'}  10MB utilisent l'upload par chunks (plus stable)</p>
             <p>Maximum: {maxFiles} fichiers</p>
           </div>
         </div>

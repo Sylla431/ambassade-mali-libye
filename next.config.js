@@ -10,13 +10,7 @@ const nextConfig = {
   // Configuration pour supporter les uploads de vidéos volumineuses
   experimental: {
     serverActions: {
-      bodySizeLimit: '100mb', // Limite pour les Server Actions
-    },
-  },
-  // Augmenter la limite de taille des requêtes API
-  api: {
-    bodyParser: {
-      sizeLimit: '100mb',
+      bodySizeLimit: '50mb', // Limite Vercel: 4.5MB (hobby), 50MB (pro)
     },
   },
 }
