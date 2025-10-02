@@ -89,7 +89,7 @@ export default function Footer() {
               <div>
                 <h3 className="text-xl font-bold mb-4">Ambassade du Mali</h3>
                 <p className="text-gray-300 leading-relaxed">
-                  Représentation officielle de la République du Mali auprès de la Libye 
+                  Représentation officielle de la République du Mali au près de la Libye 
                   et de la République de Malte.
                 </p>
               </div>
