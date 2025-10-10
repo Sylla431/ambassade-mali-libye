@@ -22,7 +22,7 @@ const leadership = [
     image: '/images/leadership/ministre.jpg',
     description: 'Responsable de la politique étrangère du Mali et des relations diplomatiques internationales.',
     email: 'ministre@affaires-etrangeres.ml',
-    phone: '+223 XX XX XX XX',
+    phone: '-',
     level: 'minister'
   },
   {
@@ -31,8 +31,8 @@ const leadership = [
     position: 'Charge d\'Affaires',
     image: '/images/leadership/ambassadeur.jpg',
     description: 'Représentant officiel de la République du Mali auprès de la Libye et de la République de Malte.',
-    email: 'charge@ambassade-mali-libye.ml',
-    phone: '(+91)800238798',
+    email: 'maliambatrp@yahoo.fr',
+    phone: '-',
     level: 'ambassador'
   }
 ]
@@ -40,40 +40,57 @@ const leadership = [
 const staff = [
   {
     id: 4,
-    name: 'Ben',
-    position: 'Conseiller, District 2',
+    name: 'Monsieur Fousseyni SOGODOGO',
+    position: 'Deuxième Conseiller',
     image: '/images/staff/ben.jpg',
-    email: 'ben@ambassade-mali-libye.ml',
-    phone: '(+91)8002354565'
+    email: 'maliambatrp@yahoo.fr',
+    phone: '-'
   },
   {
     id: 5,
-    name: 'Modibo Sylla',
-    position: 'Conseiller, District 1',
+    name: 'Monsieur Sema TRAORE',
+    position: '1er Conseiller Consulaire',
     image: '/images/staff/modibo.jpg',
-    email: 'modibo@ambassade-mali-libye.ml',
-    phone: '(+91)8002352321'
+    email: 'maliambatrp@yahoo.fr',
+    phone: '-'
   },
   {
     id: 6,
-    name: 'Cevin Peter',
-    position: 'Président du Conseil Municipal',
+    name: 'Monsieur Dramane YOLO',
+    position: '2ème Conseiller Consulaire',
     image: '/images/staff/cevin.jpg',
-    email: 'cevin@ambassade-mali-libye.ml',
-    phone: '(+91)8002359595'
+    email: 'maliambatrp@yahoo.fr',
+    phone: '-'
   },
   {
     id: 7,
-    name: 'Aminata Traoré',
-    position: 'Chargée des Affaires Consulaires',
+    name: 'Monsieur Balla dit Aliou OUATtARA',
+    position: 'Secrétaire Agent Comptable',
     image: '/images/staff/aminata.jpg',
-    email: 'aminata@ambassade-mali-libye.ml',
-    phone: '(+91)8002359999'
+      email: 'maliambatrp@yahoo.fr',
+    phone: '-'
+  },
+  {
+    id: 8,
+    name: 'Monsieur Bakary SYLLA',
+    position: 'Secrêtaire d\'Ambassade',
+    image: '/images/staff/aminata.jpg',
+    email: 'maliambatrp@yahoo.fr',
+    phone: '-'
+  },
+  {
+    id: 9,
+    name: 'Monsieur Boubacar MAIGA',
+    position: 'Chargé du Protocole',
+    image: '/images/staff/aminata.jpg',
+    email: 'maliambatrp@yahoo.fr',
+    phone: '-'
   }
 ]
 
 export default function Leadership() {
   return (
+    //make minister card up to ambassador card in the same row
     <section className="py-20 bg-white dark:bg-gray-900">
       <div className="container-custom">
         <motion.div
@@ -148,7 +165,8 @@ export default function Leadership() {
         </motion.div>
 
         {/* Direction principale */}
-        <div className="grid lg:grid-cols-2 gap-12 mb-20">
+        {/* make minister card up to ambassador card in the same row */}
+        <div className=" max-w-4xl mx-auto grid lg:grid-cols-1 gap-12 mb-20">
           {leadership.slice(1).map((leader, index) => (
             <motion.div
               key={leader.id}

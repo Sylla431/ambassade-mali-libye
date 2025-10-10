@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { ArrowRight, Globe } from 'lucide-react'
 import Link from 'next/link'
 import MaliPattern from '@/components/ui/MaliPattern'
+import Image from 'next/image'
 
 export default function Hero() {
   return (
@@ -21,14 +22,32 @@ export default function Hero() {
       
       <div className="container-custom relative z-20 py-20">
         <div className="flex items-center justify-center">
-          {/* Contenu principal centré */}
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-center space-y-8 max-w-4xl"
+            className="flex flex-col lg:flex-row items-center lg:items-start gap-8 lg:gap-12 max-w-6xl"
           >
-            <div className="space-y-6">
+            {/* Sceau du Mali à gauche */}
+            <div className="flex flex-col items-center space-y-2 flex-shrink-0">
+              <div className="relative w-32 h-32 lg:w-36 lg:h-36">
+                <Image
+                  src="/images/seals/Armoiries_Mali-3-01-150x150-1.png"
+                  width={300}
+                  height={300}
+                  alt="Sceau de la République du Mali"
+                  // fill
+                  className="object-contain"
+                />
+              </div>
+              {/* <p className="text-gray-300 text-sm text-center max-w-36">
+                République du Mali
+              </p> */}
+            </div>
+
+            {/* Contenu principal */}
+            <div className="text-center lg:text-left space-y-8 flex-1">
+              <div className="space-y-6">
               <h2 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-white leading-tight break-words" 
                   >
                 Ambassade de la{' '}
@@ -37,7 +56,7 @@ export default function Hero() {
                   et de la République de Malte
                 </span>
               </h2>
-              <p className="text-xl text-white leading-relaxed max-w-3xl mx-auto" 
+              <p className="text-xl text-white leading-relaxed max-w-3xl mx-auto lg:mx-0" 
                  style={{ 
                    textShadow: '1px 1px 3px rgba(0,0,0,0.8), 0 0 10px rgba(0,0,0,0.5)' 
                  }}>
@@ -46,7 +65,7 @@ export default function Hero() {
               </p>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            {/* <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a
                 href="https://www.diplomatiemdc.gouv.ml/vitrine"
                 target="_blank"
@@ -68,7 +87,7 @@ export default function Hero() {
               >
                 <span>Nos Services</span>
               </Link>
-            </div>
+            </div> */}
 
             {/* Carte CEN-SAD */}
             <motion.div
@@ -77,9 +96,9 @@ export default function Hero() {
               transition={{ duration: 0.8, delay: 0.4 }}
               className="mt-12"
             >
-              <div className="bg-white/95 backdrop-blur-sm p-6 rounded-xl shadow-2xl border border-white/20 max-w-md mx-auto">
+              <div className="bg-white/95 backdrop-blur-sm p-6 rounded-xl shadow-2xl border border-white/20 max-w-md mx-auto lg:mx-0">
                 <div className="flex items-center space-x-4">
-                  <Globe className="h-12 w-12 text-mali-red-600" />
+                  {/* <Globe className="h-12 w-12 text-mali-red-600" /> */}
                   <div>
                     <h3 className="text-lg font-semibold text-mali-green-800">
                       Représentation Permanente
@@ -91,6 +110,7 @@ export default function Hero() {
                 </div>
               </div>
             </motion.div>
+            </div>
           </motion.div>
         </div>
       </div>
