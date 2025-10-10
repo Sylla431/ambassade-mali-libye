@@ -45,28 +45,94 @@ const contactInfo = [
 
 const staffMembers = [
   {
-    name: 'Mamadou Sylla',
-    position: 'Ambassadeur',
-    email: 'ambassadeur@ambassade-mali-libye.ml',
-    phone: '(+91)800238798'
+    name: 'BOUBACAR SAMAKE',
+    position: 'Assistant Administratif',
+    email: '',
+    phone: ''
   },
   {
-    name: 'Ben',
-    position: 'Conseiller, District 2',
-    email: 'ben@ambassade-mali-libye.ml',
-    phone: '(+91)8002354565'
+    name: 'SIDI ALY MOHAMED TALEB',
+    position: 'Assistant Administratif',
+    email: '',
+    phone: '-'
   },
   {
-    name: 'Modibo Sylla',
-    position: 'Conseiller, District 1',
-    email: 'modibo@ambassade-mali-libye.ml',
-    phone: '(+91)8002352321'
+    name: 'MARIAM DIALLO OUMAR',
+    position: 'Secrétaire',
+    email: '',
+    phone: ''
   },
   {
-    name: 'Cevin Peter',
-    position: 'Président du Conseil Municipal',
-    email: 'cevin@ambassade-mali-libye.ml',
-    phone: '(+91)8002359595'
+    name: 'SOULEYMANE COULIBALY',
+    position: 'Assistant Administratif',
+    email: '',
+    phone: ''
+  },
+  {
+    name: 'SAYON FOFANA',
+    position: 'Traducteur-Interprète',
+    email: '',
+    phone: ''
+  },
+  {
+    name: 'KANY SANOGO',
+    position: 'Assistante Administrative',
+    email: '',
+    phone: ''
+  },
+  {
+    name: 'BOUBACAR DABO',
+    position: 'Huissier',
+    email: '',
+    phone: ''
+  },
+  {
+    name: 'ABDOULAYE TOURE',
+    position: 'Chauffeur',
+    email: '',
+    phone: ''
+  },
+  {
+    name: 'DRAMANE KENE',
+    position: 'Chauffeur',
+    email: '',
+    phone: ''
+  },
+  {
+    name: 'OUMAR DIARRA',
+    position: 'Chauffeur',
+    email: '',
+    phone: ''
+  },
+  {
+    name: 'DRAMANE DIARRA',
+    position: 'Gardien-Chancellerie',
+    email: '',
+    phone: ''
+  },
+  {
+    name: 'YOUNOUSSA SIDI MAIGA',
+    position: 'Planton',
+    email: '',
+    phone: ''
+  },
+  {
+    name: 'YACOUBA TRAORE',
+    position: 'Cuisinier-Résidence',
+    email: '',
+    phone: ''
+  },
+  {
+    name: 'OUSMANE KELLY',
+    position: 'Gardien-Résidence',
+    email: '',
+    phone: ''
+  },
+  {
+    name: 'FANTA DOUMBIA',
+    position: 'Chargée de Ménage Chancellerie',
+    email: '',
+    phone: ''
   }
 ]
 
@@ -149,28 +215,6 @@ export default function Contact() {
               </div>
             </div>
 
-            {/* Équipe */}
-            <div>
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
-                Rencontre avec les fonctionnaires
-              </h3>
-              <div className="space-y-4">
-                {staffMembers.map((member, index) => (
-                  <div key={index} className="card p-4">
-                    <h4 className="font-semibold text-gray-900 dark:text-white">
-                      {member.name}
-                    </h4>
-                    <p className="text-primary-600 dark:text-primary-400 font-medium mb-2">
-                      {member.position}
-                    </p>
-                    <div className="space-y-1 text-sm text-gray-600 dark:text-gray-400">
-                      <p>{member.email}</p>
-                      <p>{member.phone}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
           </motion.div>
 
           {/* Formulaire de contact */}
@@ -297,6 +341,53 @@ export default function Contact() {
             </div>
           </motion.div>
         </div>
+      </div>
+
+      {/* Section séparée pour la liste des contractuels */}
+      <div className="container-custom mt-20">
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+          className="text-center mb-12"
+        >
+          <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            LISTE ACTUALISÉE DES CONTRACTUELS DE L'AMBASSADE DU MALI
+          </h2>
+          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+            Personnel contractuel de l'Ambassade de la République du Mali en Libye
+          </p>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          viewport={{ once: true }}
+          className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
+        >
+          {staffMembers.map((member, index) => (
+            <div key={index} className="card p-6 hover:shadow-lg transition-shadow duration-300">
+              <h4 className="font-semibold text-gray-900 dark:text-white text-lg mb-2">
+                {member.name}
+              </h4>
+              <p className="text-primary-600 dark:text-primary-400 font-medium mb-3">
+                {member.position}
+              </p>
+              {member.email && (
+                <div className="space-y-1 text-sm text-gray-600 dark:text-gray-400">
+                  <p><strong>Email:</strong> {member.email}</p>
+                </div>
+              )}
+              {member.phone && member.phone !== '-' && (
+                <div className="space-y-1 text-sm text-gray-600 dark:text-gray-400">
+                  <p><strong>Téléphone:</strong> {member.phone}</p>
+                </div>
+              )}
+            </div>
+          ))}
+        </motion.div>
       </div>
     </section>
   )
