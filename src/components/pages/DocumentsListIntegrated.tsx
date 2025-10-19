@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { FileText, Download, Calendar, User, File, FileImage, FileVideo, Loader2, AlertCircle, Eye } from 'lucide-react'
+import { FileText, Download, Calendar, User, File, FileImage, FileVideo, Loader2, AlertCircle, Eye, Filter } from 'lucide-react'
 import { format } from 'date-fns'
 import { fr } from 'date-fns/locale'
 import { useState, useEffect } from 'react'
@@ -31,18 +31,25 @@ export default function DocumentsListIntegrated() {
   const [error, setError] = useState<string | null>(null)
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
+  const [selectedCategory, setSelectedCategory] = useState<string>('')
+  const [allDocuments, setAllDocuments] = useState<Document[]>([])
 
   useEffect(() => {
     loadDocuments()
   }, [currentPage])
 
+  useEffect(() => {
+    filterDocuments()
+  }, [selectedCategory, allDocuments])
+
   const loadDocuments = async () => {
     setLoading(true)
     setError(null)
     try {
+      // Charger plus de documents pour permettre le filtrage
       const params = new URLSearchParams({
-        page: currentPage.toString(),
-        limit: '12',
+        page: '1',
+        limit: '100', // Augmenter pour avoir plus de documents pour le filtrage
         public: 'true'
       })
 
@@ -50,7 +57,8 @@ export default function DocumentsListIntegrated() {
       const data = await response.json()
 
       if (data.success) {
-        setDocuments(data.data.data)
+        setAllDocuments(data.data.data)
+        filterDocuments(data.data.data)
         setTotalPages(data.data.pagination.totalPages)
       } else {
         setError(data.error || 'Erreur lors du chargement des documents')
@@ -61,6 +69,33 @@ export default function DocumentsListIntegrated() {
     } finally {
       setLoading(false)
     }
+  }
+
+  const filterDocuments = (documentsToFilter?: Document[]) => {
+    const docs = documentsToFilter || allDocuments
+    if (selectedCategory === '') {
+      setDocuments(docs)
+    } else {
+      const filtered = docs.filter(doc => doc.category === selectedCategory)
+      setDocuments(filtered)
+    }
+  }
+
+  const handleCategoryChange = (category: string) => {
+    setSelectedCategory(category)
+  }
+
+  // Créer la liste des catégories disponibles
+  const getAvailableCategories = () => {
+    const categoriesSet = new Set(allDocuments.map(doc => doc.category))
+    return [
+      { key: '', label: 'Toutes les catégories', count: allDocuments.length },
+      ...Array.from(categoriesSet).map(category => ({
+        key: category,
+        label: getCategoryLabel(category),
+        count: allDocuments.filter(doc => doc.category === category).length
+      }))
+    ]
   }
 
   const formatFileSize = (bytes: number) => {
@@ -83,9 +118,13 @@ export default function DocumentsListIntegrated() {
       'VISA_FORMS': 'bg-blue-100 text-blue-800',
       'LEGAL_DOCUMENTS': 'bg-green-100 text-green-800',
       'NEWS': 'bg-purple-100 text-purple-800',
-      'FORMS': 'bg-yellow-100 text-yellow-800',
-      'GUIDES': 'bg-indigo-100 text-indigo-800',
-      'AGREEMENTS': 'bg-red-100 text-red-800'
+      'ANNOUNCEMENTS': 'bg-orange-100 text-orange-800',
+      'CULTURAL': 'bg-pink-100 text-pink-800',
+      'ECONOMIC': 'bg-yellow-100 text-yellow-800',
+      'POLITICAL': 'bg-red-100 text-red-800',
+      'FORMS': 'bg-indigo-100 text-indigo-800',
+      'GUIDES': 'bg-teal-100 text-teal-800',
+      'AGREEMENTS': 'bg-gray-100 text-gray-800'
     }
     return colors[category as keyof typeof colors] || 'bg-gray-100 text-gray-800'
   }
@@ -95,6 +134,10 @@ export default function DocumentsListIntegrated() {
       'VISA_FORMS': 'Formulaires Visa',
       'LEGAL_DOCUMENTS': 'Documents Légaux',
       'NEWS': 'Actualités',
+      'ANNOUNCEMENTS': 'Annonces',
+      'CULTURAL': 'Culturel',
+      'ECONOMIC': 'Économique',
+      'POLITICAL': 'Politique',
       'FORMS': 'Formulaires',
       'GUIDES': 'Guides',
       'AGREEMENTS': 'Accords'
@@ -149,6 +192,27 @@ export default function DocumentsListIntegrated() {
           </p>
         </div>
 
+        {/* Filtres par catégorie */}
+        {!loading && allDocuments.length > 0 && (
+          <div className="mb-8">
+            <div className="flex flex-wrap gap-2 justify-center">
+              <Filter className="h-5 w-5 text-gray-400 mr-2 self-center" />
+              {getAvailableCategories().map((category) => (
+                <button
+                  key={category.key}
+                  onClick={() => handleCategoryChange(category.key)}
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                    selectedCategory === category.key
+                      ? 'bg-mali-green-600 text-white'
+                      : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-mali-green-100 dark:hover:bg-mali-green-900 border border-gray-200 dark:border-gray-700'
+                  }`}
+                >
+                  {category.label} ({category.count})
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Liste des documents */}
         {loading && documents.length > 0 ? (

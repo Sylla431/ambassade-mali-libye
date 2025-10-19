@@ -11,7 +11,10 @@ import {
   Calendar,
   Phone,
   Clock,
-  DollarSign
+  DollarSign,
+  Heart,
+  FileCheck,
+  Cross
 } from 'lucide-react'
 import Link from 'next/link'
 
@@ -27,7 +30,7 @@ const services = [
   },
   {
     icon: UserCheck,
-    title: 'Lettre de témoignage',
+    title: 'Certificat de témoignage',
     description: 'Attestation de nationalité et d\'identité',
     price: 'Gratuit',
     duration: 'Immédiat',
@@ -64,7 +67,7 @@ const services = [
   {
     icon: CreditCard,
     title: 'Enrôlement biométrique',
-    description: 'Création de carte d\'identité biométrique',
+    description: 'Établissement de la carte biométrique après enrôlement',
     price: 'Gratuit',
     duration: '30-45 jours',
     requirements: ['Acte de naissance', 'Photo d\'identité', 'Empreintes'],
@@ -78,6 +81,51 @@ const services = [
     duration: '1 jour',
     requirements: ['Acte de naissance', 'Pièce d\'identité parent'],
     href: '/services/attestation'
+  },
+  {
+    icon: Heart,
+    title: 'Célébration de Mariage',
+    description: 'Cérémonie de mariage consulaire',
+    price: 'Variable',
+    duration: 'Sur rendez-vous',
+    requirements: ['Pièces d\'identité', 'Actes de naissance', 'Certificat médical'],
+    href: '/services/mariage'
+  },
+  {
+    icon: UserCheck,
+    title: 'Établissement de la carte d\'identité consulaire',
+    description: 'Création de carte d\'identité consulaire',
+    price: 'Variable',
+    duration: '7-15 jours',
+    requirements: ['Acte de naissance', 'Photo d\'identité', 'Justificatif de résidence'],
+    href: '/services/carte-consulaire'
+  },
+  {
+    icon: FileCheck,
+    title: 'Acte de naissance',
+    description: 'Établissement d\'acte de naissance',
+    price: 'Variable',
+    duration: '3-5 jours',
+    requirements: ['Certificat médical de naissance', 'Pièces d\'identité parents'],
+    href: '/services/acte-naissance'
+  },
+  {
+    icon: Cross,
+    title: 'Acte de décès',
+    description: 'Établissement d\'acte de décès',
+    price: 'Variable',
+    duration: '2-3 jours',
+    requirements: ['Certificat médical de décès', 'Pièce d\'identité défunt'],
+    href: '/services/acte-deces'
+  },
+  {
+    icon: Cross,
+    title: 'Autorisation d\'inhumation',
+    description: 'Document d\'autorisation pour inhumation',
+    price: 'Variable',
+    duration: 'Immédiat',
+    requirements: ['Acte de décès', 'Pièce d\'identité défunt', 'Justificatif de transport'],
+    href: '/services/autorisation-inhumation'
   },
   {
     icon: Phone,

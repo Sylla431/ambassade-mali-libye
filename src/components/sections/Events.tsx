@@ -69,7 +69,7 @@ export default function Events() {
           className="text-center mb-16"
         >
           <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-            Derniers Événements de l'Ambassade
+            Actualité de l'Ambassade
           </h2>
           <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
             Découvrez les activités récentes et les rencontres diplomatiques importantes 
@@ -128,7 +128,7 @@ export default function Events() {
           className="bg-white dark:bg-gray-900 rounded-lg p-8"
         >
           <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
-            Événements à venir
+            Perspectives
           </h3>
           <div className="space-y-4">
             {upcomingEvents.map((event) => (

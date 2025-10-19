@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Phone, MapPin, Clock, Mail, Send } from 'lucide-react'
+import { Phone, MapPin, Clock, Mail, Send, MessageCircle } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -20,8 +20,11 @@ const contactInfo = [
   {
     icon: Phone,
     title: 'Téléphone',
-    details: ['0918883403', '0944831213'],
-    description: 'Appelez-nous pour toute question'
+    details: [
+      { text: '0918883403', isWhatsApp: true, phoneNumber: '218918883403' },
+      { text: '0944831213', isWhatsApp: true, phoneNumber: '218944831213' }
+    ],
+    description: 'Appelez-nous ou contactez-nous sur WhatsApp'
   },
   {
     icon: MapPin,
@@ -51,7 +54,7 @@ const staffMembers = [
     phone: ''
   },
   {
-    name: 'SIDI ALY MOHAMED TALEB',
+    name: 'MOHAMED TALEB SAYED ALI',
     position: 'Assistant Administratif',
     email: '',
     phone: '-'
@@ -201,11 +204,33 @@ export default function Contact() {
                       <h4 className="font-semibold text-gray-900 dark:text-white mb-1">
                         {info.title}
                       </h4>
-                      {info.details.map((detail, detailIndex) => (
-                        <p key={detailIndex} className="text-gray-600 dark:text-gray-400">
-                          {detail}
-                        </p>
-                      ))}
+                      {info.details.map((detail, detailIndex) => {
+                        const isDetailObject = typeof detail === 'object' && detail !== null && 'text' in detail;
+                        const detailText = isDetailObject ? detail.text : detail;
+                        const isWhatsApp = isDetailObject && detail.isWhatsApp;
+                        const phoneNumber = isDetailObject ? detail.phoneNumber : null;
+
+                        if (isWhatsApp && phoneNumber) {
+                          return (
+                            <a
+                              key={detailIndex}
+                              href={`https://wa.me/${phoneNumber}?text=Bonjour, je souhaite obtenir des informations sur les services de l'Ambassade du Mali à Tripoli.`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center space-x-2 text-mali-green-600 dark:text-mali-green-400 hover:text-mali-green-700 dark:hover:text-mali-green-300 transition-colors cursor-pointer hover:underline"
+                            >
+                              <span>{detailText}</span>
+                              <MessageCircle className="h-4 w-4 text-green-500" />
+                            </a>
+                          );
+                        }
+
+                        return (
+                          <p key={detailIndex} className="text-gray-600 dark:text-gray-400">
+                            {detailText}
+                          </p>
+                        );
+                      })}
                       <p className="text-sm text-gray-500 dark:text-gray-500 mt-1">
                         {info.description}
                       </p>

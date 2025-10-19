@@ -10,7 +10,10 @@ import {
   CreditCard,
   Calendar,
   Phone,
-  ArrowRight
+  ArrowRight,
+  Heart,
+  FileCheck,
+  Cross
 } from 'lucide-react'
 import Link from 'next/link'
 
@@ -24,7 +27,7 @@ const services = [
   },
   {
     icon: UserCheck,
-    title: 'Lettre de témoignage',
+    title: 'Certificat de témoignage',
     description: 'Attestation de nationalité et d\'identité',
     price: 'Gratuit',
     href: '/services/temoignage'
@@ -53,7 +56,7 @@ const services = [
   {
     icon: CreditCard,
     title: 'Enrôlement biométrique',
-    description: 'Création de carte d\'identité biométrique',
+    description: 'Établissement de la carte biométrique après enrôlement',
     price: 'Gratuit',
     href: '/services/biometrique'
   },
@@ -63,6 +66,41 @@ const services = [
     description: 'Document attestant la filiation',
     price: 'Gratuit',
     href: '/services/attestation'
+  },
+  {
+    icon: Heart,
+    title: 'Célébration de Mariage',
+    description: 'Cérémonie de mariage consulaire',
+    price: 'Variable',
+    href: '/services/mariage'
+  },
+  {
+    icon: UserCheck,
+    title: 'Établissement de la carte d\'identité consulaire',
+    description: 'Création de carte d\'identité consulaire',
+    price: 'Variable',
+    href: '/services/carte-consulaire'
+  },
+  {
+    icon: FileCheck,
+    title: 'Acte de naissance',
+    description: 'Établissement d\'acte de naissance',
+    price: 'Variable',
+    href: '/services/acte-naissance'
+  },
+  {
+    icon: Cross,
+    title: 'Acte de décès',
+    description: 'Établissement d\'acte de décès',
+    price: 'Variable',
+    href: '/services/acte-deces'
+  },
+  {
+    icon: Cross,
+    title: 'Autorisation d\'inhumation',
+    description: 'Document d\'autorisation pour inhumation',
+    price: 'Variable',
+    href: '/services/autorisation-inhumation'
   },
   {
     icon: Phone,

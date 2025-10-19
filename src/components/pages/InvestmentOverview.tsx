@@ -1,6 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import { useState, useEffect } from 'react'
 import { 
   TrendingUp, 
   Globe, 
@@ -14,9 +15,20 @@ import {
   Briefcase,
   MapPin,
   Calendar,
-  FileText
+  FileText,
+  Fish
 } from 'lucide-react'
 import Link from 'next/link'
+
+interface Document {
+  id: string
+  title: string
+  description?: string
+  fileName: string
+  fileUrl: string
+  mimeType: string
+  isPublic: boolean
+}
 
 const keyStats = [
   {
@@ -63,6 +75,12 @@ const sectors = [
     title: 'Élevage',
     description: 'Deuxième cheptel d\'Afrique de l\'Ouest avec des races animales robustes',
     opportunities: ['Élevage bovin', 'Élevage ovin/caprin', 'Aviculture', 'Transformation']
+  },
+  {
+    icon: Fish,
+    title: 'Pêche',
+    description: 'Secteur prometteur avec de nombreuses ressources halieutiques et un potentiel aquacole',
+    opportunities: ['Pêche artisanale', 'Pêche industrielle', 'Aquaculture', 'Transformation']
   },
   {
     icon: Award,
@@ -123,32 +141,6 @@ const incentives = [
   }
 ]
 
-const documents = [
-  {
-    title: 'Investir au Mali API PDF',
-    description: 'Guide complet des opportunités d\'investissement',
-    file: '/documents/investir-au-mali-api.pdf',
-    type: 'pdf'
-  },
-  {
-    title: 'OCI OFFICIAL BOOK - English',
-    description: 'Official OCI investment guide in English',
-    file: '/documents/oci-official-book-english.pdf',
-    type: 'pdf'
-  },
-  {
-    title: 'LIVRE OFFICIEL DE L\'OCI - Français',
-    description: 'Guide officiel d\'investissement de l\'OCI en français',
-    file: '/documents/oci-officiel-francais.pdf',
-    type: 'pdf'
-  },
-  {
-    title: 'LIVRE OFFICIEL DE L\'OCI - Arabe',
-    description: 'الدليل الرسمي للاستثمار في منظمة التعاون الإسلامي',
-    file: '/documents/oci-officiel-arabe.pdf',
-    type: 'pdf'
-  }
-]
 
 const news = [
   {
@@ -166,6 +158,75 @@ const news = [
 ]
 
 function InvestmentOverview() {
+  const [documents, setDocuments] = useState<Document[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    loadDocuments()
+  }, [])
+
+  const loadDocuments = async () => {
+    try {
+      // D'abord essayer avec la catégorie ECONOMIC
+      const params = new URLSearchParams({
+        page: '1',
+        limit: '20', // Augmenter la limite pour avoir plus de choix
+        public: 'true',
+        category: 'ECONOMIC'
+      })
+
+      const response = await fetch(`/api/documents?${params}`)
+      const data = await response.json()
+
+      if (data.success && data.data.data.length > 0) {
+        // Filtrer par mots-clés liés à l'investissement
+        const investmentDocuments = data.data.data.filter((doc: Document) => {
+          const title = doc.title.toLowerCase()
+          const description = (doc.description || '').toLowerCase()
+          const keywords = ['investissement', 'investment', 'investir', 'api', 'oci', 'mali', 'affaires', 'business', 'guide', 'opportunités']
+          
+          return keywords.some(keyword => 
+            title.includes(keyword) || description.includes(keyword)
+          )
+        })
+        
+        setDocuments(investmentDocuments.slice(0, 8)) // Limiter à 8 documents max
+      } else {
+        // Si aucun document ECONOMIC, essayer sans filtre de catégorie et filtrer par mots-clés
+        const fallbackParams = new URLSearchParams({
+          page: '1',
+          limit: '50',
+          public: 'true'
+        })
+
+        const fallbackResponse = await fetch(`/api/documents?${fallbackParams}`)
+        const fallbackData = await fallbackResponse.json()
+
+        if (fallbackData.success) {
+          const investmentDocuments = fallbackData.data.data.filter((doc: Document) => {
+            const title = doc.title.toLowerCase()
+            const description = (doc.description || '').toLowerCase()
+            const keywords = ['investissement', 'investment', 'investir', 'api', 'oci', 'mali', 'affaires', 'business', 'guide', 'opportunités']
+            
+            return keywords.some(keyword => 
+              title.includes(keyword) || description.includes(keyword)
+            )
+          })
+          
+          setDocuments(investmentDocuments.slice(0, 8))
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching documents:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleDownload = (document: Document) => {
+    window.open(`/api/documents/${document.id}/download`, '_blank')
+  }
+
   return (
     <section className="py-20 bg-white dark:bg-gray-900">
       <div className="container-custom">
@@ -383,35 +444,51 @@ function InvestmentOverview() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8">
-            {documents.map((doc, index) => (
-              <motion.div
-                key={doc.title}
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="card p-6 hover:shadow-lg transition-shadow duration-300"
-              >
-                <div className="flex items-start space-x-4">
-                  <div className="p-3 bg-mali-red-100 dark:bg-mali-red-900 rounded-lg">
-                    <FileText className="h-8 w-8 text-mali-red-600 dark:text-mali-red-400" />
+          {loading ? (
+            <div className="flex justify-center items-center py-12">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-mali-green-600"></div>
+              <span className="ml-3 text-gray-600">Chargement des documents...</span>
+            </div>
+          ) : documents.length === 0 ? (
+            <div className="text-center py-12">
+              <FileText className="mx-auto h-12 w-12 text-gray-400" />
+              <h3 className="mt-2 text-sm font-medium text-gray-900">Aucun document disponible</h3>
+              <p className="mt-1 text-sm text-gray-500">Aucun document officiel n'est disponible pour le moment.</p>
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-2 gap-8">
+              {documents.map((doc, index) => (
+                <motion.div
+                  key={doc.id}
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  className="card p-6 hover:shadow-lg transition-shadow duration-300"
+                >
+                  <div className="flex items-start space-x-4">
+                    <div className="p-3 bg-mali-red-100 dark:bg-mali-red-900 rounded-lg">
+                      <FileText className="h-8 w-8 text-mali-red-600 dark:text-mali-red-400" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
+                        {doc.title}
+                      </h3>
+                      <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">
+                        {doc.description || 'Document officiel'}
+                      </p>
+                      <button 
+                        onClick={() => handleDownload(doc)}
+                        className="btn-primary inline-flex items-center space-x-2"
+                      >
+                        <Download className="h-4 w-4" />
+                        <span>Télécharger</span>
+                      </button>
+                    </div>
                   </div>
-                  <div className="flex-1">
-                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
-                      {doc.title}
-                    </h3>
-                    <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">
-                      {doc.description}
-                    </p>
-                    <button className="btn-primary inline-flex items-center space-x-2">
-                      <Download className="h-4 w-4" />
-                      <span>Télécharger</span>
-                    </button>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+                </motion.div>
+              ))}
+            </div>
+          )}
         </motion.div>
 
         {/* Dernières nouvelles */}
@@ -488,13 +565,15 @@ function InvestmentOverview() {
                 <span>Nous Contacter</span>
                 <ArrowRight className="h-5 w-5" />
               </Link>
-              <Link
-                href="/documents"
+              <a
+                href="https://apimali.gov.ml/"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="btn-secondary inline-flex items-center space-x-2 text-lg px-8 py-4"
               >
-                <span>Télécharger les Documents</span>
-                <Download className="h-5 w-5" />
-              </Link>
+                <span>API-MALI</span>
+                <Globe className="h-5 w-5" />
+              </a>
             </div>
           </div>
         </motion.div>

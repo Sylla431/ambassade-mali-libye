@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { Phone, MapPin, Clock, Mail, Facebook, Twitter, Instagram, Youtube } from 'lucide-react'
+import { Phone, MapPin, Clock, Mail, Facebook, Twitter, Instagram, Youtube, MessageCircle } from 'lucide-react'
 
 const footerLinks = {
   services: [
@@ -99,9 +99,30 @@ export default function Footer() {
                   <MapPin className="h-5 w-5 text-mali-gold-400" />
                   <span className="text-gray-300">Tripoli, Quartier Saraj</span>
                 </div>
-                <div className="flex items-center space-x-3">
-                  <Phone className="h-5 w-5 text-mali-gold-400" />
-                  <span className="text-gray-300">0918883403 / 0944831213</span>
+                <div className="flex flex-col space-y-2">
+                  <div className="flex items-center space-x-3">
+                    <Phone className="h-5 w-5 text-mali-gold-400" />
+                    <a
+                      href="https://wa.me/218918883403?text=Bonjour, je souhaite obtenir des informations sur les services de l'Ambassade du Mali à Tripoli."
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center space-x-2 text-mali-green-400 hover:text-mali-green-300 transition-colors hover:underline"
+                    >
+                      <span>0918883403</span>
+                      <MessageCircle className="h-4 w-4 text-green-400" />
+                    </a>
+                  </div>
+                  <div className="flex items-center space-x-3 ml-7">
+                    <a
+                      href="https://wa.me/218944831213?text=Bonjour, je souhaite obtenir des informations sur les services de l'Ambassade du Mali à Tripoli."
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center space-x-2 text-mali-green-400 hover:text-mali-green-300 transition-colors hover:underline"
+                    >
+                      <span>0944831213</span>
+                      <MessageCircle className="h-4 w-4 text-green-400" />
+                    </a>
+                  </div>
                 </div>
                 <div className="flex items-center space-x-3">
                   <Mail className="h-5 w-5 text-mali-gold-400" />

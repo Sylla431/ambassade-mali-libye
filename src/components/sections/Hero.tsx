@@ -12,9 +12,9 @@ export default function Hero() {
       {/* Image de l'ambassade en arrière-plan - plus visible */}
       <div className="absolute inset-0 z-0">
         <div className="w-full h-full bg-[url('/images/ambassade/ambassade-mali-libye.jpg')] bg-cover bg-center bg-no-repeat"></div>
-        {/* Overlay subtil pour améliorer la lisibilité sans masquer l'image */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-transparent"></div>
-        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/50"></div>
+        {/* Overlay amélioré pour plus de visibilité des images */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-black/20 to-transparent"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/40"></div>
       </div>
       
       {/* Pattern décoratif subtil */}
@@ -26,10 +26,10 @@ export default function Hero() {
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="flex flex-col lg:flex-row items-center lg:items-start gap-8 lg:gap-12 max-w-6xl"
+            className="flex flex-col items-center text-center gap-8 max-w-6xl"
           >
-            {/* Sceau du Mali à gauche */}
-            <div className="flex flex-col items-center space-y-2 flex-shrink-0">
+            {/* Sceau du Mali centré */}
+            <div className="flex flex-col items-center space-y-2 flex-shrink-0 w-full lg:w-auto">
               <div className="relative w-32 h-32 lg:w-36 lg:h-36">
                 <Image
                   src="/images/seals/Armoiries_Mali-3-01-150x150-1.png"
@@ -46,22 +46,21 @@ export default function Hero() {
             </div>
 
             {/* Contenu principal */}
-            <div className="text-center lg:text-left space-y-8 flex-1">
+            <div className="text-center space-y-8 flex-1">
               <div className="space-y-6">
               <h2 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-white leading-tight break-words" 
                   >
                 Ambassade de la{' '}
                 <span className="bg-mali-gradient bg-clip-text text-transparent drop-shadow-md">
-                  République du Mali auprès de la Libye 
+                  République du Mali auprès de l'Etat de Libye 
                   et de la République de Malte
                 </span>
               </h2>
-              <p className="text-xl text-white leading-relaxed max-w-3xl mx-auto lg:mx-0" 
+              <p className="text-xl text-white leading-relaxed max-w-3xl mx-auto" 
                  style={{ 
                    textShadow: '1px 1px 3px rgba(0,0,0,0.8), 0 0 10px rgba(0,0,0,0.5)' 
                  }}>
-                Représentation officielle auprès de la Libye et de la République de Malte.
-                Nous offrons un large éventail de services consulaires à nos ressortissants.
+                Représentation permanente : Communauté des Etats Sahélo-Sahariens (CENSAD)
               </p>
             </div>
 
@@ -94,9 +93,10 @@ export default function Hero() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
-              className="mt-12"
+              className="mt-12 "
             >
-              <div className="bg-white/95 backdrop-blur-sm p-6 rounded-xl shadow-2xl border border-white/20 max-w-md mx-auto lg:mx-0">
+              {/* remove card class */}
+              <div className=" backdrop-blur-sm p-6 rounded-xl shadow-2xl border border-white/30 max-w-md mx-auto w-full">
                 <div className="flex items-center space-x-4">
                   {/* <Globe className="h-12 w-12 text-mali-red-600" /> */}
                   <div>
@@ -104,7 +104,7 @@ export default function Hero() {
                       Représentation Permanente
                     </h3>
                     <p className="text-mali-gold-700">
-                      Communauté des États Sahelo-Sahariens (CEN-SAD)
+                      Communauté des Etats Sahélo-Sahariens (CENSAD)
                     </p>
                   </div>
                 </div>

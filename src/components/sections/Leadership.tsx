@@ -18,7 +18,7 @@ const leadership = [
   {
     id: 2,
     name: 'SEM Abdoulaye Diop',
-    position: 'Ministre des Affaires Étrangères',
+    position: 'Ministre des Affaires Étrangères et de la Coopération internationale',
     image: '/images/leadership/ministre.jpg',
     description: 'Responsable de la politique étrangère du Mali et des relations diplomatiques internationales.',
     email: 'ministre@affaires-etrangeres.ml',
@@ -49,7 +49,7 @@ const staff = [
   {
     id: 5,
     name: 'Monsieur Sema TRAORE',
-    position: '1er Conseiller Consulaire',
+    position: 'Conseiller Consulaire',
     image: '/images/staff/modibo.jpg',
     email: 'maliambatrp@yahoo.fr',
     phone: '-'
@@ -57,7 +57,7 @@ const staff = [
   {
     id: 6,
     name: 'Monsieur Dramane YOLO',
-    position: '2ème Conseiller Consulaire',
+    position: 'Conseiller Consulaire',
     image: '/images/staff/cevin.jpg',
     email: 'maliambatrp@yahoo.fr',
     phone: '-'
@@ -101,7 +101,7 @@ export default function Leadership() {
           className="text-center mb-16"
         >
           <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-            Direction & Équipe
+            {/* Leadership */}
           </h2>
           <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
             Découvrez les dirigeants et l'équipe qui représentent la République du Mali 
@@ -235,7 +235,7 @@ export default function Leadership() {
           viewport={{ once: true }}
         >
           <h3 className="text-3xl font-bold text-gray-900 dark:text-white text-center mb-12">
-            Notre Équipe
+            Personnel de l'Ambassade du Mali à Tripoli-Libye
           </h3>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {staff.map((member, index) => (
