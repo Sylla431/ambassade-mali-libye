@@ -492,7 +492,7 @@ function InvestmentOverview() {
         </motion.div>
 
         {/* Dernières nouvelles */}
-        <motion.div
+        {/* <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 1.2 }}
@@ -540,7 +540,7 @@ function InvestmentOverview() {
               </motion.div>
             ))}
           </div>
-        </motion.div>
+        </motion.div> */}
 
         {/* Call to Action */}
         <motion.div
