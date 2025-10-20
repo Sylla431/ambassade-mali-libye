@@ -227,7 +227,7 @@ export default function Footer() {
         <div className="container-custom py-6">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-400 text-sm">
-              © {new Date().getFullYear()} Ambassade de la République du Mali au pres de la Libye et de la Malte. 
+              © {new Date().getFullYear()}  République du Mali auprès de l'Etat de Libye et de la République de Malte
               Tous droits réservés.
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
