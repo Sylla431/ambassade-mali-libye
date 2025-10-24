@@ -13,8 +13,8 @@ export default function Hero() {
       <div className="absolute inset-0 z-0">
         <div className="w-full h-full bg-[url('/images/ambassade/ambassade-mali-libye.jpg')] bg-cover bg-center bg-no-repeat"></div>
         {/* Overlay amélioré pour plus de visibilité des images */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-black/20 to-transparent"></div>
-        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/40"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-black/15 to-transparent"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/20"></div>
       </div>
       
       {/* Pattern décoratif subtil */}
@@ -89,27 +89,7 @@ export default function Hero() {
             </div> */}
 
             {/* Carte CEN-SAD */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-              className="mt-12 "
-            >
-              {/* remove card class */}
-              <div className=" backdrop-blur-sm p-6 rounded-xl shadow-2xl border border-white/30 max-w-md mx-auto w-full">
-                <div className="flex items-center space-x-4">
-                  {/* <Globe className="h-12 w-12 text-mali-red-600" /> */}
-                  <div>
-                    <h3 className="text-lg font-semibold text-mali-green-800">
-                      Représentation Permanente
-                    </h3>
-                    <p className="text-mali-gold-700">
-                      Communauté des Etats Sahélo-Sahariens (CENSAD)
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
+            
             </div>
           </motion.div>
         </div>

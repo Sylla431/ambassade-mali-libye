@@ -34,7 +34,7 @@ const announcements = [
       'Mardi': {
         time: '09h00 à 15h30',
         services: [
-          'Enrôlement / Carte biométrique',
+          'Biométrique / Carte biométrique',
           'Attestation parental',
           'Lettre d\'authentification (03) mois - 20 dinars',
           'Demande de passport'

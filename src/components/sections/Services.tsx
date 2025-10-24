@@ -55,7 +55,7 @@ const services = [
   },
   {
     icon: CreditCard,
-    title: 'Enrôlement biométrique',
+    title: 'Biométrique',
     description: 'Établissement de la carte biométrique après enrôlement',
     price: 'Gratuit',
     href: '/services/biometrique'
