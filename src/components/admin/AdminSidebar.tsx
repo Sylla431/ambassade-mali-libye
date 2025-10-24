@@ -49,44 +49,44 @@ export default function AdminSidebar({ user, onLogout }: AdminSidebarProps) {
         { title: 'Nouvel article', href: '/admin/articles/new' }
       ]
     },
-    {
-      title: 'Événements',
-      href: '/admin/events',
-      icon: Calendar,
-      active: pathname.startsWith('/admin/events'),
-      children: [
-        { title: 'Tous les événements', href: '/admin/events' },
-        { title: 'Nouvel événement', href: '/admin/events/new' }
-      ]
-    },
+    // {
+    //   title: 'Événements',
+    //   href: '/admin/events',
+    //   icon: Calendar,
+    //   active: pathname.startsWith('/admin/events'),
+    //   children: [
+    //     { title: 'Tous les événements', href: '/admin/events' },
+    //     { title: 'Nouvel événement', href: '/admin/events/new' }
+    //   ]
+    // },
     // {
     //   title: 'Demandes de visa',
     //   href: '/admin/visa',
     //   icon: Users,
     //   active: pathname.startsWith('/admin/visa')
     // },
-    {
-      title: 'Messages',
-      href: '/admin/contact',
-      icon: MessageSquare,
-      active: pathname.startsWith('/admin/contact')
-    },
+    // {
+    //   title: 'Messages',
+    //   href: '/admin/contact',
+    //   icon: MessageSquare,
+    //   active: pathname.startsWith('/admin/contact')
+    // },
     {
       title: 'Documents',
       href: '/admin/documents',
       icon: Upload,
       active: pathname.startsWith('/admin/documents')
     },
-    {
-      title: 'Annonces',
-      href: '/admin/announcements',
-      icon: BarChart3,
-      active: pathname.startsWith('/admin/announcements'),
-      children: [
-        { title: 'Toutes les annonces', href: '/admin/announcements' },
-        { title: 'Nouvelle annonce', href: '/admin/announcements/new' }
-      ]
-    },
+    // {
+    //   title: 'Annonces',
+    //   href: '/admin/announcements',
+    //   icon: BarChart3,
+    //   active: pathname.startsWith('/admin/announcements'),
+    //   children: [
+    //     { title: 'Toutes les annonces', href: '/admin/announcements' },
+    //     { title: 'Nouvelle annonce', href: '/admin/announcements/new' }
+    //   ]
+    // },
     {
       title: 'Galeries',
       href: '/admin/galleries',
