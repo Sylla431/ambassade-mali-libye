@@ -35,184 +35,132 @@ interface EventDetailProps {
     gallery: Array<{
       id: string
       url: string
-      alt?: string | null
-      order: number
+      altText?: string | null
     }>
   }
 }
 
 export default function EventDetail({ event }: EventDetailProps) {
+  const formattedStartDate = event.startDate ? format(new Date(event.startDate), 'dd MMMM yyyy', { locale: fr }) : 'N/A'
+  const formattedEndDate = event.endDate ? format(new Date(event.endDate), 'dd MMMM yyyy', { locale: fr }) : null
+  const startTime = event.startDate ? format(new Date(event.startDate), 'HH:mm', { locale: fr }) : 'N/A'
+  const endTime = event.endDate ? format(new Date(event.endDate), 'HH:mm', { locale: fr }) : null
+
   const getEventStatus = (startDate: string, endDate?: string | null) => {
     const now = new Date()
     const start = new Date(startDate)
     const end = endDate ? new Date(endDate) : null
 
     if (isBefore(now, start)) {
-      return { status: 'upcoming', label: 'À venir', color: 'text-blue-600 bg-blue-100' }
+      return 'À venir'
     } else if (end && isAfter(now, end)) {
-      return { status: 'past', label: 'Terminé', color: 'text-gray-600 bg-gray-100' }
+      return 'Terminé'
     } else {
-      return { status: 'current', label: 'En cours', color: 'text-green-600 bg-green-100' }
+      return 'En cours'
     }
   }
 
-  const eventStatus = getEventStatus(event.startDate, event.endDate)
-
-  const formatDate = (dateString: string) => {
-    return format(new Date(dateString), 'dd MMMM yyyy', { locale: fr })
-  }
-
-  const formatTime = (dateString: string) => {
-    return format(new Date(dateString), 'HH:mm', { locale: fr })
-  }
-
-  const formatDateTime = (dateString: string) => {
-    return format(new Date(dateString), 'dd MMMM yyyy à HH:mm', { locale: fr })
-  }
+  const status = getEventStatus(event.startDate, event.endDate)
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Header avec image */}
-      <div className="relative h-96 bg-gradient-to-r from-green-600 to-green-800">
-        {event.imageUrl && (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100"
+    >
+      {/* Hero Image */}
+      <div className="relative h-96 w-full overflow-hidden">
+        {event.imageUrl ? (
           <Image
             src={event.imageUrl}
             alt={event.title}
             fill
-            className="object-cover opacity-80"
+            className="object-cover object-center"
             priority
           />
+        ) : (
+          <div className="absolute inset-0 bg-gradient-to-br from-mali-green-600 to-mali-gold-600 flex items-center justify-center">
+            <Calendar className="h-24 w-24 text-white opacity-50" />
+          </div>
         )}
-        <div className="absolute inset-0 bg-black bg-opacity-40" />
-        
-        {/* Navigation */}
-        <div className="relative z-10 p-6">
-          <Link
-            href="/evenements"
-            className="inline-flex items-center space-x-2 text-white hover:text-green-200 transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5" />
-            <span>Retour aux événements</span>
-          </Link>
-        </div>
-
-        {/* Contenu du header */}
-        <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-          <div className="max-w-4xl mx-auto">
-            <div className="flex items-center space-x-3 mb-4">
-              <span className={`px-3 py-1 rounded-full text-sm font-medium ${eventStatus.color}`}>
-                {eventStatus.label}
-              </span>
-              {event.category && (
-                <span className="px-3 py-1 bg-white bg-opacity-20 rounded-full text-sm">
-                  {event.category.name}
-                </span>
-              )}
-            </div>
-            
+        <div className="absolute inset-0 bg-black bg-opacity-50 flex items-end p-8">
+          <div className="container-custom">
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="text-4xl lg:text-5xl font-bold mb-4"
+              transition={{ delay: 0.2, duration: 0.5 }}
+              className="text-4xl md:text-5xl font-extrabold text-white leading-tight drop-shadow-lg"
             >
               {event.title}
             </motion.h1>
-
-            {event.titleAr && (
-              <motion.h2
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.1 }}
-                className="text-2xl lg:text-3xl font-semibold text-green-200 mb-4"
-                dir="rtl"
-              >
-                {event.titleAr}
-              </motion.h2>
-            )}
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="flex flex-wrap items-center gap-6 text-lg"
-            >
-              <div className="flex items-center space-x-2">
-                <Calendar className="w-5 h-5" />
-                <span>{formatDate(event.startDate)}</span>
-              </div>
-              
-              <div className="flex items-center space-x-2">
-                <Clock className="w-5 h-5" />
-                <span>{formatTime(event.startDate)}</span>
-              </div>
-              
-              <div className="flex items-center space-x-2">
-                <MapPin className="w-5 h-5" />
-                <span>{event.location}</span>
-              </div>
-            </motion.div>
           </div>
         </div>
       </div>
 
-      {/* Contenu principal */}
-      <div className="max-w-4xl mx-auto px-6 py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Contenu principal */}
+      <div className="container-custom py-12 md:py-16">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+          {/* Main Content */}
           <div className="lg:col-span-2">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8"
+              transition={{ delay: 0.3, duration: 0.5 }}
+              className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-8 mb-8"
             >
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
-                À propos de cet événement
-              </h3>
-              
-              <div className="prose prose-lg max-w-none dark:prose-invert">
-                <p className="text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-line">
-                  {event.description}
-                </p>
+              <div className="flex flex-wrap items-center gap-4 mb-6 text-sm text-gray-600 dark:text-gray-400">
+                <span className="flex items-center gap-1">
+                  <Calendar className="h-4 w-4 text-mali-green-600" />
+                  <span>{formattedStartDate} {formattedEndDate && `- ${formattedEndDate}`}</span>
+                </span>
+                <span className="flex items-center gap-1">
+                  <Clock className="h-4 w-4 text-mali-gold-600" />
+                  <span>{startTime} {endTime && `- ${endTime}`}</span>
+                </span>
+                <span className="flex items-center gap-1">
+                  <MapPin className="h-4 w-4 text-mali-red-600" />
+                  <span>{event.location}</span>
+                </span>
+                {event.category && (
+                  <span className="px-3 py-1 bg-primary-100 dark:bg-primary-900 text-primary-800 dark:text-primary-200 text-xs font-medium rounded-full">
+                    {event.category.name}
+                  </span>
+                )}
+                <span className={`px-3 py-1 text-xs font-medium rounded-full ${
+                  status === 'À venir' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' :
+                  status === 'En cours' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' :
+                  'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
+                }`}>
+                  {status}
+                </span>
               </div>
 
-              {event.descriptionAr && (
-                <div className="mt-8">
-                  <h4 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-                    بالعربية
-                  </h4>
-                  <div className="prose prose-lg max-w-none dark:prose-invert">
-                    <p 
-                      className="text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-line"
-                      dir="rtl"
-                    >
-                      {event.descriptionAr}
-                    </p>
-                  </div>
-                </div>
-              )}
+              <div className="prose dark:prose-invert max-w-none">
+                <p className="text-lg leading-relaxed mb-4">{event.description}</p>
+                {event.descriptionAr && (
+                  <p className="text-lg leading-relaxed mb-4 text-right" dir="rtl">
+                    {event.descriptionAr}
+                  </p>
+                )}
+              </div>
             </motion.div>
 
-            {/* Galerie d'images */}
             {event.gallery && event.gallery.length > 0 && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.4 }}
-                className="mt-8 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8"
+                transition={{ delay: 0.4, duration: 0.5 }}
+                className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-8 mb-8"
               >
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
-                  Galerie
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {event.gallery.map((image, index) => (
-                    <div key={image.id} className="relative aspect-square rounded-lg overflow-hidden">
+                <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Galerie d'images</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                  {event.gallery.map((image) => (
+                    <div key={image.id} className="relative h-48 w-full overflow-hidden rounded-lg shadow-md">
                       <Image
                         src={image.url}
-                        alt={image.alt || `Image ${index + 1} de l'événement`}
+                        alt={image.altText || event.title}
                         fill
-                        className="object-cover hover:scale-105 transition-transform duration-300"
+                        className="object-cover object-center"
                       />
                     </div>
                   ))}
@@ -224,118 +172,65 @@ export default function EventDetail({ event }: EventDetailProps) {
           {/* Sidebar */}
           <div className="lg:col-span-1">
             <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.5 }}
-              className="space-y-6"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.5 }}
+              className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6 mb-8"
             >
-              {/* Détails de l'événement */}
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
-                  Détails
-                </h3>
-                
-                <div className="space-y-4">
-                  <div className="flex items-start space-x-3">
-                    <Calendar className="w-5 h-5 text-green-600 mt-1" />
-                    <div>
-                      <p className="font-medium text-gray-900 dark:text-white">
-                        Date de début
-                      </p>
-                      <p className="text-gray-600 dark:text-gray-300">
-                        {formatDateTime(event.startDate)}
-                      </p>
-                    </div>
-                  </div>
-
-                  {event.endDate && (
-                    <div className="flex items-start space-x-3">
-                      <Clock className="w-5 h-5 text-green-600 mt-1" />
-                      <div>
-                        <p className="font-medium text-gray-900 dark:text-white">
-                          Date de fin
-                        </p>
-                        <p className="text-gray-600 dark:text-gray-300">
-                          {formatDateTime(event.endDate)}
-                        </p>
-                      </div>
-                    </div>
-                  )}
-
-                  <div className="flex items-start space-x-3">
-                    <MapPin className="w-5 h-5 text-green-600 mt-1" />
-                    <div>
-                      <p className="font-medium text-gray-900 dark:text-white">
-                        Lieu
-                      </p>
-                      <p className="text-gray-600 dark:text-gray-300">
-                        {event.location}
-                      </p>
-                    </div>
-                  </div>
-
-                  {event.category && (
-                    <div className="flex items-start space-x-3">
-                      <div className="w-5 h-5 bg-green-600 rounded mt-1" />
-                      <div>
-                        <p className="font-medium text-gray-900 dark:text-white">
-                          Catégorie
-                        </p>
-                        <p className="text-gray-600 dark:text-gray-300">
-                          {event.category.name}
-                        </p>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Informations sur l'auteur */}
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
-                  Publié par
-                </h3>
-                
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center">
-                    <User className="w-5 h-5 text-white" />
-                  </div>
+              <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">Informations</h2>
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <User className="h-5 w-5 text-mali-green-600" />
                   <div>
-                    <p className="font-medium text-gray-900 dark:text-white">
-                      {event.author.name}
-                    </p>
-                    <p className="text-sm text-gray-600 dark:text-gray-300">
-                      {format(new Date(event.createdAt), 'dd MMMM yyyy', { locale: fr })}
-                    </p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Auteur</p>
+                    <p className="font-medium">{event.author.name}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Clock className="h-5 w-5 text-mali-gold-600" />
+                  <div>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Publié le</p>
+                    <p className="font-medium">{format(new Date(event.createdAt), 'dd MMMM yyyy', { locale: fr })}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Eye className="h-5 w-5 text-mali-red-600" />
+                  <div>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Statut</p>
+                    <p className="font-medium">{event.published ? 'Publié' : 'Brouillon'}</p>
                   </div>
                 </div>
               </div>
+            </motion.div>
 
-              {/* Actions */}
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
-                  Actions
-                </h3>
-                
-                <div className="space-y-3">
-                  <button className="w-full flex items-center justify-center space-x-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
-                    <Share2 className="w-4 h-4" />
-                    <span>Partager</span>
-                  </button>
-                  
-                  <Link
-                    href="/evenements"
-                    className="w-full flex items-center justify-center space-x-2 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-                  >
-                    <Eye className="w-4 h-4" />
-                    <span>Voir tous les événements</span>
-                  </Link>
-                </div>
-              </div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6, duration: 0.5 }}
+              className="flex flex-col space-y-4"
+            >
+              <Link
+                href="/evenements"
+                className="btn-secondary flex items-center justify-center space-x-2"
+              >
+                <ArrowLeft className="h-5 w-5" />
+                <span>Retour aux événements</span>
+              </Link>
+              <button
+                onClick={() => navigator.share && navigator.share({
+                  title: event.title,
+                  text: event.description,
+                  url: window.location.href,
+                })}
+                className="btn-outline flex items-center justify-center space-x-2"
+              >
+                <Share2 className="h-5 w-5" />
+                <span>Partager l'événement</span>
+              </button>
             </motion.div>
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   )
 }

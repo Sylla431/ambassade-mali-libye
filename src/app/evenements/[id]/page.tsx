@@ -73,7 +73,17 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
       notFound()
     }
 
-    return <EventDetail event={event} />
+    return <EventDetail event={{
+      ...event,
+      startDate: event.startDate.toISOString(),
+      endDate: event.endDate?.toISOString() || null,
+      createdAt: event.createdAt.toISOString(),
+      updatedAt: event.updatedAt.toISOString(),
+      gallery: event.gallery.map(img => ({
+        ...img,
+        url: img.mediaUrl
+      }))
+    }} />
   } catch (error) {
     console.error('Erreur lors du chargement de l\'événement:', error)
     notFound()
