@@ -56,7 +56,6 @@ export const PUT = withAuth(async (
 ) => {
   try {
     const body = await request.json()
-    const user = request.user!
 
     // Vérifier si l'événement existe
     const existingEvent = await prisma.event.findUnique({
