@@ -15,8 +15,7 @@ export default function EditEventPage() {
     location: '',
     startDate: '',
     endDate: '',
-    published: false,
-    featured: false,
+    published: true, // Publié par défaut
     categoryId: '',
     imageUrl: ''
   })
@@ -69,7 +68,6 @@ export default function EditEventPage() {
           startDate: event.startDate ? new Date(event.startDate).toISOString().slice(0, 16) : '',
           endDate: event.endDate ? new Date(event.endDate).toISOString().slice(0, 16) : '',
           published: event.published || false,
-          featured: event.featured || false,
           categoryId: event.categoryId || '',
           imageUrl: event.imageUrl || ''
         })
@@ -102,9 +100,19 @@ export default function EditEventPage() {
         imageUrl = await uploadImage(imageFile)
       }
       
+      // Préparer les données selon le schéma de validation
       const eventData = {
-        ...formData,
-        imageUrl
+        title: formData.title,
+        titleAr: formData.titleAr || undefined,
+        description: formData.description,
+        descriptionAr: formData.descriptionAr || undefined,
+        location: formData.location || 'Non spécifié', // Le lieu est requis
+        startDate: formData.startDate ? new Date(formData.startDate).toISOString() : undefined,
+        endDate: formData.endDate ? new Date(formData.endDate).toISOString() : undefined,
+        imageUrl: imageUrl || undefined,
+        published: formData.published,
+        categoryId: formData.categoryId || undefined
+        // Note: 'featured' n'est pas dans le schéma de validation
       }
       
       const response = await fetch(`/api/events/${eventId}`, {

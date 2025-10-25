@@ -15,8 +15,7 @@ export default function NewEventPage() {
     location: '',
     startDate: '',
     endDate: '',
-    published: false,
-    featured: false,
+    published: true, // Publié par défaut
     categoryId: '',
     imageUrl: ''
   })
@@ -57,9 +56,19 @@ export default function NewEventPage() {
         imageUrl = await uploadImage(imageFile)
       }
       
+      // Préparer les données selon le schéma de validation
       const eventData = {
-        ...formData,
-        imageUrl
+        title: formData.title,
+        titleAr: formData.titleAr || undefined,
+        description: formData.description,
+        descriptionAr: formData.descriptionAr || undefined,
+        location: formData.location || 'Non spécifié', // Le lieu est requis
+        startDate: formData.startDate ? new Date(formData.startDate).toISOString() : undefined,
+        endDate: formData.endDate ? new Date(formData.endDate).toISOString() : undefined,
+        imageUrl: imageUrl || undefined,
+        published: formData.published,
+        categoryId: formData.categoryId || undefined
+        // Note: 'featured' n'est pas dans le schéma de validation
       }
       
       const response = await fetch('/api/events', {
@@ -248,12 +257,13 @@ export default function NewEventPage() {
 
               <div className="mt-6">
                 <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-2">
-                  Lieu
+                  Lieu *
                 </label>
                 <input
                   type="text"
                   id="location"
                   name="location"
+                  required
                   value={formData.location}
                   onChange={handleInputChange}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
@@ -352,21 +362,51 @@ export default function NewEventPage() {
                   </label>
                 </div>
 
-                <div className="flex items-center">
-                  <input
-                    type="checkbox"
-                    id="featured"
-                    name="featured"
-                    checked={formData.featured}
-                    onChange={handleInputChange}
-                    className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
-                  />
-                  <label htmlFor="featured" className="ml-2 block text-sm text-gray-900">
-                    Événement en vedette
-                  </label>
-                </div>
               </div>
             </div>
+            </div>
+
+            {/* Boutons d'action */}
+            <div className="bg-white rounded-lg shadow p-6">
+              <div className="flex justify-between items-center">
+                <button
+                  type="button"
+                  onClick={() => router.push('/admin/events')}
+                  className="flex items-center space-x-2 px-4 py-2 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  <span>Retour</span>
+                </button>
+
+                <div className="flex space-x-3">
+                  <button
+                    type="button"
+                    onClick={() => router.push('/admin/events')}
+                    className="px-4 py-2 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                  >
+                    Annuler
+                  </button>
+                  
+                  <button
+                    type="submit"
+                    form="event-form"
+                    disabled={loading}
+                    className="flex items-center space-x-2 px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    {loading ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                        <span>Création...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Save className="w-4 h-4" />
+                        <span>Créer l'événement</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
             </div>
           </form>
       </AdminLayout>

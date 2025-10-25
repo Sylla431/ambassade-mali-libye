@@ -49,16 +49,16 @@ export default function AdminSidebar({ user, onLogout }: AdminSidebarProps) {
         { title: 'Nouvel article', href: '/admin/articles/new' }
       ]
     },
-    // {
-    //   title: 'Événements',
-    //   href: '/admin/events',
-    //   icon: Calendar,
-    //   active: pathname.startsWith('/admin/events'),
-    //   children: [
-    //     { title: 'Tous les événements', href: '/admin/events' },
-    //     { title: 'Nouvel événement', href: '/admin/events/new' }
-    //   ]
-    // },
+    {
+      title: 'Événements',
+      href: '/admin/events',
+      icon: Calendar,
+      active: pathname.startsWith('/admin/events'),
+      children: [
+        { title: 'Tous les événements', href: '/admin/events' },
+        { title: 'Nouvel événement', href: '/admin/events/new' }
+      ]
+    },
     // {
     //   title: 'Demandes de visa',
     //   href: '/admin/visa',
