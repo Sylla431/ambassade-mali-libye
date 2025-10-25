@@ -414,19 +414,6 @@ export default function EditEventPage() {
                           Publier l'événement
                         </label>
                       </div>
-                      <div className="flex items-center">
-                        <input
-                          type="checkbox"
-                          id="featured"
-                          name="featured"
-                          checked={formData.featured}
-                          onChange={handleInputChange}
-                          className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
-                        />
-                        <label htmlFor="featured" className="ml-2 block text-sm text-gray-900">
-                          Mettre en vedette
-                        </label>
-                      </div>
                     </div>
                   </div>
                 </div>
