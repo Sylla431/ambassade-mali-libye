@@ -140,11 +140,21 @@ export default function ArticlesListIntegrated() {
                     className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
                   >
                     <div className="relative">
-                      <img
-                        src={article.imageUrl || '/images/articles/default.jpg'}
-                        alt={article.title}
-                        className="w-full h-64 object-cover"
-                      />
+                      {article.imageUrl ? (
+                        <img
+                          src={article.imageUrl}
+                          alt={article.title}
+                          className="w-full h-64 object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-64 bg-gray-100 flex items-center justify-center">
+                          <img
+                            src="/images/seals/Armoiries_Mali-3-01-150x150-1.png"
+                            alt="Armoiries du Mali"
+                            className="w-32 h-32 object-contain opacity-60"
+                          />
+                        </div>
+                      )}
                       <div className="absolute top-4 left-4">
                         <span className="bg-yellow-500 text-white px-3 py-1 rounded-full text-sm font-medium">
                           En vedette
@@ -224,12 +234,22 @@ export default function ArticlesListIntegrated() {
                   transition={{ duration: 0.5, delay: index * 0.1 }}
                   className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
                 >
-                  <div className="relative">
-                    <img
-                      src={article.imageUrl || '/images/articles/default.jpg'}
-                      alt={article.title}
-                      className="w-full h-48 object-cover"
-                    />
+                    <div className="relative">
+                      {article.imageUrl ? (
+                        <img
+                          src={article.imageUrl}
+                          alt={article.title}
+                          className="w-full h-48 object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-48 bg-gray-100 flex items-center justify-center">
+                          <img
+                            src="/images/seals/Armoiries_Mali-3-01-150x150-1.png"
+                            alt="Armoiries du Mali"
+                            className="w-24 h-24 object-contain opacity-60"
+                          />
+                        </div>
+                      )}
                     {article.featured && (
                       <div className="absolute top-3 left-3">
                         <span className="bg-yellow-500 text-white px-2 py-1 rounded-full text-xs font-medium">

@@ -45,7 +45,7 @@ const serviceDetails = [
     ]
   },
   {
-    title: 'Enrôlement biométrique',
+    title: 'Biométrique',
     description: 'Création de carte d\'identité nationale biométrique',
     price: 'Gratuit',
     duration: '30-45 jours',

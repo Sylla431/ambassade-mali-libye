@@ -29,7 +29,7 @@ const leadership = [
     id: 3,
     name: 'Pr Adama Diawara',
     position: 'Charge d\'Affaires',
-    image: '/images/leadership/ambassadeur.jpg',
+    image: '',
     description: 'Représentant officiel de la République du Mali auprès de la Libye et de la République de Malte.',
     email: 'maliambatrp@yahoo.fr',
     phone: '-',
