@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { FileText, Calendar, User, ArrowRight, Tag } from 'lucide-react'
+import { Calendar, User, ArrowRight, Tag } from 'lucide-react'
 import Link from 'next/link'
 import { format } from 'date-fns'
 import Image from 'next/image'
@@ -144,8 +144,14 @@ export default function Articles() {
                         className="object-cover"
                       />
                     ) : (
-                      <div className="h-full bg-gradient-to-br from-mali-green-100 to-mali-gold-100 dark:from-mali-green-900 dark:to-mali-gold-900 flex items-center justify-center">
-                        <FileText className="h-16 w-16 text-mali-green-600 dark:text-mali-green-400" />
+                      <div className="h-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
+                        <Image
+                          src="/images/seals/Armoiries_Mali-3-01-150x150-1.png"
+                          alt="Armoiries du Mali"
+                          width={96}
+                          height={96}
+                          className="object-contain opacity-60"
+                        />
                       </div>
                     )}
                     {article.featured && (
