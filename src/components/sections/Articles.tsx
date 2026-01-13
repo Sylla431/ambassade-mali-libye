@@ -273,7 +273,7 @@ export default function Articles() {
               <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
                 Articles Populaires
               </h3>
-              
+            
               <div className="space-y-4">
                 {data.articles.slice(0, 3).map((article, index) => (
                   <Link

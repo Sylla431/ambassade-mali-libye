@@ -46,17 +46,18 @@ export default function Header() {
       <div className="bg-mali-gradient text-white py-2">
         <div className="container-custom">
           <div className="flex flex-col sm:flex-row justify-between items-center text-sm gap-2">
-            <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-4">
+            <div className="hidden sm:flex flex-row items-center space-x-4">
               <div className="flex items-center space-x-1">
                 <Phone className="h-4 w-4" />
-                <span className="hidden sm:inline">{t('header.phone')}</span>
+                <span>{t('header.phone')}</span>
               </div>
               <div className="flex items-center space-x-1">
                 <MapPin className="h-4 w-4" />
-                <span className="hidden sm:inline">{t('header.address')}</span>
+                <span>{t('header.address')}</span>
               </div>
             </div>
-            <div className="flex items-center space-x-4">
+            {/* Mobile: centré, Desktop: à gauche */}
+            <div className="flex items-center justify-center sm:justify-start space-x-4 w-full sm:w-auto">
               <a
                 href="https://www.diplomatiemdc.gouv.ml/vitrine"
                 target="_blank"
@@ -66,15 +67,18 @@ export default function Header() {
                 <span>Demande de Visa</span>
                 <ExternalLink className="h-3 w-3" />
               </a>
+              {/* LanguageSwitcher visible sur mobile, masqué sur desktop (sera dans le dernier bloc) */}
+              <div className="sm:hidden">
+                <LanguageSwitcher />
+              </div>
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="hidden sm:flex items-center space-x-4">
               <div className="flex items-center space-x-1">
                 <Clock className="h-4 w-4" />
-                <span className="hidden sm:inline">{t('header.hours')}</span>
+                <span>{t('header.hours')}</span>
               </div>
               <LanguageSwitcher />
             </div>
-            
           </div>
         </div>
       </div>
