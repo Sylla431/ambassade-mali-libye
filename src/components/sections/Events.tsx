@@ -5,6 +5,7 @@ import { Calendar, MapPin, Clock, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import { format, isAfter, isBefore } from 'date-fns'
 import { useEffect, useState } from 'react'
+import { isVideoUrl } from '@/utils/media'
 
 interface Event {
   id: string
@@ -146,11 +147,22 @@ export default function Events() {
                 <Link href={`/evenements/${event.id}`}>
                   <div className="h-48 bg-gradient-to-br from-mali-green-100 to-mali-gold-100 dark:from-mali-green-900 dark:to-mali-gold-900 flex items-center justify-center relative">
                     {event.imageUrl ? (
-                      <img 
-                        src={event.imageUrl} 
-                        alt={event.title}
-                        className="absolute inset-0 w-full h-full object-cover"
-                      />
+                      isVideoUrl(event.imageUrl) ? (
+                        <video
+                          src={event.imageUrl}
+                          className="absolute inset-0 w-full h-full object-cover"
+                          controls={false}
+                          muted
+                          loop
+                          playsInline
+                        />
+                      ) : (
+                        <img 
+                          src={event.imageUrl} 
+                          alt={event.title}
+                          className="absolute inset-0 w-full h-full object-cover"
+                        />
+                      )
                     ) : (
                       <>
                         <div className="absolute inset-0 bg-[url('/images/events/diplomatic-meeting-1.jpg')] bg-cover bg-center opacity-20"></div>

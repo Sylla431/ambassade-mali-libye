@@ -2,6 +2,12 @@
 const nextConfig = {
   images: {
     domains: ['localhost', 'embassy.marakadev.online'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**.public.blob.vercel-storage.com',
+      },
+    ],
   },
   i18n: {
     locales: ['fr', 'ar'],

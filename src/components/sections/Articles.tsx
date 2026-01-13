@@ -6,6 +6,7 @@ import { Calendar, User, ArrowRight, Tag } from 'lucide-react'
 import Link from 'next/link'
 import { format } from 'date-fns'
 import Image from 'next/image'
+import { isVideoUrl } from '@/utils/media'
 
 interface Article {
   id: number
@@ -137,12 +138,23 @@ export default function Articles() {
                 >
                   <div className="h-48 relative overflow-hidden">
                     {article.imageUrl ? (
-                      <Image
-                        src={article.imageUrl}
-                        alt={article.title}
-                        fill
-                        className="object-cover"
-                      />
+                      isVideoUrl(article.imageUrl) ? (
+                        <video
+                          src={article.imageUrl}
+                          className="w-full h-full object-cover"
+                          controls={false}
+                          muted
+                          loop
+                          playsInline
+                        />
+                      ) : (
+                        <Image
+                          src={article.imageUrl}
+                          alt={article.title}
+                          fill
+                          className="object-cover"
+                        />
+                      )
                     ) : (
                       <div className="h-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
                         <Image

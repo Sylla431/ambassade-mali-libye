@@ -7,6 +7,7 @@ import { format } from 'date-fns'
 import { useState, useMemo } from 'react'
 import { useArticles } from '@/hooks/useArticles'
 import { useCategories } from '@/hooks/useCategories'
+import { isVideoUrl } from '@/utils/media'
 
 export default function ArticlesListIntegrated() {
   const [searchTerm, setSearchTerm] = useState('')
@@ -141,11 +142,22 @@ export default function ArticlesListIntegrated() {
                   >
                     <div className="relative">
                       {article.imageUrl ? (
-                        <img
-                          src={article.imageUrl}
-                          alt={article.title}
-                          className="w-full h-64 object-cover"
-                        />
+                        isVideoUrl(article.imageUrl) ? (
+                          <video
+                            src={article.imageUrl}
+                            className="w-full h-64 object-cover"
+                            controls={false}
+                            muted
+                            loop
+                            playsInline
+                          />
+                        ) : (
+                          <img
+                            src={article.imageUrl}
+                            alt={article.title}
+                            className="w-full h-64 object-cover"
+                          />
+                        )
                       ) : (
                         <div className="w-full h-64 bg-gray-100 flex items-center justify-center">
                           <img
@@ -234,22 +246,33 @@ export default function ArticlesListIntegrated() {
                   transition={{ duration: 0.5, delay: index * 0.1 }}
                   className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
                 >
-                    <div className="relative">
-                      {article.imageUrl ? (
+                  <div className="relative">
+                    {article.imageUrl ? (
+                      isVideoUrl(article.imageUrl) ? (
+                        <video
+                          src={article.imageUrl}
+                          className="w-full h-48 object-cover"
+                          controls={false}
+                          muted
+                          loop
+                          playsInline
+                        />
+                      ) : (
                         <img
                           src={article.imageUrl}
                           alt={article.title}
                           className="w-full h-48 object-cover"
                         />
-                      ) : (
-                        <div className="w-full h-48 bg-gray-100 flex items-center justify-center">
-                          <img
-                            src="/images/seals/Armoiries_Mali-3-01-150x150-1.png"
-                            alt="Armoiries du Mali"
-                            className="w-24 h-24 object-contain opacity-60"
-                          />
-                        </div>
-                      )}
+                      )
+                    ) : (
+                      <div className="w-full h-48 bg-gray-100 flex items-center justify-center">
+                        <img
+                          src="/images/seals/Armoiries_Mali-3-01-150x150-1.png"
+                          alt="Armoiries du Mali"
+                          className="w-24 h-24 object-contain opacity-60"
+                        />
+                      </div>
+                    )}
                     {article.featured && (
                       <div className="absolute top-3 left-3">
                         <span className="bg-yellow-500 text-white px-2 py-1 rounded-full text-xs font-medium">

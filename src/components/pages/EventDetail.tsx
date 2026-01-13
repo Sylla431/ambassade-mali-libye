@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { format, isAfter, isBefore } from 'date-fns'
 import { fr } from 'date-fns/locale'
 import Image from 'next/image'
+import { isVideoUrl } from '@/utils/media'
 
 interface EventDetailProps {
   event: {
@@ -72,13 +73,25 @@ export default function EventDetail({ event }: EventDetailProps) {
       {/* Hero Image */}
       <div className="relative h-96 w-full overflow-hidden">
         {event.imageUrl ? (
-          <Image
-            src={event.imageUrl}
-            alt={event.title}
-            fill
-            className="object-cover object-center"
-            priority
-          />
+          isVideoUrl(event.imageUrl) ? (
+            <video
+              src={event.imageUrl}
+              className="w-full h-full object-cover object-center"
+              controls={false}
+              muted
+              loop
+              playsInline
+              autoPlay
+            />
+          ) : (
+            <Image
+              src={event.imageUrl}
+              alt={event.title}
+              fill
+              className="object-cover object-center"
+              priority
+            />
+          )
         ) : (
           <div className="absolute inset-0 bg-gradient-to-br from-mali-green-600 to-mali-gold-600 flex items-center justify-center">
             <Calendar className="h-24 w-24 text-white opacity-50" />
