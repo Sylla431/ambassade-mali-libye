@@ -10,14 +10,14 @@ const leadership = [
     name: 'Son Excellence Général d\'Armée Assimi Goïta',
     position: 'Président de la Transition',
     image: '/images/leadership/president.jpg',
-    description: 'Chef de l\'État de la République du Mali, dirigeant la transition et représentant suprême de la nation malienne.',
+    description: 'Chef de l\'État de la République du Mali',
     email: '-',
     phone: '-',
     level: 'president'
   },
   {
     id: 2,
-    name: 'SEM Abdoulaye Diop',
+    name: 'Son Excellence Monsieur Abdoulaye Diop',
     position: 'Ministre des Affaires Étrangères et de la Coopération internationale',
     image: '/images/leadership/ministre.jpg',
     description: 'Responsable de la politique étrangère du Mali et des relations diplomatiques internationales.',
@@ -28,9 +28,9 @@ const leadership = [
   {
     id: 3,
     name: 'Pr Adama Diawara',
-    position: 'Charge d\'Affaires',
+    position: 'Charge d\'Affaire a.i',
     image: '',
-    description: 'Représentant officiel de la République du Mali auprès de la Libye et de la République de Malte.',
+    description: '',
     email: 'maliambatrp@yahoo.fr',
     phone: '-',
     level: 'ambassador'
@@ -82,6 +82,14 @@ const staff = [
     id: 9,
     name: 'Monsieur Boubacar MAIGA',
     position: 'Chargé du Protocole',
+    image: '/images/staff/aminata.jpg',
+    email: 'maliambatrp@yahoo.fr',
+    phone: '-'
+  },
+  {
+    id: 10,
+    name: 'Moussa KONTA',
+    position: 'Protocole, Interprète chargé des Relations Publiques',
     image: '/images/staff/aminata.jpg',
     email: 'maliambatrp@yahoo.fr',
     phone: '-'
