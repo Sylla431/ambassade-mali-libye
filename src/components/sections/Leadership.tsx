@@ -27,10 +27,20 @@ const leadership = [
   },
   {
     id: 3,
-    name: 'Pr Adama Diawara',
-    position: 'Charge d\'Affaire a.i',
+    name: 'Non pourvu',
+    position: 'Ambassadeur de la République du Mali en Libye et à Malte',
     image: '',
-    description: '',
+    description: 'Poste vacant. Le Premier Conseiller assure l\'intérim.',
+    email: '-',
+    phone: '-',
+    level: 'ambassador'
+  },
+  {
+    id: 4,
+    name: 'Pr Adama Diawara',
+    position: 'Premier Conseiller, Chargé d\'Affaires a.i.',
+    image: '',
+    description: 'Premier Conseiller et Ambassadeur par intérim de la République du Mali en Libye et à Malte.',
     email: 'maliambatrp@yahoo.fr',
     phone: '-',
     level: 'ambassador'
@@ -39,7 +49,15 @@ const leadership = [
 
 const staff = [
   {
-    id: 4,
+    id: 5,
+    name: 'Adama DIAWARA',
+    position: 'Premier Conseiller, Chargé d\'Affaires a.i.',
+    image: '/images/staff/ben.jpg',
+    email: 'maliambatrp@yahoo.fr',
+    phone: '-'
+  },
+  {
+    id: 6,
     name: 'Monsieur Fousseyni SOGODOGO',
     position: 'Deuxième Conseiller',
     image: '/images/staff/ben.jpg',
@@ -47,7 +65,7 @@ const staff = [
     phone: '-'
   },
   {
-    id: 5,
+    id: 7,
     name: 'Monsieur Sema TRAORE',
     position: 'Conseiller Consulaire',
     image: '/images/staff/modibo.jpg',
@@ -55,7 +73,7 @@ const staff = [
     phone: '-'
   },
   {
-    id: 6,
+    id: 8,
     name: 'Monsieur Dramane YOLO',
     position: 'Conseiller Consulaire',
     image: '/images/staff/cevin.jpg',
@@ -63,7 +81,7 @@ const staff = [
     phone: '-'
   },
   {
-    id: 7,
+    id: 9,
     name: 'Monsieur Balla dit Aliou OUATtARA',
     position: 'Secrétaire Agent Comptable',
     image: '/images/staff/aminata.jpg',
@@ -71,7 +89,7 @@ const staff = [
     phone: '-'
   },
   {
-    id: 8,
+    id: 10,
     name: 'Monsieur Bakary SYLLA',
     position: 'Secrêtaire d\'Ambassade',
     image: '/images/staff/aminata.jpg',
@@ -79,7 +97,7 @@ const staff = [
     phone: '-'
   },
   {
-    id: 9,
+    id: 11,
     name: 'Monsieur Boubacar MAIGA',
     position: 'Chargé du Protocole',
     image: '/images/staff/aminata.jpg',
@@ -87,7 +105,7 @@ const staff = [
     phone: '-'
   },
   {
-    id: 10,
+    id: 12,
     name: 'Moussa KONTA',
     position: 'Protocole, Interprète chargé des Relations Publiques',
     image: '/images/staff/aminata.jpg',
@@ -175,51 +193,65 @@ export default function Leadership() {
         {/* Direction principale */}
         {/* make minister card up to ambassador card in the same row */}
         <div className=" max-w-4xl mx-auto grid lg:grid-cols-1 gap-12 mb-20">
-          {leadership.slice(1).map((leader, index) => (
-            <motion.div
-              key={leader.id}
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.2 }}
-              viewport={{ once: true }}
-              className="card-mali p-8 text-center"
-            >
-              <div className="relative mb-6">
-                <div className="w-48 h-48 mx-auto rounded-full overflow-hidden border-4 border-mali-gold-200 dark:border-mali-gold-800">
-                  {leader.image ? (
-                    <Image
-                      src={leader.image}
-                      alt={leader.name}
-                      width={192}
-                      height={192}
-                      className="object-cover w-full h-full"
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-mali-green-100 to-mali-gold-100 dark:from-mali-green-900 dark:to-mali-gold-900 flex items-center justify-center">
-                      {leader.level === 'minister' ? (
-                        <Crown className="h-20 w-20 text-mali-gold-600 dark:text-mali-gold-400" />
-                      ) : (
-                        <Award className="h-20 w-20 text-mali-green-600 dark:text-mali-green-400" />
-                      )}
+          {leadership.slice(1).map((leader, index) => {
+            const isVacant = leader.name === 'Non pourvu'
+            const isMinister = leader.level === 'minister'
+            // Taille selon le poste : Ministre (grande), Ambassadeur/Conseiller (moyenne)
+            const imageSize = isMinister ? 'w-56 h-56' : 'w-40 h-40'
+            const imageIconSize = isMinister ? 'h-24 w-24' : isVacant ? 'h-16 w-16' : 'h-16 w-16'
+            const padding = isMinister ? 'p-10' : 'p-6'
+            const titleSize = isMinister ? 'text-3xl' : 'text-xl'
+            const positionSize = isMinister ? 'text-xl' : 'text-base'
+            const descriptionSize = isMinister ? 'text-lg' : 'text-sm'
+            const borderSize = isMinister ? 'border-6' : 'border-4'
+            
+            return (
+              <motion.div
+                key={leader.id}
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.2 }}
+                viewport={{ once: true }}
+                className={`card-mali ${padding} text-center ${isVacant ? 'opacity-60 border-2 border-dashed border-gray-400 dark:border-gray-600' : ''}`}
+              >
+                <div className="relative mb-6">
+                  <div className={`${imageSize} mx-auto rounded-full overflow-hidden ${borderSize} ${isVacant ? 'border-gray-300 dark:border-gray-700' : 'border-mali-gold-200 dark:border-mali-gold-800'}`}>
+                    {leader.image ? (
+                      <Image
+                        src={leader.image}
+                        alt={leader.name}
+                        width={isMinister ? 224 : 160}
+                        height={isMinister ? 224 : 160}
+                        className="object-cover w-full h-full"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-mali-green-100 to-mali-gold-100 dark:from-mali-green-900 dark:to-mali-gold-900 flex items-center justify-center">
+                        {isMinister ? (
+                          <Crown className={`${imageIconSize} text-mali-gold-600 dark:text-mali-gold-400`} />
+                        ) : isVacant ? (
+                          <Users className={`${imageIconSize} text-gray-400 dark:text-gray-600`} />
+                        ) : (
+                          <Award className={`${imageIconSize} text-mali-green-600 dark:text-mali-green-400`} />
+                        )}
+                      </div>
+                    )}
+                  </div>
+                  {isMinister && (
+                    <div className={`absolute -top-2 -right-2 ${isMinister ? 'w-14 h-14' : 'w-12 h-12'} bg-mali-gold-600 rounded-full flex items-center justify-center`}>
+                      <Crown className={`${isMinister ? 'h-7 w-7' : 'h-6 w-6'} text-white`} />
                     </div>
                   )}
                 </div>
-                {leader.level === 'minister' && (
-                  <div className="absolute -top-2 -right-2 w-12 h-12 bg-mali-gold-600 rounded-full flex items-center justify-center">
-                    <Crown className="h-6 w-6 text-white" />
-                  </div>
-                )}
-              </div>
-              
-              <h3 className="text-2xl font-bold text-mali-green-800 dark:text-mali-green-200 mb-2">
-                {leader.name}
-              </h3>
-              <p className="text-mali-gold-600 dark:text-mali-gold-400 font-semibold mb-4">
-                {leader.position}
-              </p>
-              <p className="text-gray-600 dark:text-gray-400 mb-6">
-                {leader.description}
-              </p>
+                
+                <h3 className={`${titleSize} font-bold mb-2 ${isVacant ? 'text-gray-500 dark:text-gray-400' : 'text-mali-green-800 dark:text-mali-green-200'}`}>
+                  {leader.name}
+                </h3>
+                <p className={`${positionSize} font-semibold mb-4 ${isVacant ? 'text-gray-500 dark:text-gray-400' : 'text-mali-gold-600 dark:text-mali-gold-400'}`}>
+                  {leader.position}
+                </p>
+                <p className={`${descriptionSize} text-gray-600 dark:text-gray-400 mb-6`}>
+                  {leader.description}
+                </p>
               
               {/* <div className="space-y-2">
                 <div className="flex items-center justify-center space-x-2">
@@ -231,8 +263,9 @@ export default function Leadership() {
                   <span className="text-sm text-gray-600 dark:text-gray-400">{leader.phone}</span>
                 </div>
               </div> */}
-            </motion.div>
-          ))}
+              </motion.div>
+            )
+          })}
         </div>
 
         {/* Équipe */}
@@ -242,9 +275,9 @@ export default function Leadership() {
           transition={{ duration: 0.8, delay: 0.4 }}
           viewport={{ once: true }}
         >
-          <h3 className="text-3xl font-bold text-gray-900 dark:text-white text-center mb-12">
+          {/* <h3 className="text-3xl font-bold text-gray-900 dark:text-white text-center mb-12">
             Personnel de l'Ambassade du Mali à Tripoli-Libye
-          </h3>
+          </h3> */}
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {staff.map((member, index) => (
               <motion.div
